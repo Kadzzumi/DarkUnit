@@ -63,3 +63,8 @@ void AMainPlayerController::Look(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);;
 	}
 }
+
+void AMainPlayerController::Jump()
+{
+	ControlledPawn->Jump();
+}
