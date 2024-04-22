@@ -18,7 +18,7 @@ void AMainPlayerController::BeginPlay()
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	check(Subsystem);
 	Subsystem->AddMappingContext(PlayerContext, 0);
-	ControlledPawn = Cast<APlayerCharactermain>(GetPawn());
+	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
 }
 
 void AMainPlayerController::SetupInputComponent()
