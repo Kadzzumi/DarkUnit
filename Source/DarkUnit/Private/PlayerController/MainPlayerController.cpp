@@ -18,7 +18,7 @@ void AMainPlayerController::BeginPlay()
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	check(Subsystem);
 	Subsystem->AddMappingContext(PlayerContext, 0);
-	
+	ControlledPawn = Cast<APlayerCharactermain>(GetPawn());
 }
 
 void AMainPlayerController::SetupInputComponent()
@@ -45,7 +45,7 @@ void AMainPlayerController::Move(const FInputActionValue& InputActionValue)
 
 	// get right vector 
 	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-	if (APawn* ControlledPawn = GetPawn<APawn>())
+	if (ControlledPawn)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
@@ -57,7 +57,7 @@ void AMainPlayerController::Look(const FInputActionValue& InputActionValue)
 	// input is a Vector2D
 	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
 	
-	if (APawn* ControlledPawn = GetPawn<APawn>())
+	if (ControlledPawn)
 	{
 		ControlledPawn->AddControllerYawInput(LookAxisVector.X);;
 		ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);;
