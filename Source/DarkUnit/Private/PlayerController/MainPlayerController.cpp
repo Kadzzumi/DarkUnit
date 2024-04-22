@@ -4,8 +4,9 @@
 #include "PlayerController/MainPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Character/Player/PlayerCharacterBase.h"
 
-AMainPlayerController::AMainPlayerController()
+AMainPlayerController::AMainPlayerController(): ControlledPawn(nullptr)
 {
 	bReplicates = true;
 }
@@ -16,8 +17,10 @@ void AMainPlayerController::BeginPlay()
 
 	check(PlayerContext);
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	check(Subsystem);
-	Subsystem->AddMappingContext(PlayerContext, 0);
+	if (Subsystem)
+	{
+		Subsystem->AddMappingContext(PlayerContext, 0);
+	}
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
 }
 
