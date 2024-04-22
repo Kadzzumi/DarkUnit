@@ -31,7 +31,7 @@ private:
 
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Look(const struct FInputActionValue& InputActionValue);
-	
+	void Jump();
 	
 		
 };
