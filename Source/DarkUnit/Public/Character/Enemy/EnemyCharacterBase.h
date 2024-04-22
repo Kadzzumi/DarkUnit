@@ -13,5 +13,9 @@ UCLASS()
 class DARKUNIT_API AEnemyCharacterBase : public ACharacterBase
 {
 	GENERATED_BODY()
+public:
+	AEnemyCharacterBase();
 	
+protected:
+	virtual void BeginPlay() override;
 };
