@@ -31,6 +31,22 @@
 		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
+		},
+		{
+			"Name": "AnimationWarping",
+			"Enabled": true
+		},
+		{
+			"Name": "AnimationLocomotionLibrary",
+			"Enabled": true
+		},
+		{
+			"Name": "MotionWarping",
+			"Enabled": true
+		},
+		{
+			"Name": "MotionTrajectory",
+			"Enabled": true
 		}
 	]
 }

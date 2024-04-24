@@ -6,8 +6,8 @@
 
 UMainAttributeSet::UMainAttributeSet()
 {
-	InitHealth(100.f);
-	InitMaxHealth(125.f);
+	InitHealth(50.f);
+	InitMaxHealth(100.f);
 	InitStamina(50.f);
 	InitMaxStamina(100.f);
 }

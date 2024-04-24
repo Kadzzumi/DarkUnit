@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "MainEffectActor.generated.h"
 
+class UGameplayEffect;
 class USphereComponent;
 
 UCLASS()
@@ -16,19 +17,18 @@ class DARKUNIT_API AMainEffectActor : public AActor
 public:	
 	AMainEffectActor();
 	//Overlaps
-	UFUNCTION()
-	virtual void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& HitResult);
-	UFUNCTION()
-	virtual void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
 	
 protected:
 
 	virtual void BeginPlay() override;
-
-private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> Sphere;
 	
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UStaticMeshComponent> Mesh;
+	UFUNCTION(BlueprintCallable)
+	void ApplyEffectToTheTarget(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass);
+	
+//Effects
+	UPROPERTY(EditAnywhere, Category="AppliedEffects")
+	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
+	
+private:
 };
