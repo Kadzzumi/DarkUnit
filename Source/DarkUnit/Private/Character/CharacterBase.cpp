@@ -2,6 +2,7 @@
 
 
 #include "Character/CharacterBase.h"
+#include "AbilitySystemComponent.h"
 
 
 ACharacterBase::ACharacterBase()
@@ -23,6 +24,25 @@ void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ACharacterBase::InitAbilityActorInfo()
+{
+}
+
+void ACharacterBase::InitializeAttributes(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
+{
+	check(IsValid(GetAbilitySystemComponent()));
+	check(GameplayEffectClass);
+	const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
+}
+
+void ACharacterBase::InitializeDefaultAttributes() const
+{
+	InitializeAttributes(DefaultPrimaryAttributes, 1.f);
+	InitializeAttributes(DefaultSecondaryAttributes, 1.f);	
 }
 
 

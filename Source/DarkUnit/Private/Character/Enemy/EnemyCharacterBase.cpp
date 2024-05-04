@@ -16,9 +16,20 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 	
 }
 
+int32 AEnemyCharacterBase::GetPlayerLevel()
+{
+	return Level;
+}
+
 void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	InitAbilityActorInfo();
 	
+}
+
+void AEnemyCharacterBase::InitAbilityActorInfo()
+{
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	Cast<UMainAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }

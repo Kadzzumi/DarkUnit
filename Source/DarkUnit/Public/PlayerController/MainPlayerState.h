@@ -16,14 +16,23 @@ class DARKUNIT_API AMainPlayerState : public APlayerState, public IAbilitySystem
 	GENERATED_BODY()
 public:
 	AMainPlayerState();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	//GAS
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const {return AttributeSet; }
-
-	
-	UPROPERTY()
+	// Level Getter
+	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
+protected:	
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+	
+private:
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
+	int32 Level = 1;
+	UFUNCTION()
+	void OnRep_Level(int32 OldLevel);
+	
 };

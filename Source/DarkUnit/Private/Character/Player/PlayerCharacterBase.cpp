@@ -4,6 +4,8 @@
 #include "Character/Player/PlayerCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/MainAbilitySystemComponent.h"
+#include "Character/Player/Components/VitalComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -25,11 +27,15 @@ APlayerCharacterBase::APlayerCharacterBase()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
-	// SetupCharacter Movement
+	// SetupCharacter Movement 
 	SetRotation(false, true);
 	GetCharacterMovement()->RotationRate = ZAxisRotation;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
+
+	//Vital Component
+	VitalComponent = CreateDefaultSubobject<UVitalComponent>(TEXT("VitalComponent"));
+	VitalComponent->SetIsReplicated(true);
 }
 
 // Init Ability Actor Info
@@ -44,24 +50,34 @@ void APlayerCharacterBase::OnRep_PlayerState()
 	InitAbilityActorInfo();
 	
 }
+
+void APlayerCharacterBase::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if (VitalComponent)
+	{
+		VitalComponent->Player = this;
+	}
+}
+
 void APlayerCharacterBase::InitAbilityActorInfo()
 {
 	//Init Ability Actor Info For the Server
 	AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
 	check(MainPlayerState);
 	MainPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(MainPlayerState, this);
+	Cast<UMainAbilitySystemComponent>(MainPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();
 	AbilitySystemComponent = MainPlayerState->GetAbilitySystemComponent();
 	AttributeSet = MainPlayerState->GetAttributeSet();
-
+	
 	if (AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController()))
 	{
 		if (AMainHUD* MainHUD = Cast<AMainHUD>(PlayerController->GetHUD()))
 		{
 			MainHUD->InitOverlay(PlayerController, MainPlayerState, AbilitySystemComponent, AttributeSet);
 		}
-		
 	}
-	
+	InitializeDefaultAttributes();
 }
 
 //
@@ -102,4 +118,12 @@ float APlayerCharacterBase::GetSpeed() const
 	FVector Velocity{GetVelocity()};
 	Velocity.Z = 0.f;
 	return Velocity.Size();
+}
+
+int32 APlayerCharacterBase::GetPlayerLevel()
+{
+	const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+	check(MainPlayerState);
+
+	return MainPlayerState->GetPlayerLevel();
 }
