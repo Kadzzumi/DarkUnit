@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Character/Player/Components/VitalComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -12,6 +13,7 @@
 #include "PlayerController/MainPlayerController.h"
 #include "PlayerController/MainPlayerState.h"
 #include "UI/HUD/MainHUD.h"
+#include "UI/Widget/MainUserWidget.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
@@ -126,4 +128,10 @@ int32 APlayerCharacterBase::GetPlayerLevel()
 	check(MainPlayerState);
 
 	return MainPlayerState->GetPlayerLevel();
+}
+
+//
+void APlayerCharacterBase::OpenAttributeMenu()
+{
+
 }

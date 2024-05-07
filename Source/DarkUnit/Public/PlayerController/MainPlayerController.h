@@ -31,7 +31,9 @@ private:
 	TObjectPtr<UInputAction> LookAction;
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> JumpAction;
-
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> AttributeMenuAction;
+	
 	//Controller
 	UPROPERTY()
 	APlayerCharacterBase* ControlledPawn;
@@ -40,6 +42,5 @@ private:
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Look(const struct FInputActionValue& InputActionValue);
 	void Jump();
-	
-		
+
 };

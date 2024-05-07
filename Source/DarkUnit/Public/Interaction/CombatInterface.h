@@ -13,9 +13,7 @@ class UCombatInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
+
 class DARKUNIT_API ICombatInterface
 {
 	GENERATED_BODY()

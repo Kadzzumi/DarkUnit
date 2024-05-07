@@ -26,13 +26,15 @@ public:
 
 	//Combat Interface
 	virtual int32 GetPlayerLevel() override;
+
+	//Menu
+	void OpenAttributeMenu();
 protected:
 	
 	virtual void BeginDestroy() override;
 	//Movement
 	void SetRotation(bool bOrientToMovement, bool Yaw);
 
-	
 private:
 	// Functions
 	virtual void InitAbilityActorInfo() override;
@@ -47,4 +49,6 @@ private:
 	FRotator ZAxisRotation{FRotator(0.f, 540.f, 0.f)};
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class UVitalComponent* VitalComponent;
+
+
 };

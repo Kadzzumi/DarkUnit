@@ -31,8 +31,7 @@ void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Stamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxStamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Shield, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxShield, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, HealthFlask, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Armor, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, BlockChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StaminaRecovery, COND_None, REPNOTIFY_Always);
@@ -56,9 +55,9 @@ void UMainAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStamina());
 	}
-	if (Attribute == GetShieldAttribute())
+	if (Attribute == GetHealthFlaskAttribute())
 	{
-		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxShield());
+		NewValue = FMath::RoundToInt(NewValue);
 	}
 	
 }
@@ -112,9 +111,9 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
 	}
-	if (Data.EvaluatedData.Attribute == GetShieldAttribute())
+	if (Data.EvaluatedData.Attribute == GetHealthFlaskAttribute())
 	{
-		SetStamina(FMath::Clamp(GetShield(), 0.f, GetMaxShield()));
+		SetHealthFlask(FMath::RoundToInt(GetHealthFlask()));
 	}
 }
 
@@ -176,15 +175,11 @@ void UMainAttributeSet::OnRep_MaxStamina(const FGameplayAttributeData& OldMaxSta
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MaxStamina, OldMaxStamina);
 }
 //Shield
-void UMainAttributeSet::OnRep_Shield(const FGameplayAttributeData& OldShield) const
+void UMainAttributeSet::OnRep_HealthFlask(const FGameplayAttributeData& OldHealthFlask) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Shield, OldShield);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, HealthFlask, OldHealthFlask);
 }
 
-void UMainAttributeSet::OnRep_MaxShield(const FGameplayAttributeData& OldMaxShield) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MaxShield, OldMaxShield);
-}
 //Armor
 void UMainAttributeSet::OnRep_Armor(const FGameplayAttributeData& OldArmor) const
 {

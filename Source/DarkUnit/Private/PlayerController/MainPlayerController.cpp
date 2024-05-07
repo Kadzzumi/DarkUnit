@@ -4,6 +4,7 @@
 #include "PlayerController/MainPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Character/Player/PlayerCharacterBase.h"
 
 AMainPlayerController::AMainPlayerController(): ControlledPawn(nullptr)
@@ -32,7 +33,6 @@ void AMainPlayerController::SetupInputComponent()
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Move);
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Look);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Jump);
-	
 }
 
 void AMainPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -70,5 +70,8 @@ void AMainPlayerController::Look(const FInputActionValue& InputActionValue)
 
 void AMainPlayerController::Jump()
 {
-	ControlledPawn->Jump();
+	if (ControlledPawn)
+	{
+		ControlledPawn->Jump();
+	}
 }

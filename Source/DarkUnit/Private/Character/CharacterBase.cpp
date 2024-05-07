@@ -34,7 +34,8 @@ void ACharacterBase::InitializeAttributes(TSubclassOf<UGameplayEffect> GameplayE
 {
 	check(IsValid(GetAbilitySystemComponent()));
 	check(GameplayEffectClass);
-	const FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
 	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(GameplayEffectClass, Level, ContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
 }
@@ -42,7 +43,8 @@ void ACharacterBase::InitializeAttributes(TSubclassOf<UGameplayEffect> GameplayE
 void ACharacterBase::InitializeDefaultAttributes() const
 {
 	InitializeAttributes(DefaultPrimaryAttributes, 1.f);
-	InitializeAttributes(DefaultSecondaryAttributes, 1.f);	
+	InitializeAttributes(DefaultSecondaryAttributes, 1.f);
+	InitializeAttributes(DefaultVitalAttributes, 1.f);
 }
 
 

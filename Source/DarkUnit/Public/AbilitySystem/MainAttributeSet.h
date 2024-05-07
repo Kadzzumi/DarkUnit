@@ -131,17 +131,11 @@ public:
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, MaxStamina);
 
 	// Shield
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Shield, Category = "Vital Attributes")
-	FGameplayAttributeData Shield;
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthFlask, Category = "Vital Attributes")
+	FGameplayAttributeData HealthFlask;
 	UFUNCTION()
-	void OnRep_Shield(const FGameplayAttributeData& OldShield) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, Shield);
-	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxShield, Category = "Vital Attributes")
-	FGameplayAttributeData MaxShield;
-	UFUNCTION()
-	void OnRep_MaxShield(const FGameplayAttributeData& OldMaxShield) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, MaxShield);
+	void OnRep_HealthFlask(const FGameplayAttributeData& OldHealthFlask) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, HealthFlask);
 	
 	// Armor
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Vital Attributes")
