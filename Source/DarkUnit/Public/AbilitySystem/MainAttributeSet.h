@@ -129,13 +129,6 @@ public:
 	UFUNCTION()
 	void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina) const;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, MaxStamina);
-
-	// Shield
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthFlask, Category = "Vital Attributes")
-	FGameplayAttributeData HealthFlask;
-	UFUNCTION()
-	void OnRep_HealthFlask(const FGameplayAttributeData& OldHealthFlask) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, HealthFlask);
 	
 	// Armor
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category = "Vital Attributes")
@@ -187,11 +180,11 @@ public:
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, MovementSpeed);
 
 	// Crit Chance
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CritChance, Category = "Vital Attributes")
-	FGameplayAttributeData CritChance;
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Impulse, Category = "Vital Attributes")
+	FGameplayAttributeData Impulse;
 	UFUNCTION()
-	void OnRep_CritChance(const FGameplayAttributeData& OldCritChance) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, CritChance);
+	void OnRep_Impulse(const FGameplayAttributeData& OldImpulse) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, Impulse);
 
 	// Stun Chance
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StunChance, Category = "Vital Attributes")

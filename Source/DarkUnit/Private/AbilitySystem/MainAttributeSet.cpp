@@ -31,7 +31,6 @@ void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Stamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxStamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, HealthFlask, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Armor, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, BlockChance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StaminaRecovery, COND_None, REPNOTIFY_Always);
@@ -39,7 +38,7 @@ void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, CriticalDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, AttackSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MovementSpeed, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, CritChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Impulse, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StunChance, COND_None, REPNOTIFY_Always);
 	
 }
@@ -54,10 +53,6 @@ void UMainAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	if (Attribute == GetStaminaAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStamina());
-	}
-	if (Attribute == GetHealthFlaskAttribute())
-	{
-		NewValue = FMath::RoundToInt(NewValue);
 	}
 	
 }
@@ -110,10 +105,6 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
 		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
-	}
-	if (Data.EvaluatedData.Attribute == GetHealthFlaskAttribute())
-	{
-		SetHealthFlask(FMath::RoundToInt(GetHealthFlask()));
 	}
 }
 
@@ -174,11 +165,6 @@ void UMainAttributeSet::OnRep_MaxStamina(const FGameplayAttributeData& OldMaxSta
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MaxStamina, OldMaxStamina);
 }
-//Shield
-void UMainAttributeSet::OnRep_HealthFlask(const FGameplayAttributeData& OldHealthFlask) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, HealthFlask, OldHealthFlask);
-}
 
 //Armor
 void UMainAttributeSet::OnRep_Armor(const FGameplayAttributeData& OldArmor) const
@@ -215,10 +201,10 @@ void UMainAttributeSet::OnRep_MovementSpeed(const FGameplayAttributeData& OldMov
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MovementSpeed, OldMovementSpeed);
 }
-//CritChance
-void UMainAttributeSet::OnRep_CritChance(const FGameplayAttributeData& OldCritChance) const
+//Impulse
+void UMainAttributeSet::OnRep_Impulse(const FGameplayAttributeData& OldImpulse) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, CritChance, OldCritChance);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Impulse, OldImpulse);
 }
 //StunChance
 void UMainAttributeSet::OnRep_StunChance(const FGameplayAttributeData& OldStunChance) const
