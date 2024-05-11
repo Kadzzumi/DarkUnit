@@ -7,13 +7,7 @@ FDarkUnitGameplayTags FDarkUnitGameplayTags::GameplayTags;
 
 void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 {
-	GameplayTags.Attributes_Secondary_Vigor = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Vigor"), FString(""));
-	GameplayTags.Attributes_Secondary_Endurance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Endurance"), FString(""));
-	GameplayTags.Attributes_Secondary_Defense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Defense"), FString(""));
-	GameplayTags.Attributes_Secondary_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Strength"), FString(""));
-	GameplayTags.Attributes_Secondary_Agility = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Agility"), FString(""));
-	GameplayTags.Attributes_Secondary_Penetration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Penetration"), FString(""));
-	
+
 	//Secondary attribute tags
 	GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString("Improves Health of the Character. Gives more survivability"));
 	GameplayTags.Attributes_Secondary_MaxStamina = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxStamina"), FString("Improves Stamina of the Character. Gives more Ability to do advanced movement"));
@@ -27,4 +21,11 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_Impulse = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Impulse"), FString("Improves Impulse"));
 	GameplayTags.Attributes_Secondary_StunChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.StunChance"), FString("Stun chance is improved"));
 
+	//Primary attributes
+	GameplayTags.Attributes_Primary_Vigor = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Vigor"), FString("Improves health of the character"));
+	GameplayTags.Attributes_Primary_Endurance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Endurance"), FString("Improves endurance of the character"));
+	GameplayTags.Attributes_Primary_Defense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Defense"), FString("Improves defense of the character"));
+	GameplayTags.Attributes_Primary_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Strength"), FString("Improves strength of the character"));
+	GameplayTags.Attributes_Primary_Agility = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Agility"), FString("Improves agility of the character"));
+	GameplayTags.Attributes_Primary_Penetration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Penetration"), FString("Improves penetration of the character"));
 }

@@ -5,10 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 
-/**
- * AuraGameplayTags
- * Singleton containing Native GameplayTags
- */
 
 struct FDarkUnitGameplayTags
 {
@@ -16,15 +12,15 @@ public:
 	
 	static const FDarkUnitGameplayTags& Get() { return GameplayTags; }
 	static void InitializeNativeGameplayTags();
+	
 	//Primary Attributes
-	FGameplayTag Attributes_Secondary_Vigor;
-	FGameplayTag Attributes_Secondary_Endurance;
-	FGameplayTag Attributes_Secondary_Defense;
-	FGameplayTag Attributes_Secondary_Strength;
-	FGameplayTag Attributes_Secondary_Agility;
-	FGameplayTag Attributes_Secondary_Penetration;
-
-	//SECONDARY Attributes
+	FGameplayTag Attributes_Primary_Vigor;
+	FGameplayTag Attributes_Primary_Endurance;
+	FGameplayTag Attributes_Primary_Defense;
+	FGameplayTag Attributes_Primary_Strength;
+	FGameplayTag Attributes_Primary_Agility;
+	FGameplayTag Attributes_Primary_Penetration;
+	// Secondary
 	FGameplayTag Attributes_Secondary_MaxHealth;
 	FGameplayTag Attributes_Secondary_MaxStamina;
 	FGameplayTag Attributes_Secondary_StaminaRecovery;
