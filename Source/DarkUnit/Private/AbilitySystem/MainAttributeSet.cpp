@@ -7,12 +7,20 @@
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
+#include "DarkUnitGameplayTags.h"
 
 UMainAttributeSet::UMainAttributeSet()
 {
-	InitHealth(50.f);
-	InitMaxHealth(100.f);
+	const FDarkUnitGameplayTags& GameplayTags = FDarkUnitGameplayTags::Get();
+	
+	FAttributeSignature StrengthDelegate;
+	StrengthDelegate.BindStatic(GetStrengthAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, StrengthDelegate);
 
+	FAttributeSignature VigorDelegate;
+	VigorDelegate.BindStatic(GetVigorAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Vigor, VigorDelegate);
+	
 }
 //Replication
 void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
