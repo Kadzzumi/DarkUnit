@@ -21,4 +21,5 @@ class DARKUNIT_API ICombatInterface
 public:
 	
 	virtual int32 GetPlayerLevel();
+	virtual void SetAttackCollisions(const int32 Index);
 };

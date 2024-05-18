@@ -32,5 +32,5 @@ float UMMC_MaxStamina::CalculateBaseMagnitude_Implementation(const FGameplayEffe
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return 88.5 + (Endurance * 2) + (PlayerLevel * 1.5); 
+	return 58.5 + (Endurance * 2) + (PlayerLevel * 1.5); 
 }

@@ -2,10 +2,12 @@
 
 
 #include "PlayerController/MainPlayerController.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
-#include "Blueprint/UserWidget.h"
+#include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Character/Player/PlayerCharacterBase.h"
+#include "input/DarkUnitInputComponent.h"
 
 AMainPlayerController::AMainPlayerController(): ControlledPawn(nullptr)
 {
@@ -24,17 +26,22 @@ void AMainPlayerController::BeginPlay()
 	}
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
 }
-
+// Setting inputs
 void AMainPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 	
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Move);
-	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Look);
-	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Jump);
+	UDarkUnitInputComponent* DarkUnitInputComponent = CastChecked<UDarkUnitInputComponent>(InputComponent);
+	DarkUnitInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Move);
+	DarkUnitInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Look);
+	DarkUnitInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainPlayerController::PlayerJump);
+	DarkUnitInputComponent->BindAction(BasicAttackAction, ETriggerEvent::Triggered, this, &AMainPlayerController::BasicAttack);
+	DarkUnitInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMainPlayerController::HeavyAttack);
+	
+	DarkUnitInputComponent->BindAbilityActions(DarkUnitInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
+	
 }
-
+// Inputs to Actions
 void AMainPlayerController::Move(const FInputActionValue& InputActionValue)
 {
 	// input is a Vector2D
@@ -68,10 +75,54 @@ void AMainPlayerController::Look(const FInputActionValue& InputActionValue)
 	}
 }
 
-void AMainPlayerController::Jump()
+void AMainPlayerController::PlayerJump(const FInputActionValue& InputActionValue)
 {
 	if (ControlledPawn)
 	{
 		ControlledPawn->Jump();
 	}
+}
+
+
+//
+//Bind Input
+void AMainPlayerController::AbilityInputPressed(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+	if (GetASC() == nullptr) return;
+	GetASC()->AbilityInputTagPressed(InputTag);
+}
+
+void AMainPlayerController::AbilityInputReleased(FGameplayTag InputTag)
+{
+	if (GetASC() == nullptr) return;
+	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Green, *InputTag.ToString());
+	GetASC()->AbilityInputTagReleased(InputTag);
+}
+
+void AMainPlayerController::AbilityInputHeld(FGameplayTag InputTag)
+{
+	if (GetASC() == nullptr) return;
+	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Blue, *InputTag.ToString());
+	GetASC()->AbilityInputTagHeld(InputTag);
+}
+void AMainPlayerController::BasicAttack(const FInputActionValue& InputActionValue)
+{
+	//TODO:Add Action for the melee attack
+}
+
+void AMainPlayerController::HeavyAttack(const FInputActionValue& InputActionValue)
+{
+	//TODO:Add Action for the heavy melee attack
+}
+
+
+UMainAbilitySystemComponent* AMainPlayerController::GetASC()
+{
+	if (DarkUnitAbilitySystemComponent == nullptr)
+	{
+		DarkUnitAbilitySystemComponent = Cast<UMainAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+		GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Yellow, TEXT("Getting AbilitySystemComponent For the first time"));
+	}
+	return DarkUnitAbilitySystemComponent;
 }

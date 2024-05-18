@@ -9,7 +9,18 @@
 
 void UAttributeWidgetController::BindCallbacksToDependencies()
 {
-	
+	UMainAttributeSet* AS = Cast<UMainAttributeSet>(AttributeSet);
+	check(AttributeInfo);
+	for (auto& Pair : AS->TagsToAttributes)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value()).AddLambda(
+			[this, Pair](const FOnAttributeChangeData& Data)
+			{
+				BroadcastAttributeInfo(Pair.Key, Pair.Value());
+			}
+		);
+	}
+
 }
 
 void UAttributeWidgetController::BroadcastInitialValues()
@@ -18,9 +29,15 @@ void UAttributeWidgetController::BroadcastInitialValues()
 	check(AttributeInfo);
 	for (auto& Pair : AS->TagsToAttributes)
 	{
-		FDarkUnitAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(Pair.Key);
-		Info.AttributeValue = Pair.Value.Execute().GetNumericValue(AS);
-		AttributeInfoDelegate.Broadcast(Info);
-		UE_LOG(LogTemp, Warning, TEXT("Broadcasting attribute with tag: %s"), *Info.AttributeTag.ToString());
+		BroadcastAttributeInfo(Pair.Key, Pair.Value());
 	}
+}
+
+void UAttributeWidgetController::BroadcastAttributeInfo(const FGameplayTag& AttributeTag,
+	const FGameplayAttribute& Attribute) const
+{
+	FDarkUnitAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(AttributeTag);
+	Info.AttributeValue = Attribute.GetNumericValue(AttributeSet);
+	AttributeInfoDelegate.Broadcast(Info);
+	UE_LOG(LogTemp, Warning, TEXT("Broadcasting attribute with tag: %s"), *Info.AttributeTag.ToString());
 }

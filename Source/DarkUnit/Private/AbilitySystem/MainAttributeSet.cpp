@@ -12,14 +12,28 @@
 UMainAttributeSet::UMainAttributeSet()
 {
 	const FDarkUnitGameplayTags& GameplayTags = FDarkUnitGameplayTags::Get();
-	
-	FAttributeSignature StrengthDelegate;
-	StrengthDelegate.BindStatic(GetStrengthAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, StrengthDelegate);
+	// Primary
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Vigor, GetVigorAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Endurance, GetEnduranceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Defense, GetDefenseAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Agility, GetAgilityAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Penetration, GetPenetrationAttribute);
 
-	FAttributeSignature VigorDelegate;
-	VigorDelegate.BindStatic(GetVigorAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Vigor, VigorDelegate);
+	// Secondary
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_PhysDamage, GetPhysicalDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Armor, GetArmorAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Block, GetBlockChanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_AttackSpeed, GetAttackSpeedAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_StaminaRecovery, GetStaminaRecoveryAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_CritDamage, GetCriticalDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MovementSpeed, GetMovementSpeedAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Impulse, GetImpulseAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_StunChance, GetStunChanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxStamina, GetMaxStaminaAttribute);
+
+	
 	
 }
 //Replication
@@ -48,6 +62,7 @@ void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MovementSpeed, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Impulse, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StunChance, COND_None, REPNOTIFY_Always);
+	
 	
 }
 //Pre attribute changing

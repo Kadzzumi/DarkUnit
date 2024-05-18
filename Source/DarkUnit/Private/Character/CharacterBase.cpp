@@ -3,6 +3,7 @@
 
 #include "Character/CharacterBase.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/MainAbilitySystemComponent.h"
 
 
 ACharacterBase::ACharacterBase()
@@ -45,6 +46,16 @@ void ACharacterBase::InitializeDefaultAttributes() const
 	InitializeAttributes(DefaultPrimaryAttributes, 1.f);
 	InitializeAttributes(DefaultSecondaryAttributes, 1.f);
 	InitializeAttributes(DefaultVitalAttributes, 1.f);
+	
+}
+
+void ACharacterBase::AddCharacterAbilities()
+{
+	UMainAbilitySystemComponent* DarkUnitASC = Cast<UMainAbilitySystemComponent>(AbilitySystemComponent);
+	if (!HasAuthority()) return;
+	
+	DarkUnitASC->AddCharacterAbilities(StartupAbilities);
+	
 }
 
 
