@@ -6,6 +6,7 @@
 #include "Character/CharacterBase.h"
 #include "PlayerCharacterBase.generated.h"
 
+class AWeaponBase;
 /**
  * 
  */
@@ -30,15 +31,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Items")
 	TArray<AActor*> InteractingActorList;
 
-	// collisions for no weapon
-	UFUNCTION(BlueprintCallable)
-	virtual void SetAttackCollisions(const int32 Index) override;
 protected:
 	
 	virtual void BeginPlay() override;
 	//Movement
 	void SetRotation(bool bOrientToMovement, bool Yaw);
 
+	// EquipWeapon
+	AWeaponBase* SpawnDefaultWeapon();
+	void EquipWeapon(AWeaponBase* WeaponToEquip, bool bSwapping = false);
+	UFUNCTION(BlueprintCallable)
+	virtual void SetAttackCollisions(const int32 Index) override;
 private:
 	// Functions
 	virtual void InitAbilityActorInfo() override;
@@ -51,10 +54,33 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	FRotator ZAxisRotation{FRotator(0.f, 540.f, 0.f)};
+	
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class UVitalComponent* VitalComponent;
-	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
+	TSubclassOf<AWeaponBase> WeaponBase;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
+	AWeaponBase* PrimaryWeapon;
 	//
+	//PickUp
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	UCapsuleComponent* PickupSphere;
+	
+	// Function to handle the begin overlap event
+	UFUNCTION()
+	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	
+	// Function to handle the end overlap event
+	UFUNCTION()
+	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+};
+
+
+
+
+/*	// collisions for no weapon
+
 	//Combat Collisions
 	UPROPERTY(VisibleAnywhere, Category = "Collision")
 	class USphereComponent* LeftHandCollision;
@@ -81,17 +107,4 @@ private:
 	void OnOverlapBeginRightLeg(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 	UFUNCTION()
 	void OnOverlapEndRightLeg(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	//
-	//PickUp
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	UCapsuleComponent* PickupSphere;
-	
-	// Function to handle the begin overlap event
-	UFUNCTION()
-	void OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	
-	// Function to handle the end overlap event
-	UFUNCTION()
-	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-};
+*/

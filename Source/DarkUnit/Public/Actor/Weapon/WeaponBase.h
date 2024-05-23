@@ -2,12 +2,15 @@
 
 #pragma once
 
+#include <NiagaraSystem.h>
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
 
 class UBoxComponent;
 class USphereComponent;
+class UNiagraSystem;
 
 // Enum to represent the states of the actor
 UENUM(BlueprintType)
@@ -25,6 +28,21 @@ class DARKUNIT_API AWeaponBase : public AActor
 	
 public:	
 	AWeaponBase();
+
+	// Function to set the actor state
+	UFUNCTION(BlueprintCallable, Category = "State")
+	void SetWeaponState(EWeaponState NewState);
+	
+	void SetWeaponCollision(bool bCanHit) const;
+protected:
+	virtual void BeginPlay() override;
+
+	
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+private:
 	UPROPERTY(VisibleAnywhere, Category="Weapon")
 	USceneComponent* RootSceneComponent;
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
@@ -36,12 +54,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	EWeaponState CurrentState;
 	
-protected:
-	virtual void BeginPlay() override;
-	
-	// Function to set the actor state
-	UFUNCTION(BlueprintCallable, Category = "State")
-	void SetWeaponState(EWeaponState NewState);
-	
-	
+	//Cues
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* ImpactEffect;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> ImpactSound;
 };

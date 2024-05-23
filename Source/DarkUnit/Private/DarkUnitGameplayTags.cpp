@@ -41,5 +41,7 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_SwapSecondaryWeapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.SwapSecondaryWeapon"), FString("Swaps the current Secondary weapon"));
 	GameplayTags.InputTag_SwapItem = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.SwapItem"), FString("Swaps the current item"));
 	GameplayTags.InputTag_OpenMap = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.OpenMap"), FString("Opens the map"));
-	GameplayTags.InputTag_Interact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Interact"), FString("Inteact"));
+	GameplayTags.InputTag_Interact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Interact"), FString("Inteact key"));
+	GameplayTags.InputTag_AttributeMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.AttributeMenu"), FString("Attribute Menu key"));
+	
 }

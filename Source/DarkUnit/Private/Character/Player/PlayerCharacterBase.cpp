@@ -2,14 +2,11 @@
 
 
 #include "Character/Player/PlayerCharacterBase.h"
-
-#include <Components/SphereComponent.h>
-
 #include "AbilitySystemComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Components/CapsuleComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Actor/Weapon/WeaponBase.h"
-#include "Blueprint/UserWidget.h"
 #include "Character/Player/Components/VitalComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/EnemyCharacterBase.h"
@@ -18,7 +15,6 @@
 #include "PlayerController/MainPlayerController.h"
 #include "PlayerController/MainPlayerState.h"
 #include "UI/HUD/MainHUD.h"
-#include "UI/Widget/MainUserWidget.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
@@ -43,7 +39,8 @@ APlayerCharacterBase::APlayerCharacterBase()
 	//Vital Component
 	VitalComponent = CreateDefaultSubobject<UVitalComponent>(TEXT("VitalComponent"));
 	VitalComponent->SetIsReplicated(true);
-
+	
+/*
 	//Collisions
 	LeftHandCollision = CreateDefaultSubobject<USphereComponent>(TEXT("LeftHandCollision"));
 	LeftHandCollision->SetupAttachment(GetMesh(), TEXT("LeftHandSocket"));
@@ -76,7 +73,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	RightLegCollision->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacterBase::OnOverlapEndRightLeg);
 	RightLegCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RightLegCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
+*/
 	//
 	//Pickup
 	// Bind the overlap events
@@ -141,7 +138,7 @@ void APlayerCharacterBase::InitAbilityActorInfo()
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	SetAttackCollisions(false);
+	EquipWeapon(SpawnDefaultWeapon());
 }
 
 
@@ -168,6 +165,7 @@ void APlayerCharacterBase::SetRotation(bool bOrientToMovement, bool Yaw)
 	
 }
 
+
 //Speed
 float APlayerCharacterBase::GetSpeed() const
 {
@@ -184,6 +182,79 @@ int32 APlayerCharacterBase::GetPlayerLevel()
 
 	return MainPlayerState->GetPlayerLevel();
 }
+
+
+//
+//Pickup
+//
+void APlayerCharacterBase::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (AWeaponBase* Item = Cast<AWeaponBase>(OtherActor))
+	{
+		InteractingActorList.AddUnique(Item);
+	}
+}
+
+void APlayerCharacterBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (AWeaponBase* Item = Cast<AWeaponBase>(OtherActor))
+	{
+		InteractingActorList.Remove(Item);
+	}
+}
+
+AWeaponBase* APlayerCharacterBase::SpawnDefaultWeapon()
+{
+	// Check the TSubclassOf variable
+	if (WeaponBase)
+	{
+		// Spawn the Weapon
+		return GetWorld()->SpawnActor<AWeaponBase>(WeaponBase);
+	}
+
+	return nullptr;
+}
+
+void APlayerCharacterBase::EquipWeapon(AWeaponBase* WeaponToEquip, bool bSwapping)
+{
+	if (WeaponToEquip)
+	{
+		// Get the Hand Socket
+		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+		if (HandSocket)
+		{
+			// Attach the Weapon to the hand socket RightHandSocket
+			HandSocket->AttachActor(WeaponToEquip, GetMesh());
+			PrimaryWeapon = WeaponToEquip;
+			PrimaryWeapon->SetWeaponState(EWeaponState::EquippedState);
+		}
+	}
+}
+
+void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
+{
+	if (PrimaryWeapon)
+	{
+		switch (Index)
+		{
+		case 0:
+			PrimaryWeapon->SetWeaponCollision(false);
+			break;
+		case 1:
+			PrimaryWeapon->SetWeaponCollision(true);
+			break;
+		default:
+			PrimaryWeapon->SetWeaponCollision(false);
+			break;
+		}
+		
+	}
+}
+
+
+/*
 //
 // Attack Collision
 void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
@@ -216,32 +287,7 @@ void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
 		break;;
 	}
 
-}
-//
-//Pickup
-//
-void APlayerCharacterBase::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (AWeaponBase* Item = Cast<AWeaponBase>(OtherActor))
-	{
-		InteractingActorList.AddUnique(Item);
-
-	}
-}
-
-void APlayerCharacterBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if (AWeaponBase* Item = Cast<AWeaponBase>(OtherActor))
-	{
-		InteractingActorList.Remove(Item);
-
-	}
-}
-
-
-
+} 
 
 //
 //Overlap event
@@ -286,10 +332,10 @@ void APlayerCharacterBase::OnOverlapBeginRightHand(UPrimitiveComponent* Overlapp
 
 void APlayerCharacterBase::OnOverlapEndRightHand(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+		{
 	if (AEnemyCharacterBase* Enemy = Cast<AEnemyCharacterBase>(OtherActor))
 	{
 		if (GEngine)
-		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Right Hand End Overlap"));
 		}
 	}
@@ -345,3 +391,4 @@ void APlayerCharacterBase::OnOverlapEndRightLeg(UPrimitiveComponent* OverlappedC
 	}
 
 }
+*/

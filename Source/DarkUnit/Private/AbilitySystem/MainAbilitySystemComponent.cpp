@@ -36,9 +36,10 @@ void UMainAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
 			AbilitySpecInputPressed(AbilitySpec);
+			TryActivateAbility(AbilitySpec.Handle);
 			if (!AbilitySpec.IsActive())
 			{
-				TryActivateAbility(AbilitySpec.Handle);
+				
 			}
 		}
 	}
@@ -69,6 +70,7 @@ void UMainAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
 			AbilitySpecInputReleased(AbilitySpec);
+			
 		}
 	}	
 }
@@ -78,6 +80,6 @@ void UMainAbilitySystemComponent::EffectApply(UAbilitySystemComponent* AbilitySy
 	FGameplayTagContainer TagContainer;
 	EffectSpec.GetAllAssetTags(TagContainer);
 	
-	EffecAssetTags.Broadcast(TagContainer);
+	EffectAssetTags.Broadcast(TagContainer);
 	
 }

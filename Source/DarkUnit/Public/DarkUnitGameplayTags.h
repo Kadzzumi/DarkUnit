@@ -46,6 +46,7 @@ public:
 	FGameplayTag InputTag_SwapItem;
 	FGameplayTag InputTag_OpenMap;
 	FGameplayTag InputTag_Interact;
+	FGameplayTag InputTag_AttributeMenu;
 	
 private:
 	static FDarkUnitGameplayTags GameplayTags;

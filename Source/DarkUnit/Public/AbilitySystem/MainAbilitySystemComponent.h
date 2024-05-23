@@ -17,7 +17,7 @@ class DARKUNIT_API UMainAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 public:
 	void AbilityActorInfoSet();
-	FEffecAssetTags EffecAssetTags;
+	FEffecAssetTags EffectAssetTags;
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
 

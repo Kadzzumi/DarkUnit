@@ -45,7 +45,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		}
 	);
 	// Affect the HUD from the Data Tabgle and add widgets and tags
-	Cast<UMainAbilitySystemComponent>(AbilitySystemComponent)->EffecAssetTags.AddLambda(
+	Cast<UMainAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
 		[this](const FGameplayTagContainer& AssetTags)
 		{
 			for (FGameplayTag Tag : AssetTags)

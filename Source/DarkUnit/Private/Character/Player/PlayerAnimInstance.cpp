@@ -6,6 +6,7 @@
 #include "Character/Player/PlayerCharacterBase.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PlayerController/MainPlayerController.h"
 
 UPlayerAnimInstance::UPlayerAnimInstance():
 	Player(nullptr),
@@ -34,5 +35,13 @@ void UPlayerAnimInstance::LocalNativeUpdateAnimation(float DeltaTime)
 		const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
 		Direction = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
 		bInAir = Player->GetMovementComponent()->IsFalling();
+		if (bInAir)
+		{
+			AMainPlayerController* PC = Cast<AMainPlayerController>(Player->GetController());
+			if (PC)
+			{
+				PC->PlayerJump();
+			}
+		}
 	}
 }

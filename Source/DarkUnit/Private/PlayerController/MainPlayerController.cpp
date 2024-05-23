@@ -14,6 +14,7 @@ AMainPlayerController::AMainPlayerController(): ControlledPawn(nullptr)
 	bReplicates = true;
 }
 
+
 void AMainPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -34,9 +35,6 @@ void AMainPlayerController::SetupInputComponent()
 	UDarkUnitInputComponent* DarkUnitInputComponent = CastChecked<UDarkUnitInputComponent>(InputComponent);
 	DarkUnitInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Move);
 	DarkUnitInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainPlayerController::Look);
-	DarkUnitInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &AMainPlayerController::PlayerJump);
-	DarkUnitInputComponent->BindAction(BasicAttackAction, ETriggerEvent::Triggered, this, &AMainPlayerController::BasicAttack);
-	DarkUnitInputComponent->BindAction(HeavyAttackAction, ETriggerEvent::Triggered, this, &AMainPlayerController::HeavyAttack);
 	
 	DarkUnitInputComponent->BindAbilityActions(DarkUnitInputConfig, this, &ThisClass::AbilityInputPressed, &ThisClass::AbilityInputReleased, &ThisClass::AbilityInputHeld);
 	
@@ -75,15 +73,6 @@ void AMainPlayerController::Look(const FInputActionValue& InputActionValue)
 	}
 }
 
-void AMainPlayerController::PlayerJump(const FInputActionValue& InputActionValue)
-{
-	if (ControlledPawn)
-	{
-		ControlledPawn->Jump();
-	}
-}
-
-
 //
 //Bind Input
 void AMainPlayerController::AbilityInputPressed(FGameplayTag InputTag)
@@ -106,15 +95,6 @@ void AMainPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Blue, *InputTag.ToString());
 	GetASC()->AbilityInputTagHeld(InputTag);
 }
-void AMainPlayerController::BasicAttack(const FInputActionValue& InputActionValue)
-{
-	//TODO:Add Action for the melee attack
-}
-
-void AMainPlayerController::HeavyAttack(const FInputActionValue& InputActionValue)
-{
-	//TODO:Add Action for the heavy melee attack
-}
 
 
 UMainAbilitySystemComponent* AMainPlayerController::GetASC()
@@ -125,4 +105,13 @@ UMainAbilitySystemComponent* AMainPlayerController::GetASC()
 		GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Yellow, TEXT("Getting AbilitySystemComponent For the first time"));
 	}
 	return DarkUnitAbilitySystemComponent;
+}
+
+void AMainPlayerController::PlayerJump()
+{
+	if (GetASC())
+	{
+		const FGameplayTag JumpTag = FGameplayTag::RequestGameplayTag(FName("InputTag.Jump"));
+		GetASC()->AbilityInputTagPressed(JumpTag);
+	}
 }
