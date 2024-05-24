@@ -211,7 +211,9 @@ AWeaponBase* APlayerCharacterBase::SpawnDefaultWeapon()
 	if (WeaponBase)
 	{
 		// Spawn the Weapon
-		return GetWorld()->SpawnActor<AWeaponBase>(WeaponBase);
+		PrimaryWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponBase);
+		PrimaryWeapon->SetOwner(this);
+		return PrimaryWeapon;
 	}
 
 	return nullptr;

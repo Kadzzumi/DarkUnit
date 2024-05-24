@@ -10,7 +10,9 @@
 #include "Components/BoxComponent.h"
 
 // Sets default values
-AWeaponBase::AWeaponBase()
+AWeaponBase::AWeaponBase() :
+	Damage(10),
+	CapsuleRadius(30)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
@@ -31,17 +33,21 @@ void AWeaponBase::BeginPlay()
 	Super::BeginPlay();
 	SetWeaponState(EWeaponState::WorldState);
 	//Setup collisions
-	WeaponCollision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::OnOverlapBegin);
-	WeaponCollision->OnComponentEndOverlap.AddDynamic(this, &AWeaponBase::OnOverlapEnd);
-	WeaponCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
-	WeaponCollision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
-	WeaponCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	WeaponCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
 	WeaponCollision->SetGenerateOverlapEvents(true);
 }
 
-void AWeaponBase::SetWeaponCollision(bool bCanHit) const
+
+void AWeaponBase::SetWeaponCollision(bool bCanHit)
 {
-	WeaponCollision->SetGenerateOverlapEvents(bCanHit);
+	if (bCanHit)
+	{
+		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &AWeaponBase::PerformTrace, 0.015f, true, 0.f);
+	}
+	else
+	{
+		GetWorldTimerManager().ClearTimer(AttackTimerHandle);
+	}
 }
 
 
@@ -54,39 +60,54 @@ void AWeaponBase::SetWeaponState(EWeaponState NewState)
 	}
 }
 
-void AWeaponBase::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AWeaponBase::PerformTrace()
 {
-	if (AEnemyCharacterBase* Enemy = Cast<AEnemyCharacterBase>(OtherActor))
+	if (!WeaponMesh)
 	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Did Overlap"));
-		}
-		if (ImpactSound && ImpactEffect)
-		{
-			const FVector SpawnLocation = SweepResult.Location;
-			const FRotator SpawnRotation = FRotationMatrix::MakeFromZ(SweepResult.ImpactNormal).Rotator();
-			UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, SpawnLocation);
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, SpawnLocation, SpawnRotation);
-			SetWeaponCollision(false);
-		}
+		return;
+	}
 
+	const FVector Start = WeaponMesh->GetSocketLocation(FName("Start"));
+	const FVector End = WeaponMesh->GetSocketLocation(FName("End"));
+	const FVector TraceVector = End - Start;
+	const float CapsuleHalfHeight = TraceVector.Size() / 2.0f;
+
+	TArray<FHitResult> HitResults;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	CollisionParams.AddIgnoredActor(Owner);
+	
+
+	bool bHit = GetWorld()->SweepMultiByChannel(
+		HitResults,
+		Start,
+		End,
+		FQuat::Identity,
+		ECC_Visibility,
+		FCollisionShape::MakeCapsule(30.f, 110.f),
+		CollisionParams
+	);
+	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f, 0, 2.0f);
+
+	if (bHit)
+	{
+		for (auto& Hit : HitResults)
+		{
+			AActor* HitActor = Hit.GetActor();
+			if (HitActor && Cast<AEnemyCharacterBase>(HitActor))
+			{
+				// Apply damage to the hit actor
+				// UGameplayStatics::ApplyDamage(HitActor, Damage, nullptr, this, nullptr);
+				
+				// Play impact effects
+				if (ImpactSound && ImpactEffect)
+				{
+					const FVector SpawnLocation = Hit.Location;
+					const FRotator SpawnRotation = Hit.ImpactNormal.Rotation();
+					UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, SpawnLocation);
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, SpawnLocation, SpawnRotation);
+				}
+			}
+		}
 	}
 }
-
-void AWeaponBase::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex)
-{
-	if (AEnemyCharacterBase* Enemy = Cast<AEnemyCharacterBase>(OtherActor))
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("End Overlap"));
-		}
-		SetWeaponCollision(false);
-	}	
-}
-
-
-
