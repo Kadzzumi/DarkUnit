@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Actor/Weapon/WeaponBase.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -16,7 +13,7 @@ AWeaponBase::AWeaponBase() :
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
-	
+
 	//Setting Root && Basics
 	RootSceneComponent = CreateDefaultSubobject<USceneComponent>("RootComponent");
 	SetRootComponent(RootSceneComponent);
@@ -27,6 +24,7 @@ AWeaponBase::AWeaponBase() :
 	WeaponCollision = CreateDefaultSubobject<UBoxComponent>("WeaponCollision");
 	WeaponCollision->SetupAttachment(WeaponMesh, TEXT("CollisionSocket"));
 }
+
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
@@ -35,8 +33,8 @@ void AWeaponBase::BeginPlay()
 	//Setup collisions
 	WeaponCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
 	WeaponCollision->SetGenerateOverlapEvents(true);
+	HitActors.Empty();  // Ensure set is empty at the start
 }
-
 
 void AWeaponBase::SetWeaponCollision(bool bCanHit)
 {
@@ -47,16 +45,15 @@ void AWeaponBase::SetWeaponCollision(bool bCanHit)
 	else
 	{
 		GetWorldTimerManager().ClearTimer(AttackTimerHandle);
+		HitActors.Empty();  // Clear hit actors when stopping collision checks
 	}
 }
-
 
 void AWeaponBase::SetWeaponState(EWeaponState NewState)
 {
 	if (CurrentState != NewState)
 	{
-		CurrentState =	NewState; 
-
+		CurrentState = NewState; 
 	}
 }
 
@@ -76,7 +73,6 @@ void AWeaponBase::PerformTrace()
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
 	CollisionParams.AddIgnoredActor(Owner);
-	
 
 	bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
@@ -94,7 +90,7 @@ void AWeaponBase::PerformTrace()
 		for (auto& Hit : HitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
-			if (HitActor && Cast<AEnemyCharacterBase>(HitActor))
+			if (HitActor && Cast<AEnemyCharacterBase>(HitActor) && !HitActors.Contains(HitActor))
 			{
 				// Apply damage to the hit actor
 				// UGameplayStatics::ApplyDamage(HitActor, Damage, nullptr, this, nullptr);
@@ -106,6 +102,7 @@ void AWeaponBase::PerformTrace()
 					const FRotator SpawnRotation = Hit.ImpactNormal.Rotation();
 					UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, SpawnLocation);
 					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, SpawnLocation, SpawnRotation);
+					HitActors.Add(HitActor);  // Add actor to set so it won't be hit again until cleared
 				}
 			}
 		}
