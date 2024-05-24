@@ -66,8 +66,10 @@ void AWeaponBase::PerformTrace()
 
 	const FVector Start = WeaponMesh->GetSocketLocation(FName("Start"));
 	const FVector End = WeaponMesh->GetSocketLocation(FName("End"));
-	const FVector TraceVector = End - Start;
-	const float CapsuleHalfHeight = TraceVector.Size() / 2.0f;
+	const FVector Direction = (End - Start).GetSafeNormal();
+	const float CapsuleHalfHeight = (End - Start).Size() / 2.0f;
+
+	FQuat CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
 
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams CollisionParams;
@@ -78,12 +80,14 @@ void AWeaponBase::PerformTrace()
 		HitResults,
 		Start,
 		End,
-		FQuat::Identity,
+		CapsuleRotation,
 		ECC_Visibility,
 		FCollisionShape::MakeCapsule(30.f, 110.f),
 		CollisionParams
 	);
-	DrawDebugLine(GetWorld(), Start, End, FColor::Blue, false, 1.0f, 0, 2.0f);
+
+	// Draw the capsule in the world to visualize the sweep
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, 30.f, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
 
 	if (bHit)
 	{
@@ -92,9 +96,6 @@ void AWeaponBase::PerformTrace()
 			AActor* HitActor = Hit.GetActor();
 			if (HitActor && Cast<AEnemyCharacterBase>(HitActor) && !HitActors.Contains(HitActor))
 			{
-				// Apply damage to the hit actor
-				// UGameplayStatics::ApplyDamage(HitActor, Damage, nullptr, this, nullptr);
-				
 				// Play impact effects
 				if (ImpactSound && ImpactEffect)
 				{
