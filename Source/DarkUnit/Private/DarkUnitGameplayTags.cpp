@@ -7,27 +7,43 @@ FDarkUnitGameplayTags FDarkUnitGameplayTags::GameplayTags;
 
 void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 {
-	//Primary attributes
+	// Primary attributes
 	GameplayTags.Attributes_Primary_Vigor = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Vigor"), FString("Improves health of the character"));
 	GameplayTags.Attributes_Primary_Endurance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Endurance"), FString("Improves endurance of the character"));
-	GameplayTags.Attributes_Primary_Defense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Defense"), FString("Improves defense of the character"));
 	GameplayTags.Attributes_Primary_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Strength"), FString("Improves strength of the character"));
-	GameplayTags.Attributes_Primary_Agility = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Agility"), FString("Improves agility of the character"));
-	GameplayTags.Attributes_Primary_Penetration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Penetration"), FString("Improves penetration of the character"));
+	GameplayTags.Attributes_Primary_Dexterity = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Dexterity"), FString("Improves dexterity of the character"));
+	GameplayTags.Attributes_Primary_Intelligence = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Intelligence"), FString("Improves magic power of the character"));
+	GameplayTags.Attributes_Primary_Faith = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Faith"), FString("Improves faith of the character"));
+	GameplayTags.Attributes_Primary_Resolve = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Primary.Resolve"), FString("Improves resolve of the character"));
 
+	// Additional attribute tags
+	GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString("Improves health of the character. Gives more survivability"));
+	GameplayTags.Attributes_Secondary_MaxStamina = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxStamina"), FString("Improves stamina of the character. Gives more ability to perform advanced movements"));
+	GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxMana"), FString("Improves mana of the character"));
+	GameplayTags.Attributes_Secondary_Defense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Defense"), FString("Improves defense of the character. Gives more survivability"));
+	GameplayTags.Attributes_Secondary_MagicDefense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MagicDefense"), FString("Improves magic defense of the character"));
+	GameplayTags.Attributes_Secondary_CurseResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.CurseResistance"), FString("Improves curse resistance of the character"));
+	GameplayTags.Attributes_Secondary_StatusEffectResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.StatusEffectResistance"), FString("Improves resistance to status effects"));
+	GameplayTags.Attributes_Secondary_Evasion = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Evasion"), FString("Improves evasion"));
+	GameplayTags.Attributes_Secondary_StaminaRecoveryRate = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.StaminaRecoveryRate"), FString("Recovers stamina faster"));
+	GameplayTags.Attributes_Secondary_HealingEffectiveness = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HealingEffectiveness"), FString("Improves healing effectiveness"));
+	GameplayTags.Attributes_Secondary_ControlOverCurses = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.ControlOverCurses"), FString("Improves control over curses"));
+	GameplayTags.Attributes_Secondary_HolyDamageResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HolyDamageResistance"), FString("Improves resistance to holy damage"));
 
-	//Secondary attribute tags
-	GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString("Improves Health of the Character. Gives more survivability"));
-	GameplayTags.Attributes_Secondary_MaxStamina = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxStamina"), FString("Improves Stamina of the Character. Gives more Ability to do advanced movement"));
-	GameplayTags.Attributes_Secondary_StaminaRecovery = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.StaminaRecovery"), FString("Recovers Stamina Faster"));
-	GameplayTags.Attributes_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Armor"), FString("Improves Defense of the Character. Gives more survivability"));
-	GameplayTags.Attributes_Secondary_Block = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Block"), FString("Blocks the Impulse if it is high enough"));
-	GameplayTags.Attributes_Secondary_PhysDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.PhysDamage"), FString("Improves damage"));
-	GameplayTags.Attributes_Secondary_CritDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.CritDamage"), FString("Improves damage when used charged attack"));
-	GameplayTags.Attributes_Secondary_AttackSpeed = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.AttackSpeed"), FString("Improves attack speed of the player"));
-	GameplayTags.Attributes_Secondary_MovementSpeed = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MovementSpeed"), FString("Improves max movement speed"));
-	GameplayTags.Attributes_Secondary_Impulse = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Impulse"), FString("Improves Impulse"));
-	GameplayTags.Attributes_Secondary_StunChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.StunChance"), FString("Stun chance is improved"));
+	// Damage Types
+	GameplayTags.Attributes_Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Physical"), FString("Physical damage"));
+	GameplayTags.Attributes_Damage_Slash = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Slash"), FString("Slash damage"));
+	GameplayTags.Attributes_Damage_Pierce = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Pierce"), FString("Pierce damage"));
+	GameplayTags.Attributes_Damage_Blunt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Blunt"), FString("Blunt damage"));
+	GameplayTags.Attributes_Damage_Magic = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Magic"), FString("Magic damage"));
+	GameplayTags.Attributes_Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Fire"), FString("Fire damage"));
+	GameplayTags.Attributes_Damage_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Ice"), FString("Ice damage"));
+	GameplayTags.Attributes_Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Lightning"), FString("Lightning damage"));
+	GameplayTags.Attributes_Damage_Dark = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Dark"), FString("Dark damage"));
+	GameplayTags.Attributes_Damage_Holy = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Holy"), FString("Holy damage"));
+	GameplayTags.Attributes_Damage_Poison = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Poison"), FString("Poison damage"));
+	GameplayTags.Attributes_Damage_Curse = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Curse"), FString("Curse damage"));
+
 
 	//Input Tags
 	GameplayTags.InputTag_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Attack"), FString("Triggers the attack action"));
@@ -43,5 +59,6 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_OpenMap = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.OpenMap"), FString("Opens the map"));
 	GameplayTags.InputTag_Interact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Interact"), FString("Inteact key"));
 	GameplayTags.InputTag_AttributeMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.AttributeMenu"), FString("Attribute Menu key"));
-	
+	GameplayTags.InputTag_SpawnDefaultWeapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.SpawnDefaultWeapon"), FString("Spawns Weapon"));
+
 }

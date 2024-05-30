@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class AWeaponBase;
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UCombatInterface : public UInterface
@@ -22,4 +23,6 @@ public:
 	
 	virtual int32 GetPlayerLevel();
 	virtual void SetAttackCollisions(const int32 Index);
+	virtual FTransform GetCombatSocketTransform();
+	virtual void SetWeaponAttachment(AWeaponBase* Weapon);
 };

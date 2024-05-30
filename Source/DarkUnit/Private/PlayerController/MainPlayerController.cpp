@@ -26,6 +26,11 @@ void AMainPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(PlayerContext, 0);
 	}
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
+	if (GetASC())
+	{
+		const FGameplayTag JumpTag = FGameplayTag::RequestGameplayTag(FName("InputTag.SpawnDefaultWeapon"));
+		GetASC()->AbilityInputTagPressed(JumpTag);
+	}
 }
 // Setting inputs
 void AMainPlayerController::SetupInputComponent()

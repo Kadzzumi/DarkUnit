@@ -13,25 +13,42 @@ public:
 	static const FDarkUnitGameplayTags& Get() { return GameplayTags; }
 	static void InitializeNativeGameplayTags();
 	
-	//Primary Attributes
+	// Primary Attributes
 	FGameplayTag Attributes_Primary_Vigor;
 	FGameplayTag Attributes_Primary_Endurance;
-	FGameplayTag Attributes_Primary_Defense;
 	FGameplayTag Attributes_Primary_Strength;
-	FGameplayTag Attributes_Primary_Agility;
-	FGameplayTag Attributes_Primary_Penetration;
-	// Secondary
-	FGameplayTag Attributes_Secondary_MaxHealth;
-	FGameplayTag Attributes_Secondary_MaxStamina;
-	FGameplayTag Attributes_Secondary_StaminaRecovery;
-	FGameplayTag Attributes_Secondary_Armor;
-	FGameplayTag Attributes_Secondary_Block;
-	FGameplayTag Attributes_Secondary_PhysDamage;
-	FGameplayTag Attributes_Secondary_CritDamage;
-	FGameplayTag Attributes_Secondary_AttackSpeed;
-	FGameplayTag Attributes_Secondary_MovementSpeed;
-	FGameplayTag Attributes_Secondary_Impulse;
-	FGameplayTag Attributes_Secondary_StunChance;
+	FGameplayTag Attributes_Primary_Dexterity;
+	FGameplayTag Attributes_Primary_Intelligence;
+	FGameplayTag Attributes_Primary_Faith;
+	FGameplayTag Attributes_Primary_Resolve;
+
+	// Additional Attributes
+	FGameplayTag Attributes_Secondary_MaxHealth;             // Health Points (HP)
+	FGameplayTag Attributes_Secondary_MaxStamina;            // Stamina Points (SP)
+	FGameplayTag Attributes_Secondary_MaxMana;               // Mana Points (MP)
+	FGameplayTag Attributes_Secondary_Defense;                  // Defense
+	FGameplayTag Attributes_Secondary_MagicDefense;             // Magic Defense
+	FGameplayTag Attributes_Secondary_CurseResistance;          // Curse Resistance
+	FGameplayTag Attributes_Secondary_StatusEffectResistance;   // Status Effect Resistance
+	FGameplayTag Attributes_Secondary_Evasion;                  // Evasion
+	FGameplayTag Attributes_Secondary_StaminaRecoveryRate;      // Stamina Recovery Rate
+	FGameplayTag Attributes_Secondary_HealingEffectiveness;     // Healing Effectiveness
+	FGameplayTag Attributes_Secondary_ControlOverCurses;        // Control Over Curses
+	FGameplayTag Attributes_Secondary_HolyDamageResistance;     // Holy Damage Resistance
+
+	// Damage Types
+	FGameplayTag Attributes_Damage_Physical;
+	FGameplayTag Attributes_Damage_Slash;
+	FGameplayTag Attributes_Damage_Pierce;
+	FGameplayTag Attributes_Damage_Blunt;
+	FGameplayTag Attributes_Damage_Magic;
+	FGameplayTag Attributes_Damage_Fire;
+	FGameplayTag Attributes_Damage_Ice;
+	FGameplayTag Attributes_Damage_Lightning;
+	FGameplayTag Attributes_Damage_Dark;
+	FGameplayTag Attributes_Damage_Holy;
+	FGameplayTag Attributes_Damage_Poison;
+	FGameplayTag Attributes_Damage_Curse;
 
 	//Inputs tags
 	FGameplayTag InputTag_Attack;
@@ -47,7 +64,8 @@ public:
 	FGameplayTag InputTag_OpenMap;
 	FGameplayTag InputTag_Interact;
 	FGameplayTag InputTag_AttributeMenu;
-	
+	FGameplayTag InputTag_SpawnDefaultWeapon;
+
 private:
 	static FDarkUnitGameplayTags GameplayTags;
 };

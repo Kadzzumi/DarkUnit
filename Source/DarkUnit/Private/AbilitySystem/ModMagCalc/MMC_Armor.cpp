@@ -7,11 +7,11 @@
 
 UMMC_Armor::UMMC_Armor()
 {
-	DefenseDef.AttributeToCapture = UMainAttributeSet::GetDefenseAttribute();
-	DefenseDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	DefenseDef.bSnapshot = false;
+	StrengthDef.AttributeToCapture = UMainAttributeSet::GetStrengthAttribute();
+	StrengthDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	StrengthDef.bSnapshot = false;
 
-	RelevantAttributesToCapture.Add(DefenseDef);
+	RelevantAttributesToCapture.Add(StrengthDef);
 }
 
 float UMMC_Armor::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -24,12 +24,12 @@ float UMMC_Armor::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpe
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 	
-	float Defense = 0.f;
-	GetCapturedAttributeMagnitude(DefenseDef, Spec, EvaluateParameters, Defense);
-	Defense = FMath::Max<float>(Defense, 0);
+	float Strength = 0.f;
+	GetCapturedAttributeMagnitude(StrengthDef, Spec, EvaluateParameters, Strength);
+	Strength = FMath::Max<float>(Strength, 0);
 	
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	10 + Defense + PlayerLevel/2;
+	return	10 + Strength + PlayerLevel/2;
 }

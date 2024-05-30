@@ -2,18 +2,15 @@
 
 
 #include "Character/CharacterBase.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
+#include "Actor/Weapon/WeaponBase.h"
 
 
-ACharacterBase::ACharacterBase()
+ACharacterBase::ACharacterBase(): PrimaryWeapon(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
-	Weapon->SetupAttachment(GetMesh(), FName("RightWeaponSocket"));
-	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	
 }
 
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
@@ -27,8 +24,27 @@ void ACharacterBase::BeginPlay()
 	
 }
 
+FTransform ACharacterBase::GetCombatSocketTransform()
+{
+	return GetMesh()->GetSocketTransform(FName("RightHandSocket"));
+}
+
+void ACharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
+{
+	PrimaryWeapon = Weapon;
+	// Get the Hand Socket
+	if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket")))
+	{
+		// Attach the Weapon to the hand socket RightHandSocket
+		HandSocket->AttachActor(PrimaryWeapon, GetMesh());;
+		PrimaryWeapon->SetWeaponState(EWeaponState::EquippedState);
+	}	
+}
+
+
 void ACharacterBase::InitAbilityActorInfo()
 {
+	
 }
 
 void ACharacterBase::InitializeAttributes(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const

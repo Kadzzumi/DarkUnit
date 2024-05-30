@@ -1,5 +1,8 @@
 #include "Actor/Weapon/WeaponBase.h"
 
+#include <AbilitySystemBlueprintLibrary.h>
+#include <AbilitySystemComponent.h>
+
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
 #include "NiagaraFunctionLibrary.h"
@@ -9,7 +12,7 @@
 // Sets default values
 AWeaponBase::AWeaponBase() :
 	Damage(10),
-	CapsuleRadius(30)
+	CapsuleRadius(10)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bReplicates = true;
@@ -67,27 +70,27 @@ void AWeaponBase::PerformTrace()
 	const FVector Start = WeaponMesh->GetSocketLocation(FName("Start"));
 	const FVector End = WeaponMesh->GetSocketLocation(FName("End"));
 	const FVector Direction = (End - Start).GetSafeNormal();
-	const float CapsuleHalfHeight = (End - Start).Size() / 2.0f;
+	const float CapsuleHalfHeight = (End - Start).Size();
 
-	FQuat CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
+	const FQuat CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
 
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
 	CollisionParams.AddIgnoredActor(Owner);
 
-	bool bHit = GetWorld()->SweepMultiByChannel(
+	const bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
 		Start,
 		End,
 		CapsuleRotation,
 		ECC_Visibility,
-		FCollisionShape::MakeCapsule(30.f, 110.f),
+		FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight),
 		CollisionParams
 	);
 
 	// Draw the capsule in the world to visualize the sweep
-	DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, 30.f, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, CapsuleRadius, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
 
 	if (bHit)
 	{
@@ -96,15 +99,21 @@ void AWeaponBase::PerformTrace()
 			AActor* HitActor = Hit.GetActor();
 			if (HitActor && Cast<AEnemyCharacterBase>(HitActor) && !HitActors.Contains(HitActor))
 			{
-				// Play impact effects
-				if (ImpactSound && ImpactEffect)
+				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor))
 				{
-					const FVector SpawnLocation = Hit.Location;
-					const FRotator SpawnRotation = Hit.ImpactNormal.Rotation();
-					UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, SpawnLocation);
-					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, SpawnLocation, SpawnRotation);
+					TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+					// Play impact effects
+					if (ImpactSound && ImpactEffect)
+					{
+						const FVector SpawnLocation = Hit.ImpactPoint;
+						const FRotator SpawnRotation = Hit.ImpactNormal.Rotation();
+						UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, SpawnLocation);
+						UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, SpawnLocation, SpawnRotation);
+					}
 					HitActors.Add(HitActor);  // Add actor to set so it won't be hit again until cleared
 				}
+				
+
 			}
 		}
 	}

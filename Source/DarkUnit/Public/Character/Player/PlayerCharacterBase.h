@@ -6,7 +6,8 @@
 #include "Character/CharacterBase.h"
 #include "PlayerCharacterBase.generated.h"
 
-class AWeaponBase;
+
+class UGameplayEffect;
 /**
  * 
  */
@@ -36,12 +37,12 @@ protected:
 	virtual void BeginPlay() override;
 	//Movement
 	void SetRotation(bool bOrientToMovement, bool Yaw);
-
-	// EquipWeapon
-	AWeaponBase* SpawnDefaultWeapon();
-	void EquipWeapon(AWeaponBase* WeaponToEquip, bool bSwapping = false);
+	
 	UFUNCTION(BlueprintCallable)
 	virtual void SetAttackCollisions(const int32 Index) override;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 private:
 	// Functions
 	virtual void InitAbilityActorInfo() override;
@@ -57,11 +58,8 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	class UVitalComponent* VitalComponent;
+	
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
-	TSubclassOf<AWeaponBase> WeaponBase;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
-	AWeaponBase* PrimaryWeapon;
 	//
 	//PickUp
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")

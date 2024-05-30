@@ -3,7 +3,6 @@
 
 #include "Character/Player/PlayerCharacterBase.h"
 #include "AbilitySystemComponent.h"
-#include "Engine/SkeletalMeshSocket.h"
 #include "Components/CapsuleComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Actor/Weapon/WeaponBase.h"
@@ -138,7 +137,7 @@ void APlayerCharacterBase::InitAbilityActorInfo()
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	EquipWeapon(SpawnDefaultWeapon());
+
 }
 
 
@@ -205,35 +204,6 @@ void APlayerCharacterBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedCom
 	}
 }
 
-AWeaponBase* APlayerCharacterBase::SpawnDefaultWeapon()
-{
-	// Check the TSubclassOf variable
-	if (WeaponBase)
-	{
-		// Spawn the Weapon
-		PrimaryWeapon = GetWorld()->SpawnActor<AWeaponBase>(WeaponBase);
-		PrimaryWeapon->SetOwner(this);
-		return PrimaryWeapon;
-	}
-
-	return nullptr;
-}
-
-void APlayerCharacterBase::EquipWeapon(AWeaponBase* WeaponToEquip, bool bSwapping)
-{
-	if (WeaponToEquip)
-	{
-		// Get the Hand Socket
-		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
-		if (HandSocket)
-		{
-			// Attach the Weapon to the hand socket RightHandSocket
-			HandSocket->AttachActor(WeaponToEquip, GetMesh());
-			PrimaryWeapon = WeaponToEquip;
-			PrimaryWeapon->SetWeaponState(EWeaponState::EquippedState);
-		}
-	}
-}
 
 void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
 {

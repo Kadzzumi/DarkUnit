@@ -6,13 +6,14 @@
 #include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "GameplayEffectTypes.h"
 #include "CharacterBase.generated.h"
 
 class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
-
+class AWeaponBase;
 
 UCLASS(Abstract)
 class DARKUNIT_API ACharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -23,13 +24,20 @@ public:
 	ACharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const {return AttributeSet; }
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
+	AWeaponBase* PrimaryWeapon;
 
 protected:
 	virtual void BeginPlay() override;
-
+	//Weapons
 	UPROPERTY(EditAnywhere, Category="Combat")
-	TObjectPtr<USkeletalMeshComponent> Weapon;
+	FName WeaponSocketName;
 
+	virtual FTransform GetCombatSocketTransform() override;
+	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
+	//
+	// GAS
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -51,7 +59,9 @@ protected:
 	void InitializeDefaultAttributes() const;
 
 	void AddCharacterAbilities();
+
 private:
+
 
 	
 	UPROPERTY(EditAnywhere, Category="Abilities")

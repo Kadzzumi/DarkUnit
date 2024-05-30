@@ -15,23 +15,40 @@ UMainAttributeSet::UMainAttributeSet()
 	// Primary
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Vigor, GetVigorAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Endurance, GetEnduranceAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Defense, GetDefenseAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Strength, GetStrengthAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Agility, GetAgilityAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Penetration, GetPenetrationAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Dexterity, GetDexterityAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Intelligence, GetIntelligenceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Faith, GetFaithAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Primary_Resolve, GetResolveAttribute);
 
-	// Secondary
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_PhysDamage, GetPhysicalDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Armor, GetArmorAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Block, GetBlockChanceAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_AttackSpeed, GetAttackSpeedAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_StaminaRecovery, GetStaminaRecoveryAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_CritDamage, GetCriticalDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MovementSpeed, GetMovementSpeedAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Impulse, GetImpulseAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_StunChance, GetStunChanceAttribute);
+	// Additional
 	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxHealth, GetMaxHealthAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxStamina, GetMaxStaminaAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MaxMana, GetMaxManaAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Defense, GetDefenseAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_MagicDefense, GetMagicDefenseAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_CurseResistance, GetCurseResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_StatusEffectResistance, GetStatusEffectResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_Evasion, GetEvasionAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_StaminaRecoveryRate, GetStaminaRecoveryRateAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_HealingEffectiveness, GetHealingEffectivenessAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_ControlOverCurses, GetControlOverCursesAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Secondary_HolyDamageResistance, GetHolyDamageResistanceAttribute);
+
+	// Damage Types
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Physical, GetPhysicalDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Slash, GetSlashDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Pierce, GetPierceDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Blunt, GetBluntDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Magic, GetMagicDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Fire, GetFireDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Ice, GetIceDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Lightning, GetLightningDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Dark, GetDarkDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Holy, GetHolyDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Poison, GetPoisonDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Curse, GetCurseDamageAttribute);
+
 
 	
 	
@@ -43,25 +60,43 @@ void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	// Primary
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Vigor, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Endurance, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Defense, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Strength, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Agility, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Penetration, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Dexterity, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Intelligence, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Faith, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Resolve, COND_None, REPNOTIFY_Always);
 
 	// Vital
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Stamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxStamina, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Armor, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, BlockChance, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StaminaRecovery, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Mana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MaxMana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Defense, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MagicDefense, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, CurseResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StatusEffectResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Evasion, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StaminaRecoveryRate, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, HealingEffectiveness, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, ControlOverCurses, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, HolyDamageResistance, COND_None, REPNOTIFY_Always);
+
+	// Damage Types
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PhysicalDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, CriticalDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, AttackSpeed, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MovementSpeed, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, Impulse, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StunChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, SlashDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PierceDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, BluntDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MagicDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, FireDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, IceDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, LightningDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, DarkDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, HolyDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PoisonDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, CurseDamage, COND_None, REPNOTIFY_Always);
+
 	
 	
 }
@@ -124,6 +159,8 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+		UE_LOG(LogTemp, Warning, TEXT("ChangeHealth on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
+		
 	}
 	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
@@ -135,36 +172,42 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 //Primary Attributes
 //Vigor
+// Vigor
 void UMainAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Vigor, OldVigor);
 }
-//Endurance
+// Endurance
 void UMainAttributeSet::OnRep_Endurance(const FGameplayAttributeData& OldEndurance) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Endurance, OldEndurance);
 }
-//Defense
-
-void UMainAttributeSet::OnRep_Defense(const FGameplayAttributeData& OldDefense) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Defense, OldDefense);
-}
-//Strength
+// Strength
 void UMainAttributeSet::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Strength, OldStrength);
 }
-//Agility
-void UMainAttributeSet::OnRep_Agility(const FGameplayAttributeData& OldAgility) const
+// Dexterity
+void UMainAttributeSet::OnRep_Dexterity(const FGameplayAttributeData& OldDexterity) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Agility, OldAgility);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Dexterity, OldDexterity);
 }
-//Penetration
-void UMainAttributeSet::OnRep_Penetration(const FGameplayAttributeData& OldPenetration) const
+// Intelligence
+void UMainAttributeSet::OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Penetration, OldPenetration);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Intelligence, OldIntelligence);
 }
+// Faith
+void UMainAttributeSet::OnRep_Faith(const FGameplayAttributeData& OldFaith) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Faith, OldFaith);
+}
+// Resolve
+void UMainAttributeSet::OnRep_Resolve(const FGameplayAttributeData& OldResolve) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Resolve, OldResolve);
+}
+
 
 //
 // Secondary
@@ -188,49 +231,121 @@ void UMainAttributeSet::OnRep_MaxStamina(const FGameplayAttributeData& OldMaxSta
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MaxStamina, OldMaxStamina);
 }
-
-//Armor
-void UMainAttributeSet::OnRep_Armor(const FGameplayAttributeData& OldArmor) const
+// Mana Points (MP)
+void UMainAttributeSet::OnRep_Mana(const FGameplayAttributeData& OldMana) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Armor, OldArmor);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Mana, OldMana);
+}
+// Mana Points (MP)
+void UMainAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MaxMana, OldMaxMana);
 }
 
-void UMainAttributeSet::OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const
+void UMainAttributeSet::OnRep_Defense(const FGameplayAttributeData& OldDefense) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, BlockChance, OldBlockChance);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Defense, OldDefense);
 }
-//StaminaRecovery
-void UMainAttributeSet::OnRep_StaminaRecovery(const FGameplayAttributeData& OldStaminaRecovery) const
+
+// Magic Defense
+void UMainAttributeSet::OnRep_MagicDefense(const FGameplayAttributeData& OldMagicDefense) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, StaminaRecovery, OldStaminaRecovery);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MagicDefense, OldMagicDefense);
 }
-//PhysicalDamage
+// Curse Resistance
+void UMainAttributeSet::OnRep_CurseResistance(const FGameplayAttributeData& OldCurseResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, CurseResistance, OldCurseResistance);
+}
+// Status Effect Resistance
+void UMainAttributeSet::OnRep_StatusEffectResistance(const FGameplayAttributeData& OldStatusEffectResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, StatusEffectResistance, OldStatusEffectResistance);
+}
+// Evasion
+void UMainAttributeSet::OnRep_Evasion(const FGameplayAttributeData& OldEvasion) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Evasion, OldEvasion);
+}
+// Stamina Recovery Rate
+void UMainAttributeSet::OnRep_StaminaRecoveryRate(const FGameplayAttributeData& OldStaminaRecoveryRate) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, StaminaRecoveryRate, OldStaminaRecoveryRate);
+}
+// Healing Effectiveness
+void UMainAttributeSet::OnRep_HealingEffectiveness(const FGameplayAttributeData& OldHealingEffectiveness) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, HealingEffectiveness, OldHealingEffectiveness);
+}
+// Control Over Curses
+void UMainAttributeSet::OnRep_ControlOverCurses(const FGameplayAttributeData& OldControlOverCurses) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, ControlOverCurses, OldControlOverCurses);
+}
+// Holy Damage Resistance
+void UMainAttributeSet::OnRep_HolyDamageResistance(const FGameplayAttributeData& OldHolyDamageResistance) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, HolyDamageResistance, OldHolyDamageResistance);
+}
+
+// Damage Types
+// Physical Damage
 void UMainAttributeSet::OnRep_PhysicalDamage(const FGameplayAttributeData& OldPhysicalDamage) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PhysicalDamage, OldPhysicalDamage);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PhysicalDamage, OldPhysicalDamage);
 }
-//CriticalDamage
-void UMainAttributeSet::OnRep_CriticalDamage(const FGameplayAttributeData& OldCriticalDamage) const
+// Slash Damage
+void UMainAttributeSet::OnRep_SlashDamage(const FGameplayAttributeData& OldSlashDamage) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, CriticalDamage, OldCriticalDamage);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, SlashDamage, OldSlashDamage);
 }
-//AttackSpeed
-void UMainAttributeSet::OnRep_AttackSpeed(const FGameplayAttributeData& OldAttackSpeed) const
+// Pierce Damage
+void UMainAttributeSet::OnRep_PierceDamage(const FGameplayAttributeData& OldPierceDamage) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, AttackSpeed, OldAttackSpeed);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PierceDamage, OldPierceDamage);
 }
-//MovementSpeed
-void UMainAttributeSet::OnRep_MovementSpeed(const FGameplayAttributeData& OldMovementSpeed) const
+// Blunt Damage
+void UMainAttributeSet::OnRep_BluntDamage(const FGameplayAttributeData& OldBluntDamage) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MovementSpeed, OldMovementSpeed);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, BluntDamage, OldBluntDamage);
 }
-//Impulse
-void UMainAttributeSet::OnRep_Impulse(const FGameplayAttributeData& OldImpulse) const
+// Magic Damage
+void UMainAttributeSet::OnRep_MagicDamage(const FGameplayAttributeData& OldMagicDamage) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, Impulse, OldImpulse);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MagicDamage, OldMagicDamage);
 }
-//StunChance
-void UMainAttributeSet::OnRep_StunChance(const FGameplayAttributeData& OldStunChance) const
+// Fire Damage
+void UMainAttributeSet::OnRep_FireDamage(const FGameplayAttributeData& OldFireDamage) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, StunChance, OldStunChance);
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, FireDamage, OldFireDamage);
+}
+// Ice Damage
+void UMainAttributeSet::OnRep_IceDamage(const FGameplayAttributeData& OldIceDamage) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, IceDamage, OldIceDamage);
+}
+// Lightning Damage
+void UMainAttributeSet::OnRep_LightningDamage(const FGameplayAttributeData& OldLightningDamage) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, LightningDamage, OldLightningDamage);
+}
+// Dark Damage
+void UMainAttributeSet::OnRep_DarkDamage(const FGameplayAttributeData& OldDarkDamage) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, DarkDamage, OldDarkDamage);
+}
+// Holy Damage
+void UMainAttributeSet::OnRep_HolyDamage(const FGameplayAttributeData& OldHolyDamage) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, HolyDamage, OldHolyDamage);
+}
+// Poison Damage
+void UMainAttributeSet::OnRep_PoisonDamage(const FGameplayAttributeData& OldPoisonDamage) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PoisonDamage, OldPoisonDamage);
+}
+// Curse Damage
+void UMainAttributeSet::OnRep_CurseDamage(const FGameplayAttributeData& OldCurseDamage) const
+{
+    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, CurseDamage, OldCurseDamage);
 }
