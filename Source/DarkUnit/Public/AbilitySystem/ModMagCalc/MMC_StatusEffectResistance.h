@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameplayModMagnitudeCalculation.h"
-#include "MMC_StatusEffecResistance.generated.h"
+#include "MMC_StatusEffectResistance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DARKUNIT_API UMMC_StatusEffecResistance : public UGameplayModMagnitudeCalculation
+class DARKUNIT_API UMMC_StatusEffectResistance : public UGameplayModMagnitudeCalculation
 {
 	GENERATED_BODY()
 public:
-	UMMC_StatusEffecResistance();
+	UMMC_StatusEffectResistance();
 	virtual float CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const override;
 	
 private:
