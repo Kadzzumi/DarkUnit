@@ -32,10 +32,11 @@ protected:
 	virtual void BeginPlay() override;
 	//Weapons
 	UPROPERTY(EditAnywhere, Category="Combat")
-	FName WeaponSocketName;
+	FName WeaponSocketName = "RightHandSocket";
 
 	virtual FTransform GetCombatSocketTransform() override;
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
+	
 	//
 	// GAS
 	UPROPERTY()
@@ -56,8 +57,7 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 	
 	void InitializeAttributes(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
-	void InitializeDefaultAttributes() const;
-
+	virtual void InitializeDefaultAttributes() const;
 	void AddCharacterAbilities();
 
 private:

@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerState.h"
 #include "MainPlayerState.generated.h"
 
+class AWeaponBase;
 class UAbilitySystemComponent;
 class UAttributeSet;
 
@@ -22,6 +23,9 @@ public:
 	UAttributeSet* GetAttributeSet() const {return AttributeSet; }
 	// Level Getter
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
+	FORCEINLINE AWeaponBase* GetPrimaryWeapon() const {return PrimaryWeapon; }
+
+	void UpdateWeaponInventory(AWeaponBase* Weapon, bool bIsAdding);
 protected:	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -30,9 +34,17 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 	
 private:
+		
+	UPROPERTY(EditAnywhere)
+	TArray<AWeaponBase*> WeaponInventory;
+	
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
 	
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_PrimaryWeapon)
+	AWeaponBase* PrimaryWeapon;
+	UFUNCTION()
+	void OnRep_PrimaryWeapon();
 };

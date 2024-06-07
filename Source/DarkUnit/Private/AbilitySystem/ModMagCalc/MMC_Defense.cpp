@@ -31,5 +31,5 @@ float UMMC_Defense::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	10 + Strength + PlayerLevel/2;
+	return	10 + Strength;
 }

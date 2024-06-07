@@ -12,7 +12,6 @@ void ICombatInterface::SetAttackCollisions(const int32 Index)
 {
 	
 }
-
 FTransform ICombatInterface::GetCombatSocketTransform()
 {
 	return FTransform();

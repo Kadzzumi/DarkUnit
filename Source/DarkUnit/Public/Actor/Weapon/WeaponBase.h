@@ -14,9 +14,9 @@ class UNiagaraSystem;
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
-	PickedUpState UMETA(DisplayName = "Picked Up"),
+	InventoryState UMETA(DisplayName = "Inventory"),
 	EquippedState UMETA(DisplayName = "Equipped"),
-	WorldState UMETA(DisplayName = "In World")
+	InReserve UMETA(DisplayName = "InReserve")
 };
 
 UCLASS()
@@ -41,15 +41,15 @@ protected:
 	virtual void BeginPlay() override;
 	UFUNCTION()
 	void PerformTrace();
-	
+	// Add at the beginning of the private section
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayImpactEffects(const FVector& Location, const FRotator& Rotation);
 private:
 	UPROPERTY(VisibleAnywhere, Category="Weapon")
 	USceneComponent* RootSceneComponent;
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	USkeletalMeshComponent* WeaponMesh;
-
-	UPROPERTY(EditDefaultsOnly,Category="Weapon")
-	UBoxComponent* WeaponCollision;
+	
 	// The state of the actor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
 	EWeaponState CurrentState;
@@ -64,10 +64,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSet<AActor*> HitActors;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee", meta = (AllowPrivateAccess = "true"))
-	float Damage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee", meta = (AllowPrivateAccess = "true"))
 	float CapsuleRadius;
-
-
+	
 	FTimerHandle AttackTimerHandle;
 };

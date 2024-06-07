@@ -38,18 +38,22 @@ public:
 
 	// Damage Types
 	FGameplayTag Attributes_Damage_Physical;
-	FGameplayTag Attributes_Damage_Slash;
-	FGameplayTag Attributes_Damage_Pierce;
-	FGameplayTag Attributes_Damage_Blunt;
+	FGameplayTag Attributes_Damage_Strength;
+	FGameplayTag Attributes_Damage_Dexterity;
 	FGameplayTag Attributes_Damage_Magic;
-	FGameplayTag Attributes_Damage_Fire;
-	FGameplayTag Attributes_Damage_Ice;
-	FGameplayTag Attributes_Damage_Lightning;
-	FGameplayTag Attributes_Damage_Dark;
 	FGameplayTag Attributes_Damage_Holy;
-	FGameplayTag Attributes_Damage_Poison;
 	FGameplayTag Attributes_Damage_Curse;
 
+	//Status Effects
+	FGameplayTag Attributes_Status_Slash;
+	FGameplayTag Attributes_Status_Pierce;
+	FGameplayTag Attributes_Status_Blunt;
+	FGameplayTag Attributes_Status_Fire;
+	FGameplayTag Attributes_Status_Ice;
+	FGameplayTag Attributes_Status_Lightning;
+	FGameplayTag Attributes_Status_Dark;
+	FGameplayTag Attributes_Status_Poison;
+	
 	//Inputs tags
 	FGameplayTag InputTag_Attack;
 	FGameplayTag InputTag_Block;

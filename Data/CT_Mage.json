@@ -1,0 +1,38 @@
+[
+	{
+		"Name": "Attributes.Primary.Strength",
+		"1": 11,
+		"50": 18,
+		"100": 30
+	},
+	{
+		"Name": "Attributes.Primary.Intelligence",
+		"1": 15,
+		"100": 50
+	},
+	{
+		"Name": "Attributes.Primary.Vigor",
+		"1": 20,
+		"100": 50
+	},
+	{
+		"Name": "Attributes.Primary.Dexterity",
+		"1": 11,
+		"100": 35
+	},
+	{
+		"Name": "Attributes.Primary.Faith",
+		"1": 15,
+		"100": 40
+	},
+	{
+		"Name": "Attributes.Primary.Resolve",
+		"1": 11,
+		"100": 40
+	},
+	{
+		"Name": "Attributes.Primary.Endurance",
+		"1": 15,
+		"100": 45
+	}
+]

@@ -7,11 +7,11 @@
 
 UMMC_MagicDefense::UMMC_MagicDefense()
 {
-	StrengthDef.AttributeToCapture = UMainAttributeSet::GetStrengthAttribute();
-	StrengthDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	StrengthDef.bSnapshot = false;
+	IntelligenceDef.AttributeToCapture = UMainAttributeSet::GetIntelligenceAttribute();
+	IntelligenceDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	IntelligenceDef.bSnapshot = false;
 
-	RelevantAttributesToCapture.Add(StrengthDef);
+	RelevantAttributesToCapture.Add(IntelligenceDef);
 }
 
 float UMMC_MagicDefense::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -24,12 +24,12 @@ float UMMC_MagicDefense::CalculateBaseMagnitude_Implementation(const FGameplayEf
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 	
-	float Strength = 0.f;
-	GetCapturedAttributeMagnitude(StrengthDef, Spec, EvaluateParameters, Strength);
-	Strength = FMath::Max<float>(Strength, 0);
+	float Intelligence = 0.f;
+	GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluateParameters, Intelligence);
+	Intelligence = FMath::Max<float>(Intelligence, 0);
 	
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	10 + Strength + PlayerLevel/2;
+	return	10 + Intelligence;
 }

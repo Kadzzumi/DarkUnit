@@ -2,7 +2,6 @@
 
 
 #include "Character/CharacterBase.h"
-#include "Engine/SkeletalMeshSocket.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Actor/Weapon/WeaponBase.h"
@@ -26,19 +25,12 @@ void ACharacterBase::BeginPlay()
 
 FTransform ACharacterBase::GetCombatSocketTransform()
 {
-	return GetMesh()->GetSocketTransform(FName("RightHandSocket"));
+	return GetMesh()->GetSocketTransform(WeaponSocketName);
 }
 
 void ACharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
-	PrimaryWeapon = Weapon;
-	// Get the Hand Socket
-	if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket")))
-	{
-		// Attach the Weapon to the hand socket RightHandSocket
-		HandSocket->AttachActor(PrimaryWeapon, GetMesh());;
-		PrimaryWeapon->SetWeaponState(EWeaponState::EquippedState);
-	}	
+
 }
 
 

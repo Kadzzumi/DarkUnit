@@ -7,11 +7,11 @@
 
 UMMC_Evasion::UMMC_Evasion()
 {
-	StrengthDef.AttributeToCapture = UMainAttributeSet::GetStrengthAttribute();
-	StrengthDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	StrengthDef.bSnapshot = false;
+	DexterityDef.AttributeToCapture = UMainAttributeSet::GetDexterityAttribute();
+	DexterityDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	DexterityDef.bSnapshot = false;
 
-	RelevantAttributesToCapture.Add(StrengthDef);
+	RelevantAttributesToCapture.Add(DexterityDef);
 }
 
 float UMMC_Evasion::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -24,12 +24,12 @@ float UMMC_Evasion::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 	
-	float Strength = 0.f;
-	GetCapturedAttributeMagnitude(StrengthDef, Spec, EvaluateParameters, Strength);
-	Strength = FMath::Max<float>(Strength, 0);
+	float Dexterity = 0.f;
+	GetCapturedAttributeMagnitude(DexterityDef, Spec, EvaluateParameters, Dexterity);
+	Dexterity = FMath::Max<float>(Dexterity, 0);
 	
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	10 + Strength + PlayerLevel/2;
+	return	10 + Dexterity;
 }

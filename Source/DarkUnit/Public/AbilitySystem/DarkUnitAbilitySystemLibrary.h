@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Data/CharacterClassInfo.h"
 #include "DarkUnitAbilitySystemLibrary.generated.h"
 
+class UAbilitySystemComponent;
 class UAttributeWidgetController;
 class UOverlayWidgetController;
 /**
@@ -21,4 +23,7 @@ public:
 	
 	UFUNCTION(BlueprintPure, Category = "DarkUnitAbilitySystemLibrary|WidgetController")
 	static UAttributeWidgetController* GetAttributeWidgetController(const UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, Category="DarkUnitAbilitySystemLibrary|CharacterClassInfo")
+	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 };

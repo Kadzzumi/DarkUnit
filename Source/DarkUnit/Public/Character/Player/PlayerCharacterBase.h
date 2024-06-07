@@ -43,6 +43,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
+
+	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
 private:
 	// Functions
 	virtual void InitAbilityActorInfo() override;
@@ -73,36 +75,3 @@ private:
 	UFUNCTION()
 	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
-
-
-
-
-/*	// collisions for no weapon
-
-	//Combat Collisions
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	class USphereComponent* LeftHandCollision;
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	USphereComponent* RightHandCollision;
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	USphereComponent* LeftLegCollision;
-	UPROPERTY(VisibleAnywhere, Category = "Collision")
-	USphereComponent* RightLegCollision;
-
-	UFUNCTION()
-	void OnOverlapBeginLeftHand(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	UFUNCTION()
-	void OnOverlapEndLeftHand(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UFUNCTION()
-	void OnOverlapBeginRightHand(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	UFUNCTION()
-	void OnOverlapEndRightHand(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UFUNCTION()
-	void OnOverlapBeginLeftLeg(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	UFUNCTION()
-	void OnOverlapEndLeftLeg(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	UFUNCTION()
-	void OnOverlapBeginRightLeg(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-	UFUNCTION()
-	void OnOverlapEndRightLeg(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-*/

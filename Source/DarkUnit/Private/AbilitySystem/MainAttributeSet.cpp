@@ -37,21 +37,21 @@ UMainAttributeSet::UMainAttributeSet()
 
 	// Damage Types
 	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Physical, GetPhysicalDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Slash, GetSlashDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Pierce, GetPierceDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Blunt, GetBluntDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Strength, GetStrengthDamageAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Dexterity, GetDexterityDamageAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Magic, GetMagicDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Fire, GetFireDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Ice, GetIceDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Lightning, GetLightningDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Dark, GetDarkDamageAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Holy, GetHolyDamageAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Poison, GetPoisonDamageAttribute);
 	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Curse, GetCurseDamageAttribute);
 
-
-	
-	
+	// Status types
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Slash, GetSlashStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Pierce, GetPierceStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Blunt, GetBluntStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Fire, GetFireStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Ice, GetIceStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Lightning, GetLightningStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Dark, GetDarkStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Status_Poison, GetPoisonStatusAttribute);	
 }
 //Replication
 void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -85,20 +85,21 @@ void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 	// Damage Types
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PhysicalDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, SlashDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PierceDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, BluntDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, StrengthDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, DexterityDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, MagicDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, FireDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, IceDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, LightningDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, DarkDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, HolyDamage, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PoisonDamage, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, CurseDamage, COND_None, REPNOTIFY_Always);
 
-	
-	
+	// Status types
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, SlashStatus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PierceStatus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, BluntStatus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, FireStatus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, IceStatus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, LightningStatus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, DarkStatus, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMainAttributeSet, PoisonStatus, COND_None, REPNOTIFY_Always);
 }
 //Pre attribute changing
 void UMainAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -165,6 +166,17 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
 		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
+	}
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		const float LocalIncomingDamage = GetIncomingDamage();
+		SetIncomingDamage(0.f);
+		if (LocalIncomingDamage >=0.f)
+		{
+			const float NewHealth = GetHealth() - LocalIncomingDamage;
+			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+			const bool bFatal = NewHealth <= 0.f;
+		}
 	}
 }
 
@@ -294,58 +306,70 @@ void UMainAttributeSet::OnRep_PhysicalDamage(const FGameplayAttributeData& OldPh
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PhysicalDamage, OldPhysicalDamage);
 }
-// Slash Damage
-void UMainAttributeSet::OnRep_SlashDamage(const FGameplayAttributeData& OldSlashDamage) const
+void UMainAttributeSet::OnRep_StrengthDamage(const FGameplayAttributeData& OldStrengthDamage) const
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, SlashDamage, OldSlashDamage);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, StrengthDamage, OldStrengthDamage);
 }
-// Pierce Damage
-void UMainAttributeSet::OnRep_PierceDamage(const FGameplayAttributeData& OldPierceDamage) const
+void UMainAttributeSet::OnRep_DexterityDamage(const FGameplayAttributeData& OldDexterityDamage) const
 {
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PierceDamage, OldPierceDamage);
-}
-// Blunt Damage
-void UMainAttributeSet::OnRep_BluntDamage(const FGameplayAttributeData& OldBluntDamage) const
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, BluntDamage, OldBluntDamage);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, DexterityDamage, OldDexterityDamage);
 }
 // Magic Damage
 void UMainAttributeSet::OnRep_MagicDamage(const FGameplayAttributeData& OldMagicDamage) const
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, MagicDamage, OldMagicDamage);
 }
-// Fire Damage
-void UMainAttributeSet::OnRep_FireDamage(const FGameplayAttributeData& OldFireDamage) const
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, FireDamage, OldFireDamage);
-}
-// Ice Damage
-void UMainAttributeSet::OnRep_IceDamage(const FGameplayAttributeData& OldIceDamage) const
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, IceDamage, OldIceDamage);
-}
-// Lightning Damage
-void UMainAttributeSet::OnRep_LightningDamage(const FGameplayAttributeData& OldLightningDamage) const
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, LightningDamage, OldLightningDamage);
-}
-// Dark Damage
-void UMainAttributeSet::OnRep_DarkDamage(const FGameplayAttributeData& OldDarkDamage) const
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, DarkDamage, OldDarkDamage);
-}
 // Holy Damage
 void UMainAttributeSet::OnRep_HolyDamage(const FGameplayAttributeData& OldHolyDamage) const
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, HolyDamage, OldHolyDamage);
 }
-// Poison Damage
-void UMainAttributeSet::OnRep_PoisonDamage(const FGameplayAttributeData& OldPoisonDamage) const
-{
-    GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PoisonDamage, OldPoisonDamage);
-}
 // Curse Damage
 void UMainAttributeSet::OnRep_CurseDamage(const FGameplayAttributeData& OldCurseDamage) const
 {
     GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, CurseDamage, OldCurseDamage);
+}
+
+
+//
+// Status types
+// Slash Damage
+void UMainAttributeSet::OnRep_SlashStatus(const FGameplayAttributeData& OldSlashStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, SlashStatus, OldSlashStatus);
+}
+// Pierce Status
+void UMainAttributeSet::OnRep_PierceStatus(const FGameplayAttributeData& OldPierceStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PierceStatus, OldPierceStatus);
+}
+// Blunt Status
+void UMainAttributeSet::OnRep_BluntStatus(const FGameplayAttributeData& OldBluntStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, BluntStatus, OldBluntStatus);
+}
+// Poison Status
+void UMainAttributeSet::OnRep_PoisonStatus(const FGameplayAttributeData& OldPoisonStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, PoisonStatus, OldPoisonStatus);
+}
+// Fire Status
+void UMainAttributeSet::OnRep_FireStatus(const FGameplayAttributeData& OldFireStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, FireStatus, OldFireStatus);
+}
+// Ice Status
+void UMainAttributeSet::OnRep_IceStatus(const FGameplayAttributeData& OldIceStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, IceStatus, OldIceStatus);
+}
+// Lightning Status
+void UMainAttributeSet::OnRep_LightningStatus(const FGameplayAttributeData& OldLightningStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, LightningStatus, OldLightningStatus);
+}
+// Dark Status
+void UMainAttributeSet::OnRep_DarkStatus(const FGameplayAttributeData& OldDarkStatus) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UMainAttributeSet, DarkStatus, OldDarkStatus);
 }

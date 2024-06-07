@@ -3,6 +3,7 @@
 
 #include "Character/Enemy/EnemyCharacterBase.h"
 
+#include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
 #include "Components/WidgetComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "AbilitySystem/MainAttributeSet.h"
@@ -30,6 +31,7 @@ void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	InitAbilityActorInfo();
+	
 	if (UMainUserWidget* MainUserWidget = Cast<UMainUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
 		MainUserWidget->SetWidgetController(this);
@@ -58,4 +60,9 @@ void AEnemyCharacterBase::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UMainAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 	InitializeDefaultAttributes();
+}
+
+void AEnemyCharacterBase::InitializeDefaultAttributes() const
+{
+	UDarkUnitAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }

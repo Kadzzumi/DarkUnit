@@ -31,5 +31,5 @@ float UMMC_StaminaRecovery::CalculateBaseMagnitude_Implementation(const FGamepla
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	15 + Endurance/2 + PlayerLevel/5;
+	return	15 + Endurance/1.8 + PlayerLevel/5;
 }

@@ -7,11 +7,11 @@
 
 UMMC_CurseResistance::UMMC_CurseResistance()
 {
-	StrengthDef.AttributeToCapture = UMainAttributeSet::GetStrengthAttribute();
-	StrengthDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	StrengthDef.bSnapshot = false;
+	ResolveDef.AttributeToCapture = UMainAttributeSet::GetResolveAttribute();
+	ResolveDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	ResolveDef.bSnapshot = false;
 
-	RelevantAttributesToCapture.Add(StrengthDef);
+	RelevantAttributesToCapture.Add(ResolveDef);
 }
 
 float UMMC_CurseResistance::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -24,12 +24,12 @@ float UMMC_CurseResistance::CalculateBaseMagnitude_Implementation(const FGamepla
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 	
-	float Strength = 0.f;
-	GetCapturedAttributeMagnitude(StrengthDef, Spec, EvaluateParameters, Strength);
-	Strength = FMath::Max<float>(Strength, 0);
+	float Resolve = 0.f;
+	GetCapturedAttributeMagnitude(ResolveDef, Spec, EvaluateParameters, Resolve);
+	Resolve = FMath::Max<float>(Resolve, 0);
 	
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	10 + Strength + PlayerLevel/2;
+	return	10 + Resolve;
 }

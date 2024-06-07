@@ -7,11 +7,11 @@
 
 UMMC_HolyDamageResistance::UMMC_HolyDamageResistance()
 {
-	StrengthDef.AttributeToCapture = UMainAttributeSet::GetStrengthAttribute();
-	StrengthDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
-	StrengthDef.bSnapshot = false;
+	FaithDef.AttributeToCapture = UMainAttributeSet::GetFaithAttribute();
+	FaithDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
+	FaithDef.bSnapshot = false;
 
-	RelevantAttributesToCapture.Add(StrengthDef);
+	RelevantAttributesToCapture.Add(FaithDef);
 }
 
 float UMMC_HolyDamageResistance::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
@@ -24,12 +24,12 @@ float UMMC_HolyDamageResistance::CalculateBaseMagnitude_Implementation(const FGa
 	EvaluateParameters.SourceTags = SourceTags;
 	EvaluateParameters.TargetTags = TargetTags;
 	
-	float Strength = 0.f;
-	GetCapturedAttributeMagnitude(StrengthDef, Spec, EvaluateParameters, Strength);
-	Strength = FMath::Max<float>(Strength, 0);
+	float Faith = 0.f;
+	GetCapturedAttributeMagnitude(FaithDef, Spec, EvaluateParameters, Faith);
+	Faith = FMath::Max<float>(Faith, 0);
 	
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	10 + Strength + PlayerLevel/2;
+	return	10 + Faith;
 }

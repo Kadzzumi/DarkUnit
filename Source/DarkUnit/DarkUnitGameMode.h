@@ -6,6 +6,8 @@
 #include "GameFramework/GameMode.h"
 #include "DarkUnitGameMode.generated.h"
 
+
+class UCharacterClassInfo;
 /**
  * 
  */
@@ -14,4 +16,7 @@ class DARKUNIT_API ADarkUnitGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(EditDefaultsOnly, Category="CharacterClassInfo")
+	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
 };

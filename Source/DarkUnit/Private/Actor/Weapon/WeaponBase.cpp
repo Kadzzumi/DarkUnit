@@ -11,7 +11,6 @@
 
 // Sets default values
 AWeaponBase::AWeaponBase() :
-	Damage(10),
 	CapsuleRadius(10)
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -23,19 +22,16 @@ AWeaponBase::AWeaponBase() :
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	WeaponMesh->SetupAttachment(GetRootComponent());
-
-	WeaponCollision = CreateDefaultSubobject<UBoxComponent>("WeaponCollision");
-	WeaponCollision->SetupAttachment(WeaponMesh, TEXT("CollisionSocket"));
+	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+	
 }
 
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	SetWeaponState(EWeaponState::WorldState);
+	SetWeaponState(EWeaponState::EquippedState);
 	//Setup collisions
-	WeaponCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
-	WeaponCollision->SetGenerateOverlapEvents(true);
 	HitActors.Empty();  // Ensure set is empty at the start
 }
 
@@ -70,7 +66,7 @@ void AWeaponBase::PerformTrace()
 	const FVector Start = WeaponMesh->GetSocketLocation(FName("Start"));
 	const FVector End = WeaponMesh->GetSocketLocation(FName("End"));
 	const FVector Direction = (End - Start).GetSafeNormal();
-	const float CapsuleHalfHeight = (End - Start).Size();
+	const float CapsuleHalfHeight = (End - Start).Size() - 15.f;
 
 	const FQuat CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
 
@@ -107,14 +103,20 @@ void AWeaponBase::PerformTrace()
 					{
 						const FVector SpawnLocation = Hit.ImpactPoint;
 						const FRotator SpawnRotation = Hit.ImpactNormal.Rotation();
-						UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, SpawnLocation);
-						UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, SpawnLocation, SpawnRotation);
+						MulticastPlayImpactEffects(SpawnLocation, SpawnRotation);
 					}
 					HitActors.Add(HitActor);  // Add actor to set so it won't be hit again until cleared
 				}
-				
-
 			}
 		}
+	}
+}
+
+void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Location, const FRotator& Rotation)
+{
+	if (ImpactSound && ImpactEffect)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, Location);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, Location, Rotation);
 	}
 }

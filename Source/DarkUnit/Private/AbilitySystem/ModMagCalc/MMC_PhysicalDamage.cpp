@@ -32,5 +32,5 @@ float UMMC_PhysicalDamage::CalculateBaseMagnitude_Implementation(const FGameplay
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
 	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
-	return	21 + Strength*5 + PlayerLevel*3;
+	return	21 + Strength;
 }
