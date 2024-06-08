@@ -14,6 +14,7 @@ class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
 class AWeaponBase;
+class UAnimMontage;
 
 UCLASS(Abstract)
 class DARKUNIT_API ACharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -27,16 +28,20 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
 	AWeaponBase* PrimaryWeapon;
-
+	
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	
+	//Weapons
+	virtual FTransform GetCombatSocketTransform() override;
+	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
+	// Damage Output
+	virtual float CalculateOveralldDamage() override;
 protected:
 	virtual void BeginPlay() override;
 	//Weapons
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName WeaponSocketName = "RightHandSocket";
 
-	virtual FTransform GetCombatSocketTransform() override;
-	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
-	
 	//
 	// GAS
 	UPROPERTY()
@@ -61,8 +66,8 @@ protected:
 	void AddCharacterAbilities();
 
 private:
-
-
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 	
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;

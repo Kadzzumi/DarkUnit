@@ -19,7 +19,7 @@ public:
 	APlayerCharacterBase();
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	virtual void PostInitializeComponents() override;
+	
 	//Tick
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -32,19 +32,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Items")
 	TArray<AActor*> InteractingActorList;
 
+	virtual float CalculateOveralldDamage() override;
+	//
+	//Attack
+	UFUNCTION(BlueprintCallable)
+	virtual void SetAttackCollisions(const int32 Index) override;
+	
+	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
+	
 protected:
 	
 	virtual void BeginPlay() override;
+	
 	//Movement
 	void SetRotation(bool bOrientToMovement, bool Yaw);
-	
-	UFUNCTION(BlueprintCallable)
-	virtual void SetAttackCollisions(const int32 Index) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
-	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
 private:
 	// Functions
 	virtual void InitAbilityActorInfo() override;
@@ -58,10 +61,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	FRotator ZAxisRotation{FRotator(0.f, 540.f, 0.f)};
 	
-	UPROPERTY(VisibleAnywhere, Category="Components")
-	class UVitalComponent* VitalComponent;
-	
-
 	//
 	//PickUp
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")

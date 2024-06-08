@@ -27,9 +27,6 @@ float UMMC_Evasion::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	float Dexterity = 0.f;
 	GetCapturedAttributeMagnitude(DexterityDef, Spec, EvaluateParameters, Dexterity);
 	Dexterity = FMath::Max<float>(Dexterity, 0);
-	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
 	return	10 + Dexterity;
 }

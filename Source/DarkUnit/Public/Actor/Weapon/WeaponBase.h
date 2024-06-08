@@ -10,13 +10,15 @@ class UBoxComponent;
 class USphereComponent;
 class UNiagaraSystem;
 
-// Enum to represent the states of the actor
 UENUM(BlueprintType)
-enum class EWeaponState : uint8
+enum class EWeaponDamageTier : uint8
 {
-	InventoryState UMETA(DisplayName = "Inventory"),
-	EquippedState UMETA(DisplayName = "Equipped"),
-	InReserve UMETA(DisplayName = "InReserve")
+	Tier_S UMETA(DisplayName = "S"),
+	Tier_A UMETA(DisplayName = "A"),
+	Tier_B UMETA(DisplayName = "B"),
+	Tier_C UMETA(DisplayName = "C"),
+	Tier_D UMETA(DisplayName = "D"),
+	Tier_E UMETA(DisplayName = "E")
 };
 
 UCLASS()
@@ -27,32 +29,55 @@ class DARKUNIT_API AWeaponBase : public AActor
 public:	
 	AWeaponBase();
 
-	// Function to set the actor state
-	UFUNCTION(BlueprintCallable, Category = "State")
-	void SetWeaponState(EWeaponState NewState);
-	
 	void SetWeaponCollision(bool bCanHit);
-	
+
+	//Damage Effect SpecHandle
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
+
+	//Dmg
+	//Weapon Damage Tier
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	float PhysicalDamage = 50.f;
+	
+	float GetTierValue(EWeaponDamageTier DamageTier);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Damage")
+	float StrengthCoff;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	EWeaponDamageTier StrengthDamageEff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	EWeaponDamageTier DexterityDamageEff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	EWeaponDamageTier IntelligenceDamageEff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	EWeaponDamageTier FaithDamageEff;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
+	EWeaponDamageTier CurseDamageEff;
 	
 protected:
 	virtual void BeginPlay() override;
+	// Trace for combat
 	UFUNCTION()
 	void PerformTrace();
 	// Add at the beginning of the private section
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayImpactEffects(const FVector& Location, const FRotator& Rotation);
+	
 private:
+	// Root and mesh
 	UPROPERTY(VisibleAnywhere, Category="Weapon")
 	USceneComponent* RootSceneComponent;
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	USkeletalMeshComponent* WeaponMesh;
-	
-	// The state of the actor
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", meta = (AllowPrivateAccess = "true"))
-	EWeaponState CurrentState;
 	
 	//Cues
 	UPROPERTY(EditAnywhere)

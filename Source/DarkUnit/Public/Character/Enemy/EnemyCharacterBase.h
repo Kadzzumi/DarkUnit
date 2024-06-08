@@ -26,12 +26,26 @@ public:
 	FOnAttributeChangeSignature OnHealthChange;
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangeSignature OnMaxHealthChange;
+
+	
+	// tag add or remove function
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	UPROPERTY(BlueprintReadOnly, Category="Combat")
+	bool bHitReacting;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combat")
+	float BaseWalkSpeed = 250.f;
+	
+	// Weapon
+	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
+	virtual float CalculateOveralldDamage() override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitializeDefaultAttributes() const override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults", meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(BlueprintReadOnly, Category = "Character Class Defaults", meta=(AllowPrivateAccess = "true"))
 	int32 Level = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults", meta=(AllowPrivateAccess = "true"))
@@ -39,6 +53,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
-private:
 
+private:
+	UPROPERTY(EditDefaultsOnly)
+	float BonusDamage = 50;
 };

@@ -28,8 +28,6 @@ float UMMC_CurseResistance::CalculateBaseMagnitude_Implementation(const FGamepla
 	GetCapturedAttributeMagnitude(ResolveDef, Spec, EvaluateParameters, Resolve);
 	Resolve = FMath::Max<float>(Resolve, 0);
 	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
 	return	10 + Resolve;
 }

@@ -66,4 +66,14 @@ void ACharacterBase::AddCharacterAbilities()
 	
 }
 
+float ACharacterBase::CalculateOveralldDamage()
+{
+	return ICombatInterface::CalculateOveralldDamage();
+}
+
+UAnimMontage* ACharacterBase::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
 

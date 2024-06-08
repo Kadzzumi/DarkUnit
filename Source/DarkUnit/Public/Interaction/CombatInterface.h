@@ -8,7 +8,7 @@
 
 class AWeaponBase;
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -25,4 +25,8 @@ public:
 	virtual void SetAttackCollisions(const int32 Index);
 	virtual FTransform GetCombatSocketTransform();
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon);
+	virtual float CalculateOveralldDamage();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetHitReactMontage();
 };

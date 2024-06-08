@@ -45,14 +45,16 @@ public:
 	FGameplayTag Attributes_Damage_Curse;
 
 	//Status Effects
-	FGameplayTag Attributes_Status_Slash;
-	FGameplayTag Attributes_Status_Pierce;
-	FGameplayTag Attributes_Status_Blunt;
-	FGameplayTag Attributes_Status_Fire;
-	FGameplayTag Attributes_Status_Ice;
-	FGameplayTag Attributes_Status_Lightning;
-	FGameplayTag Attributes_Status_Dark;
-	FGameplayTag Attributes_Status_Poison;
+	FGameplayTag Status_Slash;
+	FGameplayTag Status_Pierce;
+	FGameplayTag Status_Blunt;
+	FGameplayTag Status_Fire;
+	FGameplayTag Status_Ice;
+	FGameplayTag Status_Lightning;
+	FGameplayTag Status_Dark;
+	FGameplayTag Status_Poison;
+
+	FGameplayTag Effect_HitReactSmall;
 	
 	//Inputs tags
 	FGameplayTag InputTag_Attack;

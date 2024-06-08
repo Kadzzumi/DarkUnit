@@ -44,14 +44,14 @@ UMainAttributeSet::UMainAttributeSet()
 	TagsToAttributes.Add(GameplayTags.Attributes_Damage_Curse, GetCurseDamageAttribute);
 
 	// Status types
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Slash, GetSlashStatusAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Pierce, GetPierceStatusAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Blunt, GetBluntStatusAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Fire, GetFireStatusAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Ice, GetIceStatusAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Lightning, GetLightningStatusAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Dark, GetDarkStatusAttribute);
-	TagsToAttributes.Add(GameplayTags.Attributes_Status_Poison, GetPoisonStatusAttribute);	
+	TagsToAttributes.Add(GameplayTags.Status_Slash, GetSlashStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Status_Pierce, GetPierceStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Status_Blunt, GetBluntStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Status_Fire, GetFireStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Status_Ice, GetIceStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Status_Lightning, GetLightningStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Status_Dark, GetDarkStatusAttribute);
+	TagsToAttributes.Add(GameplayTags.Status_Poison, GetPoisonStatusAttribute);	
 }
 //Replication
 void UMainAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -113,6 +113,11 @@ void UMainAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxStamina());
 	}
+	if (Attribute == GetManaAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	}
+	
 	
 }
 
@@ -160,12 +165,14 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-		UE_LOG(LogTemp, Warning, TEXT("ChangeHealth on %s, Health: %f"), *Props.TargetAvatarActor->GetName(), GetHealth());
-		
 	}
 	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
 		SetStamina(FMath::Clamp(GetStamina(), 0.f, GetMaxStamina()));
+	}
+	if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxStamina()));
 	}
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
@@ -176,6 +183,12 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const float NewHealth = GetHealth() - LocalIncomingDamage;
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 			const bool bFatal = NewHealth <= 0.f;
+			if (!bFatal)
+			{
+				FGameplayTagContainer TagContainer;
+				TagContainer.AddTag(FDarkUnitGameplayTags::Get().Effect_HitReactSmall);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
 		}
 	}
 }

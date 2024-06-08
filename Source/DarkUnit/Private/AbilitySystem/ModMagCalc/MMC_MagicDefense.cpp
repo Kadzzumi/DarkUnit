@@ -27,9 +27,6 @@ float UMMC_MagicDefense::CalculateBaseMagnitude_Implementation(const FGameplayEf
 	float Intelligence = 0.f;
 	GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluateParameters, Intelligence);
 	Intelligence = FMath::Max<float>(Intelligence, 0);
-	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
 	return	10 + Intelligence;
 }

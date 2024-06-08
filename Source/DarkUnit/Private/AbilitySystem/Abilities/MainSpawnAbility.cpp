@@ -21,15 +21,17 @@ void UMainSpawnAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	{
 		if (WeaponClass)
 		{
+			//Interface Values
 			const FTransform SpawnTransform = CombatInterface->GetCombatSocketTransform();
+			float ScaledDamage = CombatInterface->CalculateOveralldDamage();
+			
 			AWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<AWeaponBase>(WeaponClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 			const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent((GetAvatarActorFromActorInfo()));
 			const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
 			//Tag For the Damage
 			const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
-
 			//Damage
-			const float ScaledDamage = Damage.GetValueAtLevel(10);
+			ScaledDamage += Damage.GetValueAtLevel(10);
 			// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("FireBolt Damage: %f"), ScaledDamage));
 			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Damage_Physical, ScaledDamage);
 			

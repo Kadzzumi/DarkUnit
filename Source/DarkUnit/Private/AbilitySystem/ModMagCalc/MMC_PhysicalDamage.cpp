@@ -28,9 +28,6 @@ float UMMC_PhysicalDamage::CalculateBaseMagnitude_Implementation(const FGameplay
 	float Strength = 0.f;
 	GetCapturedAttributeMagnitude(StrengthDef, Spec, EvaluateParameters, Strength);
 	Strength = FMath::Max<float>(Strength, 0);
-	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
 	return	21 + Strength;
 }

@@ -2,6 +2,7 @@
 #include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
 
 #include "AttributeSet.h"
+#include "AbilitySystem/Abilities/DarkUnitGameplayAbility.h"
 #include "DarkUnit/DarkUnitGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController/MainPlayerState.h"
@@ -66,4 +67,18 @@ void UDarkUnitAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* W
 	VitalAttributesContextHandle.AddSourceObject(AvatarActor);
 	const FGameplayEffectSpecHandle VitalAttributesSpecHandle = ASC->MakeOutgoingSpec(CharacterClassInfo->VitalAttributes, Level, VitalAttributesContextHandle);
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalAttributesSpecHandle.Data.Get());
+}
+
+void UDarkUnitAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject,
+	UAbilitySystemComponent* ASC)
+{
+	ADarkUnitGameMode* MainGameMode = Cast<ADarkUnitGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (MainGameMode == nullptr) return;
+	
+	UCharacterClassInfo* CharacterClassInfo =  MainGameMode->CharacterClassInfo;
+	for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		ASC->GiveAbility(AbilitySpec);
+	}
 }

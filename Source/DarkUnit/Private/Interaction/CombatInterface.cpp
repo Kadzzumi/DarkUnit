@@ -1,7 +1,6 @@
 // Interface for the Level
 #include "Interaction/CombatInterface.h"
-#include "Actor/Weapon/WeaponBase.h"
-#include "Engine/SkeletalMeshSocket.h"
+
 
 int32 ICombatInterface::GetPlayerLevel()
 {
@@ -20,4 +19,9 @@ FTransform ICombatInterface::GetCombatSocketTransform()
 void ICombatInterface::SetWeaponAttachment(AWeaponBase* Weapon)
 {
 	
+}
+
+float ICombatInterface::CalculateOveralldDamage()
+{
+	return 0;
 }

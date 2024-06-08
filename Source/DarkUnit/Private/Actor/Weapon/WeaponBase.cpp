@@ -1,19 +1,17 @@
 #include "Actor/Weapon/WeaponBase.h"
 
-#include <AbilitySystemBlueprintLibrary.h>
-#include <AbilitySystemComponent.h>
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "Components/AudioComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Character/Enemy/EnemyCharacterBase.h"
-#include "Components/BoxComponent.h"
 
 // Sets default values
 AWeaponBase::AWeaponBase() :
 	CapsuleRadius(10)
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 
 	//Setting Root && Basics
@@ -30,29 +28,48 @@ AWeaponBase::AWeaponBase() :
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	SetWeaponState(EWeaponState::EquippedState);
 	//Setup collisions
 	HitActors.Empty();  // Ensure set is empty at the start
+	StrengthCoff = GetTierValue(StrengthDamageEff);
+}
+
+
+float AWeaponBase::GetTierValue(EWeaponDamageTier DamageTier)
+{
+	switch (DamageTier)
+	{
+	case EWeaponDamageTier::Tier_S:
+		return 1.0f;
+		break;
+	case EWeaponDamageTier::Tier_A:
+		return 0.8f;
+		break;
+	case EWeaponDamageTier::Tier_B:
+		return 0.6f;
+		break;
+	case EWeaponDamageTier::Tier_C:
+		return 0.4f;
+		break;
+	case EWeaponDamageTier::Tier_D:
+		return 0.2f;
+		break;
+	case EWeaponDamageTier::Tier_E:
+		return 0.f;
+		break;
+	}
+	return 0;
 }
 
 void AWeaponBase::SetWeaponCollision(bool bCanHit)
 {
 	if (bCanHit)
 	{
-		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &AWeaponBase::PerformTrace, 0.015f, true, 0.f);
+		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &AWeaponBase::PerformTrace, 0.02f, true, 0.f);
 	}
 	else
 	{
 		GetWorldTimerManager().ClearTimer(AttackTimerHandle);
 		HitActors.Empty();  // Clear hit actors when stopping collision checks
-	}
-}
-
-void AWeaponBase::SetWeaponState(EWeaponState NewState)
-{
-	if (CurrentState != NewState)
-	{
-		CurrentState = NewState; 
 	}
 }
 

@@ -27,9 +27,6 @@ float UMMC_HolyDamageResistance::CalculateBaseMagnitude_Implementation(const FGa
 	float Faith = 0.f;
 	GetCapturedAttributeMagnitude(FaithDef, Spec, EvaluateParameters, Faith);
 	Faith = FMath::Max<float>(Faith, 0);
-	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
 
 	return	10 + Faith;
 }

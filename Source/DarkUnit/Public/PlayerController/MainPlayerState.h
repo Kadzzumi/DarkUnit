@@ -26,6 +26,7 @@ public:
 	FORCEINLINE AWeaponBase* GetPrimaryWeapon() const {return PrimaryWeapon; }
 
 	void UpdateWeaponInventory(AWeaponBase* Weapon, bool bIsAdding);
+	
 protected:	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

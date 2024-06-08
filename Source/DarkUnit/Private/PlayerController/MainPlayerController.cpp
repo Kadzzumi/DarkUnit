@@ -28,8 +28,8 @@ void AMainPlayerController::BeginPlay()
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
 	if (GetASC())
 	{
-		const FGameplayTag JumpTag = FGameplayTag::RequestGameplayTag(FName("InputTag.SpawnDefaultWeapon"));
-		GetASC()->AbilityInputTagPressed(JumpTag);
+		const FGameplayTag WeaponTag = FGameplayTag::RequestGameplayTag(FName("InputTag.SpawnDefaultWeapon"));
+		GetASC()->AbilityInputTagPressed(WeaponTag);
 	}
 }
 // Setting inputs

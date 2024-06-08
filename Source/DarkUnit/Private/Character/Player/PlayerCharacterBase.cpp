@@ -6,7 +6,6 @@
 #include "Components/CapsuleComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Actor/Weapon/WeaponBase.h"
-#include "Character/Player/Components/VitalComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/EnemyCharacterBase.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -35,11 +34,7 @@ APlayerCharacterBase::APlayerCharacterBase()
 	GetCharacterMovement()->RotationRate = ZAxisRotation;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
-
-	//Vital Component
-	VitalComponent = CreateDefaultSubobject<UVitalComponent>(TEXT("VitalComponent"));
-	VitalComponent->SetIsReplicated(true);
-
+	
 	//
 	//Pickup
 	// Bind the overlap events
@@ -92,15 +87,6 @@ void APlayerCharacterBase::Tick(float DeltaSeconds)
 	
 }
 
-void APlayerCharacterBase::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	if (VitalComponent)
-	{
-		VitalComponent->Player = this;
-	}
-}
-
 void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
 	if(Weapon == nullptr) return;
@@ -113,7 +99,6 @@ void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 			// Attach the Weapon to the hand socket RightHandSocket
 			PrimaryWeapon = MainPlayerState->GetPrimaryWeapon();
 			HandSocket->AttachActor(PrimaryWeapon, GetMesh());
-			PrimaryWeapon->SetWeaponState(EWeaponState::EquippedState);
 		}
 	}
 }
@@ -206,4 +191,9 @@ void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
 		}
 		
 	}
+}
+
+float APlayerCharacterBase::CalculateOveralldDamage()
+{
+	return 50;
 }
