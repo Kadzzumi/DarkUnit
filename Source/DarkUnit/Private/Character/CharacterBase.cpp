@@ -5,9 +5,11 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Actor/Weapon/WeaponBase.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
-ACharacterBase::ACharacterBase(): PrimaryWeapon(nullptr)
+ACharacterBase::ACharacterBase(): PrimaryWeapon(nullptr), DeathMontage(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = false;
 }
@@ -30,7 +32,13 @@ FTransform ACharacterBase::GetCombatSocketTransform()
 
 void ACharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
-
+	if(Weapon == nullptr) return;
+	if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
+	{
+		// Attach the Weapon to the hand socket RightHandSocket
+		PrimaryWeapon = Weapon;
+		HandSocket->AttachActor(PrimaryWeapon, GetMesh());
+	}
 }
 
 
@@ -66,14 +74,61 @@ void ACharacterBase::AddCharacterAbilities()
 	
 }
 
+
+
 float ACharacterBase::CalculateOveralldDamage()
 {
 	return ICombatInterface::CalculateOveralldDamage();
 }
 
+//
+//Hit react and Death
 UAnimMontage* ACharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
+}
+
+void ACharacterBase::Die()
+{
+	if (PrimaryWeapon != nullptr)
+	{
+		PrimaryWeapon->DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+		PrimaryWeapon->SetLifeSpan(7.f);
+	}
+	HandleDeath();
+	PlayDeath();
+	MulticastHandleDeath();
+}
+
+void ACharacterBase::MulticastHandleDeath_Implementation()
+{
+	if (PrimaryWeapon != nullptr)
+	{
+		PrimaryWeapon->SetWeaponState(EWeaponState::State_Dropped);
+	}
+}
+void ACharacterBase::PlayDeath() const
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && DeathMontage)
+	{
+		AnimInstance->Montage_Play(DeathMontage, 1.0f);
+	}
+}
+
+void ACharacterBase::HandleDeath() const
+{
+	// Disable all collisions
+	TArray<UActorComponent*> Components;
+	GetComponents(Components);
+
+	for (UActorComponent* Component : Components)
+	{
+		if (UPrimitiveComponent* PrimitiveComponent = Cast<UPrimitiveComponent>(Component))
+		{
+			PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
 }
 
 

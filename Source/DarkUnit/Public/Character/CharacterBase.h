@@ -36,6 +36,11 @@ public:
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
 	// Damage Output
 	virtual float CalculateOveralldDamage() override;
+
+	//Death
+	virtual void Die() override;
+
+	
 protected:
 	virtual void BeginPlay() override;
 	//Weapons
@@ -65,10 +70,21 @@ protected:
 	virtual void InitializeDefaultAttributes() const;
 	void AddCharacterAbilities();
 
+	// Death montage
+	void PlayDeath() const;
+		
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDeath();
+
+	UFUNCTION()
+	void HandleDeath() const;
 private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 	
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* DeathMontage;
 };

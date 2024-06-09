@@ -8,6 +8,7 @@
 #include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 #include "DarkUnitGameplayTags.h"
+#include "Interaction/CombatInterface.h"
 
 UMainAttributeSet::UMainAttributeSet()
 {
@@ -183,11 +184,19 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const float NewHealth = GetHealth() - LocalIncomingDamage;
 			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 			const bool bFatal = NewHealth <= 0.f;
-			if (!bFatal)
+			if (bFatal)
+			{
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+				if (CombatInterface)
+				{
+					CombatInterface->Die();
+				}
+			}
+			else
 			{
 				FGameplayTagContainer TagContainer;
 				TagContainer.AddTag(FDarkUnitGameplayTags::Get().Effect_HitReactSmall);
-				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);	
 			}
 		}
 	}

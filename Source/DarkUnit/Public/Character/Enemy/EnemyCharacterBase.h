@@ -40,6 +40,8 @@ public:
 	// Weapon
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
 	virtual float CalculateOveralldDamage() override;
+	// Death
+	virtual void Die() override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
@@ -57,4 +59,6 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly)
 	float BonusDamage = 50;
+	UPROPERTY(EditDefaultsOnly)
+	float LifeSpanTime = 5.f;	
 };

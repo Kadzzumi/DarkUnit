@@ -21,7 +21,7 @@ AWeaponBase::AWeaponBase() :
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	WeaponMesh->SetupAttachment(GetRootComponent());
 	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
-	
+	SetWeaponState(EWeaponState::State_Equipped);
 }
 
 // Called when the game starts or when spawned
@@ -75,8 +75,9 @@ void AWeaponBase::SetWeaponCollision(bool bCanHit)
 
 void AWeaponBase::PerformTrace()
 {
-	if (!WeaponMesh)
+	if (!WeaponMesh || !DamageEffectSpecHandle.IsValid() || !Owner)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("WeaponMesh, DamageEffectSpecHandle, or Owner is invalid."));
 		return;
 	}
 
@@ -135,5 +136,32 @@ void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Locat
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, Location);
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, Location, Rotation);
+	}
+}
+
+// Weapon State
+void AWeaponBase::SetWeaponState(EWeaponState State)
+{
+	WeaponState = State;
+	switch (WeaponState)
+	{
+	case EWeaponState::State_Equipped:
+		WeaponMesh->SetSimulatePhysics(false);
+		WeaponMesh->SetEnableGravity(false);
+		WeaponMesh->SetVisibility(true);
+		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		break;
+	case EWeaponState::State_Dropped:
+		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		WeaponMesh->SetSimulatePhysics(true);
+		WeaponMesh->SetEnableGravity(true);
+		WeaponMesh->SetVisibility(true);
+		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		WeaponMesh->SetCollisionResponseToChannel(
+			ECollisionChannel::ECC_WorldStatic,
+			ECollisionResponse::ECR_Block);
+		UE_LOG(LogTemp, Warning, TEXT("WeaponMesh is dropped"));
+		break;
 	}
 }

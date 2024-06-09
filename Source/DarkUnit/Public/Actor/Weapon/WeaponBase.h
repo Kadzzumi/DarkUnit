@@ -21,6 +21,13 @@ enum class EWeaponDamageTier : uint8
 	Tier_E UMETA(DisplayName = "E")
 };
 
+UENUM(BlueprintType)
+enum class EWeaponState : uint8
+{
+	State_Equipped UMETA(DisplayName = "Equipped"),
+	State_Dropped UMETA(DisplayName = "Dropped"),
+};
+
 UCLASS()
 class DARKUNIT_API AWeaponBase : public AActor
 {
@@ -62,7 +69,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
 	EWeaponDamageTier CurseDamageEff;
-	
+
+	void SetWeaponState(EWeaponState State);
 protected:
 	virtual void BeginPlay() override;
 	// Trace for combat
@@ -92,4 +100,8 @@ private:
 	float CapsuleRadius;
 	
 	FTimerHandle AttackTimerHandle;
+
+	// Weapon State
+	UPROPERTY(VisibleAnywhere)
+	EWeaponState WeaponState;
 };

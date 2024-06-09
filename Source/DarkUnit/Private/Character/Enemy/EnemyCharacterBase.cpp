@@ -65,6 +65,14 @@ void AEnemyCharacterBase::BeginPlay()
 		
 		OnHealthChange.Broadcast(DarkUnitAS->GetHealth());
 		OnMaxHealthChange.Broadcast(DarkUnitAS->GetMaxHealth());
+		
+		if (AbilitySystemComponent)
+		{
+			const FGameplayTag WeaponTag = FGameplayTag::RequestGameplayTag(FName("InputTag.SpawnDefaultWeapon"));
+			FGameplayTagContainer TagContainer;
+			TagContainer.AddTag(WeaponTag);
+			AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
+		}
 	}
 }
 
@@ -82,18 +90,18 @@ void AEnemyCharacterBase::InitializeDefaultAttributes() const
 
 void AEnemyCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
-	if(Weapon == nullptr) return;
-	// Get the Hand Socket
-	if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
-	{
-		// Attach the Weapon to the hand socket RightHandSocket
-		HandSocket->AttachActor(Weapon, GetMesh());
-	}
+	Super::SetWeaponAttachment(Weapon);
 }
 
 float AEnemyCharacterBase::CalculateOveralldDamage()
 {
 	return BonusDamage;
+}
+
+void AEnemyCharacterBase::Die()
+{
+	SetLifeSpan(LifeSpanTime);
+	Super::Die();
 }
 
 void AEnemyCharacterBase::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
