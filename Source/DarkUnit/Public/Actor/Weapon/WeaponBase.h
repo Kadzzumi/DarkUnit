@@ -79,7 +79,13 @@ protected:
 	// Add at the beginning of the private section
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayImpactEffects(const FVector& Location, const FRotator& Rotation);
-	
+
+	// WeaponDissolve
+	void Dissolve();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> MI_WeaponDessolve;
 private:
 	// Root and mesh
 	UPROPERTY(VisibleAnywhere, Category="Weapon")

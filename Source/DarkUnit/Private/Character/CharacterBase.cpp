@@ -106,6 +106,7 @@ void ACharacterBase::MulticastHandleDeath_Implementation()
 	{
 		PrimaryWeapon->SetWeaponState(EWeaponState::State_Dropped);
 	}
+	Dissolve();
 }
 void ACharacterBase::PlayDeath() const
 {
@@ -128,6 +129,16 @@ void ACharacterBase::HandleDeath() const
 		{
 			PrimitiveComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
+	}
+}
+
+void ACharacterBase::Dissolve()
+{
+	if(IsValid(MI_CharacterDessolve))
+	{
+		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(MI_CharacterDessolve, this);
+		GetMesh()->SetMaterial(0, DynamicMatInst);
+		StartDissolveTimeline(DynamicMatInst);
 	}
 }
 
