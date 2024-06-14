@@ -72,6 +72,7 @@ public:
 	UFUNCTION(Client, Reliable)
 	void SetWeaponState(EWeaponState State);
 
+	//
 	// Weapon Level Damage
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Damage")
 	float PhysicalDamage;

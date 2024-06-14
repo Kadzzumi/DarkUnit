@@ -87,11 +87,11 @@ void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	SourceFocus = FMath::Max(SourceFocus, 0.f);
 	
 	float SourceStrength = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().EvasionDef, EvaluateParameters, SourceStrength);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().StrengthDef, EvaluateParameters, SourceStrength);
 	SourceStrength = FMath::Max(SourceStrength, 0.f);
 	
 	float SourceDexterity = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().EvasionDef, EvaluateParameters, SourceDexterity);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DexterityDef, EvaluateParameters, SourceDexterity);
 	SourceDexterity = FMath::Max(SourceDexterity, 0.f);
 
 
@@ -99,8 +99,10 @@ void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	//Calculation
 	const bool bEvaded = FMath::RandRange(1, 100) < TargetEvasionChance/SourceFocus*10;
 	Damage = bEvaded ? Damage / 2.f : Damage;
-
-	Damage *= 1-(TargetDefense/SourceStrength/SourceDexterity);
+	
+	const float PhysicalEffectiveDefense = 1-(TargetDefense/SourceStrength/SourceDexterity);
+	
+	Damage *= FMath::Clamp(PhysicalEffectiveDefense, 0.5f, 1);
 	
 	
 	// Capture 

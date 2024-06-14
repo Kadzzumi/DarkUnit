@@ -172,7 +172,6 @@ void AWeaponBase::Dissolve()
 {
 	if(IsValid(MI_WeaponDessolve))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("WeaponMesh is dropped"));
 		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(MI_WeaponDessolve, WeaponMesh);
 		WeaponMesh->SetMaterial(0, DynamicMatInst);
 		StartDissolveTimeline(DynamicMatInst);
