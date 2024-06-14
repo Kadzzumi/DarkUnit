@@ -67,7 +67,8 @@ void APlayerCharacterBase::OnRep_PlayerState()
 void APlayerCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-
+	//Weapon Equip
+	EquipWeapon(DefaultWeapon());
 }
 
 void APlayerCharacterBase::Tick(float DeltaSeconds)
@@ -87,19 +88,41 @@ void APlayerCharacterBase::Tick(float DeltaSeconds)
 	
 }
 
+//
+// Deafault Weapon
+AWeaponBase* APlayerCharacterBase::DefaultWeapon()
+{
+	// Check the TSubclassOf variable
+	const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+	if (MainPlayerState->DefaultWeapon != nullptr)
+	{
+		// Spawn the Weapon
+		return GetWorld()->SpawnActor<AWeaponBase>(MainPlayerState->DefaultWeapon);
+	}
+	return nullptr;
+}
+void APlayerCharacterBase::EquipWeapon(AWeaponBase* WeaponToEquip)
+{
+	AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+	AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController());
+	EquippedWeapon = WeaponToEquip;
+	EquippedWeapon->SetOwner(this);
+	SetWeaponAttachment(EquippedWeapon);
+	if (PlayerController && MainPlayerState)
+	{
+		PlayerController->SetWeaponSpecHandle();
+		MainPlayerState->UpdateWeaponInventory(EquippedWeapon, true);
+	}
+}
 void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
 	if(Weapon == nullptr) return;
-	if (AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>())
+	// Get the Hand Socket
+	if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
 	{
-		MainPlayerState->UpdateWeaponInventory(Weapon, true);
-		// Get the Hand Socket
-		if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
-		{
-			// Attach the Weapon to the hand socket RightHandSocket
-			PrimaryWeapon = MainPlayerState->GetPrimaryWeapon();
-			HandSocket->AttachActor(PrimaryWeapon, GetMesh());
-		}
+		// Attach the Weapon to the hand socket RightHandSocket
+		PrimaryWeapon = Weapon;
+		HandSocket->AttachActor(PrimaryWeapon, GetMesh());
 	}
 }
 
@@ -130,7 +153,6 @@ void APlayerCharacterBase::SetRotation(bool bOrientToMovement, bool Yaw)
 	
 }
 
-
 //Speed
 float APlayerCharacterBase::GetSpeed() const
 {
@@ -142,7 +164,7 @@ float APlayerCharacterBase::GetSpeed() const
 //Player Level
 int32 APlayerCharacterBase::GetPlayerLevel()
 {
-	const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+	AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
 	check(MainPlayerState);
 
 	return MainPlayerState->GetPlayerLevel();

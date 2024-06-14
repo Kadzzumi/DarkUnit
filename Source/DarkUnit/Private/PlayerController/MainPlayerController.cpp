@@ -7,12 +7,17 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Character/Player/PlayerCharacterBase.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "input/DarkUnitInputComponent.h"
+#include "GameFramework/Character.h"
+#include "UI/Widget/DamageTextComponent.h"
+
 
 AMainPlayerController::AMainPlayerController(): ControlledPawn(nullptr)
 {
 	bReplicates = true;
 }
+
 
 
 void AMainPlayerController::BeginPlay()
@@ -25,10 +30,17 @@ void AMainPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(PlayerContext, 0);
 	}
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
+
+}
+//
+void AMainPlayerController::SetWeaponSpecHandle()
+{
 	if (GetASC())
 	{
-		const FGameplayTag WeaponTag = FGameplayTag::RequestGameplayTag(FName("InputTag.SpawnDefaultWeapon"));
-		GetASC()->AbilityInputTagPressed(WeaponTag);
+		const FGameplayTag WeaponTag = FGameplayTag::RequestGameplayTag(FName("GA.SetWeaponSpecHandle"));
+		FGameplayTagContainer WeaponTagContainer;
+		WeaponTagContainer.AddTag(WeaponTag);
+		GetASC()->TryActivateAbilitiesByTag(WeaponTagContainer);
 	}
 }
 // Setting inputs
@@ -117,5 +129,17 @@ void AMainPlayerController::PlayerJump()
 	{
 		const FGameplayTag JumpTag = FGameplayTag::RequestGameplayTag(FName("InputTag.Jump"));
 		GetASC()->AbilityInputTagPressed(JumpTag);
+	}
+}
+// Show Damage Number
+void AMainPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+{
+	if (IsValid(TargetCharacter) && DamageText)
+	{
+		UDamageTextComponent* DamageTextComponent = NewObject<UDamageTextComponent>(TargetCharacter, DamageText);
+		DamageTextComponent->RegisterComponent();
+		DamageTextComponent->AttachToComponent(TargetCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("DamageSocket"));
+		DamageTextComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageTextComponent->SetDamageText(DamageAmount);
 	}
 }

@@ -4,6 +4,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "GameplayEffectTypes.h"
+#include "ScalableFloat.h"
 #include "WeaponBase.generated.h"
 
 class UBoxComponent;
@@ -35,7 +36,7 @@ class DARKUNIT_API AWeaponBase : public AActor
 	
 public:	
 	AWeaponBase();
-
+	
 	void SetWeaponCollision(bool bCanHit);
 
 	//Damage Effect SpecHandle
@@ -46,8 +47,6 @@ public:
 	//Dmg
 	//Weapon Damage Tier
 	//
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-	float PhysicalDamage = 50.f;
 	
 	float GetTierValue(EWeaponDamageTier DamageTier);
 
@@ -70,7 +69,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
 	EWeaponDamageTier CurseDamageEff;
 
+	UFUNCTION(Client, Reliable)
 	void SetWeaponState(EWeaponState State);
+
+	// Weapon Level Damage
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Damage")
+	float PhysicalDamage;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (ClampMin = 1, ClampMax = 10))
+	int32 WeaponLevel;
+
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void SetWeaponLevel(int32 NewWeaponLevel);
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
+	FScalableFloat DamageCurve;
 protected:
 	virtual void BeginPlay() override;
 	// Trace for combat
@@ -86,6 +99,7 @@ protected:
 	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> MI_WeaponDessolve;
+	
 private:
 	// Root and mesh
 	UPROPERTY(VisibleAnywhere, Category="Weapon")

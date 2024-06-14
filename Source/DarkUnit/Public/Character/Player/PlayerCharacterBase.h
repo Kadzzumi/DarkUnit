@@ -7,6 +7,7 @@
 #include "PlayerCharacterBase.generated.h"
 
 
+class AMainPlayerState;
 class UGameplayEffect;
 /**
  * 
@@ -33,6 +34,9 @@ public:
 	TArray<AActor*> InteractingActorList;
 
 	virtual float CalculateOveralldDamage() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	AWeaponBase* EquippedWeapon;
 	//
 	//Attack
 	UFUNCTION(BlueprintCallable)
@@ -46,6 +50,10 @@ protected:
 	
 	//Movement
 	void SetRotation(bool bOrientToMovement, bool Yaw);
+
+	// Inventory
+	void EquipWeapon(AWeaponBase* WeaponToEquip);
+	AWeaponBase* DefaultWeapon();
 
 
 private:
@@ -73,4 +81,6 @@ private:
 	// Function to handle the end overlap event
 	UFUNCTION()
 	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
 };

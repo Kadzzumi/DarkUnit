@@ -29,23 +29,25 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_HealingEffectiveness = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HealingEffectiveness"), FString("Improves healing effectiveness"));
 	GameplayTags.Attributes_Secondary_ControlOverCurses = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.ControlOverCurses"), FString("Improves control over curses"));
 	GameplayTags.Attributes_Secondary_HolyDamageResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HolyDamageResistance"), FString("Improves resistance to holy damage"));
+	GameplayTags.Attributes_Secondary_Focus = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Focus"), FString("Improves Focus"));
 
 	// Damage Types
 	GameplayTags.Attributes_Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Physical"), FString("Physical damage"));
-	GameplayTags.Attributes_Damage_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Strength"), FString("Strength damage"));
-	GameplayTags.Attributes_Damage_Dexterity = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Dexterity"), FString("Dexterity damage"));
+	GameplayTags.Attributes_Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Fire"), FString("Fire damage"));
+	GameplayTags.Attributes_Damage_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Ice"), FString("Ice damage"));
+	GameplayTags.Attributes_Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Lightning"), FString("Lightning damage"));
 	GameplayTags.Attributes_Damage_Magic = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Magic"), FString("Magic damage"));
 	GameplayTags.Attributes_Damage_Holy = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Holy"), FString("Holy damage"));
 	GameplayTags.Attributes_Damage_Curse = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Curse"), FString("Curse damage"));
 
 	// Status types
-	GameplayTags.Status_Slash = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Status.Slash"), FString("Slash Status"));
-	GameplayTags.Status_Pierce = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Status.Pierce"), FString("Pierce Status"));
-	GameplayTags.Status_Blunt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Status.Blunt"), FString("Blunt Status"));
-	GameplayTags.Status_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Fire"), FString("Fire Status"));
-	GameplayTags.Status_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Ice"), FString("Ice Status"));
-	GameplayTags.Status_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Lightning"), FString("Lightning Status"));
-	GameplayTags.Status_Dark = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Dark"), FString("Dark Status"));
+	GameplayTags.Status_Slash = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Slash"), FString("Slash Status"));
+	GameplayTags.Status_Pierce = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Pierce"), FString("Pierce Status"));
+	GameplayTags.Status_Blunt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Blunt"), FString("Blunt Status"));
+	GameplayTags.Status_Burn = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Burn"), FString("Fire Status"));
+	GameplayTags.Status_Frost = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Frost"), FString("Ice Status"));
+	GameplayTags.Status_Strike = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Strike"), FString("Lightning Status"));
+	GameplayTags.Status_Blight = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Blight"), FString("Dark Status"));
 	GameplayTags.Status_Poison = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Poison"), FString("Poison Status"));
 
 	// Effects
@@ -67,5 +69,8 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.InputTag_Interact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Interact"), FString("Inteact key"));
 	GameplayTags.InputTag_AttributeMenu = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.AttributeMenu"), FString("Attribute Menu key"));
 	GameplayTags.InputTag_SpawnDefaultWeapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.SpawnDefaultWeapon"), FString("Spawns Weapon"));
+
+	//
+	GameplayTags.GA_SetWeaponSpecHandle = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GA.SetWeaponSpecHandle"), FString("Spawns Weapon Spec Handle"));
 
 }

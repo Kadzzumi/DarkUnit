@@ -47,6 +47,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName WeaponSocketName = "RightHandSocket";
 
+
+	
 	//
 	// GAS
 	UPROPERTY()
@@ -87,6 +89,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> MI_CharacterDessolve;
 
+
+
 private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
@@ -96,4 +100,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* DeathMontage;
+
+	
 };

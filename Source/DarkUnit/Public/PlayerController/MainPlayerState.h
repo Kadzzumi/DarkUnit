@@ -23,9 +23,23 @@ public:
 	UAttributeSet* GetAttributeSet() const {return AttributeSet; }
 	// Level Getter
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
-	FORCEINLINE AWeaponBase* GetPrimaryWeapon() const {return PrimaryWeapon; }
+	
 
+	
+	//InventorySystem
+	UPROPERTY(VisibleAnywhere)
+	AWeaponBase* EquippedWeapon;
+
+	const int32 MaxWeaponCapacity{ 3 };
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AWeaponBase> DefaultWeapon;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TArray<AWeaponBase*> WeaponInventory;
+	
 	void UpdateWeaponInventory(AWeaponBase* Weapon, bool bIsAdding);
+	
 	
 protected:	
 	UPROPERTY(VisibleAnywhere)
@@ -35,17 +49,11 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;
 	
 private:
-		
-	UPROPERTY(EditAnywhere)
-	TArray<AWeaponBase*> WeaponInventory;
 	
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
-	
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_PrimaryWeapon)
-	AWeaponBase* PrimaryWeapon;
-	UFUNCTION()
-	void OnRep_PrimaryWeapon();
+
+
 };

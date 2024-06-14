@@ -35,11 +35,13 @@ public:
 	FGameplayTag Attributes_Secondary_HealingEffectiveness;     // Healing Effectiveness
 	FGameplayTag Attributes_Secondary_ControlOverCurses;        // Control Over Curses
 	FGameplayTag Attributes_Secondary_HolyDamageResistance;     // Holy Damage Resistance
-
+	FGameplayTag Attributes_Secondary_Focus;
+	
 	// Damage Types
 	FGameplayTag Attributes_Damage_Physical;
-	FGameplayTag Attributes_Damage_Strength;
-	FGameplayTag Attributes_Damage_Dexterity;
+	FGameplayTag Attributes_Damage_Fire;
+	FGameplayTag Attributes_Damage_Ice;
+	FGameplayTag Attributes_Damage_Lightning;
 	FGameplayTag Attributes_Damage_Magic;
 	FGameplayTag Attributes_Damage_Holy;
 	FGameplayTag Attributes_Damage_Curse;
@@ -48,10 +50,10 @@ public:
 	FGameplayTag Status_Slash;
 	FGameplayTag Status_Pierce;
 	FGameplayTag Status_Blunt;
-	FGameplayTag Status_Fire;
-	FGameplayTag Status_Ice;
-	FGameplayTag Status_Lightning;
-	FGameplayTag Status_Dark;
+	FGameplayTag Status_Burn;
+	FGameplayTag Status_Frost;
+	FGameplayTag Status_Strike;
+	FGameplayTag Status_Blight;
 	FGameplayTag Status_Poison;
 
 	FGameplayTag Effect_HitReactSmall;
@@ -71,6 +73,9 @@ public:
 	FGameplayTag InputTag_Interact;
 	FGameplayTag InputTag_AttributeMenu;
 	FGameplayTag InputTag_SpawnDefaultWeapon;
+
+	//
+	FGameplayTag GA_SetWeaponSpecHandle;
 
 private:
 	static FDarkUnitGameplayTags GameplayTags;

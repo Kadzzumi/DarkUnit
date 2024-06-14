@@ -227,6 +227,13 @@ public:
 	UFUNCTION()
 	void OnRep_HolyDamageResistance(const FGameplayAttributeData& OldHolyDamageResistance) const;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, HolyDamageResistance);
+	
+	// Holy Damage Resistance
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HolyDamageResistance, Category = "Vital Attributes")
+	FGameplayAttributeData Focus;
+	UFUNCTION()
+	void OnRep_Focus(const FGameplayAttributeData& OldFocus) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, Focus);
 
 	// Damage Types
 	// Physical Damage
@@ -236,19 +243,26 @@ public:
 	void OnRep_PhysicalDamage(const FGameplayAttributeData& OldPhysicalDamage) const;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, PhysicalDamage);
 
-	// Strength Damage
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StrengthDamage, Category = "Damage Types")
-	FGameplayAttributeData StrengthDamage;
+	// Fire Damage
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireDamage, Category = "Damage Types")
+	FGameplayAttributeData FireDamage;
 	UFUNCTION()
-	void OnRep_StrengthDamage(const FGameplayAttributeData& OldStrengthDamage) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, StrengthDamage);
+	void OnRep_FireDamage(const FGameplayAttributeData& OldFireDamage) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, FireDamage);
 
-	// Dexterity Damage
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_DexterityDamage, Category = "Damage Types")
-	FGameplayAttributeData DexterityDamage;
+	// Ice Damage
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_IceDamage, Category = "Damage Types")
+	FGameplayAttributeData IceDamage;
 	UFUNCTION()
-	void OnRep_DexterityDamage(const FGameplayAttributeData& OldDexterityDamage) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, DexterityDamage);
+	void OnRep_IceDamage(const FGameplayAttributeData& OldIceDamage) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, IceDamage);
+
+	// Lightning Damage
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_LightningDamage, Category = "Damage Types")
+	FGameplayAttributeData LightningDamage;
+	UFUNCTION()
+	void OnRep_LightningDamage(const FGameplayAttributeData& OldLightningDamage) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, LightningDamage);
 	
 	// Magic Damage
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MagicDamage, Category = "Damage Types")
@@ -295,33 +309,33 @@ public:
 	void OnRep_PoisonStatus(const FGameplayAttributeData& OldPoisonStatus) const;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, PoisonStatus);
 
-	// Dark Status
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_DarkStatus, Category = "Status Types")
-	FGameplayAttributeData DarkStatus;
+	// Blight Status
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlightStatus, Category = "Status Types")
+	FGameplayAttributeData BlightStatus;
 	UFUNCTION()
-	void OnRep_DarkStatus(const FGameplayAttributeData& OldDarkStatus) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, DarkStatus);
+	void OnRep_BlightStatus(const FGameplayAttributeData& OldBlightStatus) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, BlightStatus);
 	
-	// Fire Status
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireStatus, Category = "Status Types")
-	FGameplayAttributeData FireStatus;
+	// Burn Status
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BurnStatus, Category = "Status Types")
+	FGameplayAttributeData BurnStatus;
 	UFUNCTION()
-	void OnRep_FireStatus(const FGameplayAttributeData& OldFireStatus) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, FireStatus);
+	void OnRep_BurnStatus(const FGameplayAttributeData& OldBurnStatus) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, BurnStatus);
 
-	// Ice Status
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_IceStatus, Category = "Status Types")
-	FGameplayAttributeData IceStatus;
+	// Frost Status
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FrostStatus, Category = "Status Types")
+	FGameplayAttributeData FrostStatus;
 	UFUNCTION()
-	void OnRep_IceStatus(const FGameplayAttributeData& OldIceStatus) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, IceStatus);
+	void OnRep_FrostStatus(const FGameplayAttributeData& OldFrostStatus) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, FrostStatus);
 
-	// Lightning Status
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_LightningStatus, Category = "Status Types")
-	FGameplayAttributeData LightningStatus;
+	// Strike Status
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StrikeStatus, Category = "Status Types")
+	FGameplayAttributeData StrikeStatus;
 	UFUNCTION()
-	void OnRep_LightningStatus(const FGameplayAttributeData& OldLightningStatus) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, LightningStatus);
+	void OnRep_StrikeStatus(const FGameplayAttributeData& OldStrikeStatus) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, StrikeStatus);
 	
 	// Blunt Status
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BluntStatus, Category = "Status Types")
@@ -339,5 +353,5 @@ public:
 private:
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
-	
+	void ShowFloatingText(const FEffectProperties& Props, float Damage);
 };

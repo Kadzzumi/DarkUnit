@@ -14,6 +14,7 @@ AWeaponBase::AWeaponBase() :
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 
+
 	//Setting Root && Basics
 	RootSceneComponent = CreateDefaultSubobject<USceneComponent>("RootComponent");
 	SetRootComponent(RootSceneComponent);
@@ -31,6 +32,7 @@ void AWeaponBase::BeginPlay()
 	//Setup collisions
 	HitActors.Empty();  // Ensure set is empty at the start
 	StrengthCoff = GetTierValue(StrengthDamageEff);
+	SetWeaponLevel(1);
 }
 
 
@@ -140,7 +142,7 @@ void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Locat
 }
 
 // Weapon State
-void AWeaponBase::SetWeaponState(EWeaponState State)
+void AWeaponBase::SetWeaponState_Implementation(EWeaponState State)
 {
 	WeaponState = State;
 	switch (WeaponState)
@@ -177,3 +179,11 @@ void AWeaponBase::Dissolve()
 	}
 }
 
+//
+// Weapon Phys Damage
+
+void AWeaponBase::SetWeaponLevel(int32 NewWeaponLevel)
+{
+	WeaponLevel = FMath::Clamp(NewWeaponLevel, 1, 10);
+	PhysicalDamage = DamageCurve.GetValueAtLevel(WeaponLevel);
+}

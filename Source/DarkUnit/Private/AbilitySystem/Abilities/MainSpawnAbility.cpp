@@ -31,7 +31,7 @@ void UMainSpawnAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 			//Tag For the Damage
 			const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
 			//Damage
-			ScaledDamage += Damage.GetValueAtLevel(10);
+			ScaledDamage += Damage.GetValueAtLevel(GetAbilityLevel());
 			// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("FireBolt Damage: %f"), ScaledDamage));
 			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Damage_Physical, ScaledDamage);
 			

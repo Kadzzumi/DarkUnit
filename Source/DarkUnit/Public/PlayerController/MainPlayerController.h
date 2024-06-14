@@ -8,6 +8,7 @@
 #include "MainPlayerController.generated.h"
 
 
+class UDamageTextComponent;
 class UDarkUnitInputConfig;
 class APlayerCharacterBase;
 class UInputMappingContext;
@@ -21,6 +22,11 @@ class DARKUNIT_API AMainPlayerController : public APlayerController
 public:
 	AMainPlayerController();
 	void PlayerJump();
+
+	UFUNCTION(Client, Reliable)
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
+
+	void SetWeaponSpecHandle();
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -54,4 +60,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UMainAbilitySystemComponent> DarkUnitAbilitySystemComponent;
 	UMainAbilitySystemComponent* GetASC();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageText;
 };

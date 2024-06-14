@@ -22,8 +22,9 @@ UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
+
 
 FTransform ACharacterBase::GetCombatSocketTransform()
 {
@@ -95,8 +96,6 @@ void ACharacterBase::Die()
 		PrimaryWeapon->DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 		PrimaryWeapon->SetLifeSpan(7.f);
 	}
-	HandleDeath();
-	PlayDeath();
 	MulticastHandleDeath();
 }
 
@@ -106,6 +105,8 @@ void ACharacterBase::MulticastHandleDeath_Implementation()
 	{
 		PrimaryWeapon->SetWeaponState(EWeaponState::State_Dropped);
 	}
+	HandleDeath();
+	PlayDeath();
 	Dissolve();
 }
 void ACharacterBase::PlayDeath() const
