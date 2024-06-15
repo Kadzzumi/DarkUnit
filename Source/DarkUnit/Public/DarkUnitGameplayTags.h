@@ -38,6 +38,7 @@ public:
 	FGameplayTag Attributes_Secondary_Focus;
 	
 	// Damage Types
+	FGameplayTag Attributes_Damage_WeaponDamage;
 	FGameplayTag Attributes_Damage_Physical;
 	FGameplayTag Attributes_Damage_Fire;
 	FGameplayTag Attributes_Damage_Ice;

@@ -5,7 +5,10 @@
 
 #include "AbilitySystemComponent.h"
 #include "DarkUnitGameplayTags.h"
+#include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
 #include "AbilitySystem/MainAttributeSet.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "Interaction/CombatInterface.h"
 
 struct DarkUnitDamageStatics
 {
@@ -49,12 +52,18 @@ UExecCals_Damage::UExecCals_Damage()
 void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
 	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
+	// Getting Ability system component of the target and the character
 	const UAbilitySystemComponent* SourceACS = ExecutionParams.GetSourceAbilitySystemComponent();
 	const UAbilitySystemComponent* TargetACS = ExecutionParams.GetTargetAbilitySystemComponent();
-	
-	const AActor* SourceAvatar = SourceACS ? SourceACS->GetAvatarActor() : nullptr;
-	const AActor* TargetAvatar = TargetACS ? TargetACS->GetAvatarActor() : nullptr;
 
+	// Getting Avatars
+	AActor* SourceAvatar = SourceACS ? SourceACS->GetAvatarActor() : nullptr;
+	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
+		
+	AActor* TargetAvatar = TargetACS ? TargetACS->GetAvatarActor() : nullptr;
+	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
+
+	
 	// Gather tags from source and target
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
@@ -68,9 +77,6 @@ void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	//Capture the Physical Defense
 	
-	
-	//Get DamageSet by collar mag/ Calculations
-	float Damage = Spec.GetSetByCallerMagnitude(FDarkUnitGameplayTags::Get().Attributes_Damage_Physical);
 
 	// Target Attributes
 	float TargetEvasionChance = 0.f;
@@ -94,9 +100,16 @@ void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DexterityDef, EvaluateParameters, SourceDexterity);
 	SourceDexterity = FMath::Max(SourceDexterity, 0.f);
 
-
+	const UCharacterClassInfo* CharacterClassInfo = UDarkUnitAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
+	const FRealCurve* CharDamageCurve = CharacterClassInfo->CharacterDamageCurve->FindCurve(FName("CharDamagePerLevel"), FString());
+	const float CharacterDamage = CharDamageCurve->Eval(SourceCombatInterface->GetPlayerLevel());
+	
 	//
 	//Calculation
+	//Get DamageSet by collar mag/ Calculations
+	float Damage = Spec.GetSetByCallerMagnitude(FDarkUnitGameplayTags::Get().Attributes_Damage_WeaponDamage);
+	Damage += CharacterDamage;
+	
 	const bool bEvaded = FMath::RandRange(1, 100) < TargetEvasionChance/SourceFocus*10;
 	Damage = bEvaded ? Damage / 2.f : Damage;
 	

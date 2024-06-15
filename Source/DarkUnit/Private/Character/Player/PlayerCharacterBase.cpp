@@ -77,7 +77,7 @@ void APlayerCharacterBase::Tick(float DeltaSeconds)
 
 
 	// Orient Rotation
-	if (GetSpeed() <= 0.f)
+	if (GetSpeed() <= 0.f || !bCanRotate)
 	{
 		SetRotation(true, false);
 	}
@@ -105,13 +105,13 @@ void APlayerCharacterBase::EquipWeapon(AWeaponBase* WeaponToEquip)
 {
 	AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
 	AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController());
-	EquippedWeapon = WeaponToEquip;
-	EquippedWeapon->SetOwner(this);
-	SetWeaponAttachment(EquippedWeapon);
+	PrimaryWeapon = WeaponToEquip;
+	PrimaryWeapon->SetOwner(this);
+	SetWeaponAttachment(PrimaryWeapon);
 	if (PlayerController && MainPlayerState)
 	{
 		PlayerController->SetWeaponSpecHandle();
-		MainPlayerState->UpdateWeaponInventory(EquippedWeapon, true);
+		MainPlayerState->UpdateWeaponInventory(PrimaryWeapon, true);
 	}
 }
 void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
@@ -203,12 +203,19 @@ void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
 		{
 		case 0:
 			PrimaryWeapon->SetWeaponCollision(false);
+			bCanRotate = true;
 			break;
 		case 1:
 			PrimaryWeapon->SetWeaponCollision(true);
+			bCanRotate = false;
+			break;
+		case 3:
+			PrimaryWeapon->SetWeaponCollision(false);
+			bCanRotate = false;
 			break;
 		default:
 			PrimaryWeapon->SetWeaponCollision(false);
+			bCanRotate = true;
 			break;
 		}
 		

@@ -32,6 +32,7 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_Focus = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Focus"), FString("Improves Focus"));
 
 	// Damage Types
+	GameplayTags.Attributes_Damage_WeaponDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Weapon"), FString("Weapon damage"));
 	GameplayTags.Attributes_Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Physical"), FString("Physical damage"));
 	GameplayTags.Attributes_Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Fire"), FString("Fire damage"));
 	GameplayTags.Attributes_Damage_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Ice"), FString("Ice damage"));

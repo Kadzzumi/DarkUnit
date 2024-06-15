@@ -34,9 +34,7 @@ public:
 	TArray<AActor*> InteractingActorList;
 
 	virtual float CalculateOveralldDamage() override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	AWeaponBase* EquippedWeapon;
+	
 	//
 	//Attack
 	UFUNCTION(BlueprintCallable)
@@ -68,6 +66,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	FRotator ZAxisRotation{FRotator(0.f, 540.f, 0.f)};
+
+	UPROPERTY(VisibleAnywhere)
+	bool bCanRotate = true;
 	
 	//
 	//PickUp
@@ -82,5 +83,6 @@ private:
 	UFUNCTION()
 	void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	//
 
 };

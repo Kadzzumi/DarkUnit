@@ -26,7 +26,7 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
 
 		// Weapon
-		AWeaponBase* Weapon = Cast<AWeaponBase>(Player->EquippedWeapon);
+		AWeaponBase* Weapon = Cast<AWeaponBase>(Player->PrimaryWeapon);
 		
 		// Capture Attributes
 		const UMainAttributeSet* AttributeSet = Cast<UMainAttributeSet>(SourceASC->GetAttributeSet(UMainAttributeSet::StaticClass()));
@@ -41,9 +41,9 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 		const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
 		//Damage
 
-		float ScaledDamage = Weapon->PhysicalDamage + StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue;
+		const float ScaledDamage = Weapon->PhysicalDamage + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
 		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("FireBolt Damage: %f"), ScaledDamage));
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Damage_Physical, ScaledDamage);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Damage_WeaponDamage, ScaledDamage);
 			
 		Weapon->DamageEffectSpecHandle = SpecHandle;
 	}

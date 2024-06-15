@@ -45,13 +45,10 @@ UAttributeWidgetController* UDarkUnitAbilitySystemLibrary::GetAttributeWidgetCon
 
 void UDarkUnitAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
 {
-	ADarkUnitGameMode* MainGameMode = Cast<ADarkUnitGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (MainGameMode == nullptr) return;
-
 	AActor* AvatarActor = ASC->GetAvatarActor();
 	
-	UCharacterClassInfo* CharacterClassInfo =  MainGameMode->CharacterClassInfo;
-	FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	UCharacterClassInfo* CharacterClassInfo =  GetCharacterClassInfo(WorldContextObject);
+	const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
 	
 	FGameplayEffectContextHandle PrimaryAttributesContextHandle = ASC->MakeEffectContext();
 	PrimaryAttributesContextHandle.AddSourceObject(AvatarActor);
@@ -72,13 +69,19 @@ void UDarkUnitAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* W
 void UDarkUnitAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject,
 	UAbilitySystemComponent* ASC)
 {
-	ADarkUnitGameMode* MainGameMode = Cast<ADarkUnitGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
-	if (MainGameMode == nullptr) return;
-	
-	UCharacterClassInfo* CharacterClassInfo =  MainGameMode->CharacterClassInfo;
+	UCharacterClassInfo* CharacterClassInfo =  GetCharacterClassInfo(WorldContextObject);
 	for (TSubclassOf<UGameplayAbility> AbilityClass : CharacterClassInfo->CommonAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		ASC->GiveAbility(AbilitySpec);
 	}
+}
+
+UCharacterClassInfo* UDarkUnitAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+	ADarkUnitGameMode* MainGameMode = Cast<ADarkUnitGameMode>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if (MainGameMode == nullptr) return nullptr;
+	
+	return MainGameMode->CharacterClassInfo;
+
 }
