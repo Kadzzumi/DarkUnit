@@ -32,8 +32,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Items")
 	TArray<AActor*> InteractingActorList;
-
-	virtual float CalculateOveralldDamage() override;
 	
 	//
 	//Attack
@@ -41,7 +39,10 @@ public:
 	virtual void SetAttackCollisions(const int32 Index) override;
 	
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
-	
+
+	//Character Rotation
+	UPROPERTY(EditAnywhere)
+	bool bCanRotate = true;
 protected:
 	
 	virtual void BeginPlay() override;
@@ -51,7 +52,7 @@ protected:
 
 	// Inventory
 	void EquipWeapon(AWeaponBase* WeaponToEquip);
-	AWeaponBase* DefaultWeapon();
+	AWeaponBase* DefaultWeapon() const;
 
 
 private:
@@ -67,8 +68,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	FRotator ZAxisRotation{FRotator(0.f, 540.f, 0.f)};
 
-	UPROPERTY(VisibleAnywhere)
-	bool bCanRotate = true;
+
 	
 	//
 	//PickUp

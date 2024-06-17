@@ -3,6 +3,7 @@
 
 #include "DarkUnitAssetManager.h"
 #include "DarkUnitGameplayTags.h"
+#include "AbilitySystemGlobals.h"
 UDarkUnitAssetManager& UDarkUnitAssetManager::Get()
 {
 	check(GEngine);
@@ -14,5 +15,6 @@ void UDarkUnitAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
 	FDarkUnitGameplayTags::InitializeNativeGameplayTags();
+	UAbilitySystemGlobals::Get().InitGlobalData();
 	
 }

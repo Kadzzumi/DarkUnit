@@ -33,6 +33,7 @@ public:
 	
 	//Weapons
 	virtual FTransform GetCombatSocketTransform() override;
+	virtual FTransform GetSpellSocketTransform() override;
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
 	// Damage Output
 	virtual float CalculateOveralldDamage() override;
@@ -46,8 +47,9 @@ protected:
 	//Weapons
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName WeaponSocketName = "RightHandSocket";
-
-
+	
+	UPROPERTY(EditAnywhere, Category="Combat")
+	FName WeaponTipSocketName = "WeaponTipSocket";
 	
 	//
 	// GAS
@@ -89,7 +91,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> MI_CharacterDessolve;
 
-
+	UFUNCTION(BlueprintCallable)
+	void WeaponTrailEffect(bool bStart);
 
 private:
 	UPROPERTY(EditAnywhere, Category="Combat")

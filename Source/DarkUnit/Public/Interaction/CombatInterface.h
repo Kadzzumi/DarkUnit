@@ -24,6 +24,7 @@ public:
 	virtual int32 GetPlayerLevel();
 	virtual void SetAttackCollisions(const int32 Index);
 	virtual FTransform GetCombatSocketTransform();
+	virtual FTransform GetSpellSocketTransform();
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon);
 	virtual float CalculateOveralldDamage();
 

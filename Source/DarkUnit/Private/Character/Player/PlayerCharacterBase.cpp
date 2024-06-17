@@ -90,7 +90,7 @@ void APlayerCharacterBase::Tick(float DeltaSeconds)
 
 //
 // Deafault Weapon
-AWeaponBase* APlayerCharacterBase::DefaultWeapon()
+AWeaponBase* APlayerCharacterBase::DefaultWeapon() const
 {
 	// Check the TSubclassOf variable
 	const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
@@ -164,7 +164,7 @@ float APlayerCharacterBase::GetSpeed() const
 //Player Level
 int32 APlayerCharacterBase::GetPlayerLevel()
 {
-	AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+	const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
 	check(MainPlayerState);
 
 	return MainPlayerState->GetPlayerLevel();
@@ -218,11 +218,5 @@ void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
 			bCanRotate = true;
 			break;
 		}
-		
 	}
-}
-
-float APlayerCharacterBase::CalculateOveralldDamage()
-{
-	return 50;
 }

@@ -16,6 +16,11 @@ FTransform ICombatInterface::GetCombatSocketTransform()
 	return FTransform();
 }
 
+FTransform ICombatInterface::GetSpellSocketTransform()
+{
+	return FTransform();
+}
+
 void ICombatInterface::SetWeaponAttachment(AWeaponBase* Weapon)
 {
 	

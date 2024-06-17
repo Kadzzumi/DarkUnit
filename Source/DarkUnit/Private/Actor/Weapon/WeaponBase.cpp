@@ -23,6 +23,11 @@ AWeaponBase::AWeaponBase() :
 	WeaponMesh->SetupAttachment(GetRootComponent());
 	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SetWeaponState(EWeaponState::State_Equipped);
+
+	// Create and initialize the particle system component
+	TrailEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TrailEffect"));
+	TrailEffect->SetupAttachment(GetRootComponent());  // Assuming RootComponent is already set
+	TrailEffect->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -106,7 +111,7 @@ void AWeaponBase::PerformTrace()
 	);
 
 	// Draw the capsule in the world to visualize the sweep
-	DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, CapsuleRadius, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
+	// DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, CapsuleRadius, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
 
 	if (bHit)
 	{
@@ -185,4 +190,20 @@ void AWeaponBase::SetWeaponLevel(int32 NewWeaponLevel)
 {
 	WeaponLevel = FMath::Clamp(NewWeaponLevel, 1, 10);
 	PhysicalDamage = DamageCurve.GetValueAtLevel(WeaponLevel);
+}
+
+void AWeaponBase::ToggleTrailEffect(bool bShouldStart)
+{
+	if (bShouldStart)
+	{
+		// Start the particle system from the "start" socket to the "end" socket
+		TrailEffect->SetVectorParameter(FName("Source"), WeaponMesh->GetSocketLocation(FName("Start")));
+		TrailEffect->SetVectorParameter(FName("Target"), WeaponMesh->GetSocketLocation(FName("End")));
+		TrailEffect->ActivateSystem();
+	}
+	else
+	{
+		// Stop the particle system
+		TrailEffect->DeactivateSystem();
+	}
 }

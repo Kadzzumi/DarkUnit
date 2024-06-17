@@ -39,6 +39,10 @@ public:
 	
 	void SetWeaponCollision(bool bCanHit);
 
+	// Weapon Mesh
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	USkeletalMeshComponent* WeaponMesh;
+	
 	//Damage Effect SpecHandle
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
@@ -85,6 +89,12 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
 	FScalableFloat DamageCurve;
+
+	//Weapon Trail
+	void ToggleTrailEffect(bool bShouldStart);
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* TrailEffect;
 protected:
 	virtual void BeginPlay() override;
 	// Trace for combat
@@ -105,8 +115,6 @@ private:
 	// Root and mesh
 	UPROPERTY(VisibleAnywhere, Category="Weapon")
 	USceneComponent* RootSceneComponent;
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	USkeletalMeshComponent* WeaponMesh;
 	
 	//Cues
 	UPROPERTY(EditAnywhere)

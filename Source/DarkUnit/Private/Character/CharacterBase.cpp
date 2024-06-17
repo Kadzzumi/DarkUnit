@@ -31,6 +31,16 @@ FTransform ACharacterBase::GetCombatSocketTransform()
 	return GetMesh()->GetSocketTransform(WeaponSocketName);
 }
 
+FTransform ACharacterBase::GetSpellSocketTransform()
+{
+	FTransform WeaponTipTransform;
+	if (PrimaryWeapon)
+	{
+		WeaponTipTransform = PrimaryWeapon->WeaponMesh->GetSocketTransform(WeaponTipSocketName);
+	}
+	return WeaponTipTransform;
+}
+
 void ACharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
 	if(Weapon == nullptr) return;
@@ -140,6 +150,14 @@ void ACharacterBase::Dissolve()
 		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(MI_CharacterDessolve, this);
 		GetMesh()->SetMaterial(0, DynamicMatInst);
 		StartDissolveTimeline(DynamicMatInst);
+	}
+}
+
+void ACharacterBase::WeaponTrailEffect(bool bStart)
+{
+	if (PrimaryWeapon != nullptr)
+	{
+		PrimaryWeapon->ToggleTrailEffect(bStart);
 	}
 }
 
