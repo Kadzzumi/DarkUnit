@@ -30,7 +30,7 @@ void AMainPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(PlayerContext, 0);
 	}
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
-
+	SetWeaponSpecHandle();
 }
 //
 void AMainPlayerController::SetWeaponSpecHandle()
@@ -84,8 +84,20 @@ void AMainPlayerController::Look(const FInputActionValue& InputActionValue)
 	
 	if (ControlledPawn)
 	{
-		ControlledPawn->AddControllerYawInput(LookAxisVector.X);;
-		ControlledPawn->AddControllerPitchInput(LookAxisVector.Y);;
+		ControlledPawn->AddControllerYawInput(LookAxisVector.X);
+		const float CurrentPitch = ControlledPawn->GetBaseAimRotation().Pitch;
+		float BasePitch = LookAxisVector.Y;
+		UE_LOG(LogTemp, Warning, TEXT("Pitch is: %f"), CurrentPitch);
+		UE_LOG(LogTemp, Warning, TEXT("BasePitch is: %f"), BasePitch);
+		if (CurrentPitch >= 50 && BasePitch < 0)
+		{
+			BasePitch = 0;
+		}
+		else if(CurrentPitch <= -50 && BasePitch > 0)
+		{
+			BasePitch = 0;
+		}
+		ControlledPawn->AddControllerPitchInput(BasePitch);
 	}
 }
 

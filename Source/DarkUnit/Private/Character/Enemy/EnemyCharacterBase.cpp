@@ -18,6 +18,7 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 	//GAS
 	AbilitySystemComponent = CreateDefaultSubobject<UMainAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
 	AttributeSet = CreateDefaultSubobject<UMainAttributeSet>("AttributeSet");
 
@@ -37,7 +38,11 @@ void AEnemyCharacterBase::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	
 	InitAbilityActorInfo();
-	UDarkUnitAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	if (HasAuthority())
+	{
+		UDarkUnitAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	}
+
 	
 	// Widget for health
 	if (UMainUserWidget* MainUserWidget = Cast<UMainUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -80,7 +85,10 @@ void AEnemyCharacterBase::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UMainAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
-	InitializeDefaultAttributes();
+	if (HasAuthority())
+	{
+		InitializeDefaultAttributes();
+	}
 }
 
 void AEnemyCharacterBase::InitializeDefaultAttributes() const

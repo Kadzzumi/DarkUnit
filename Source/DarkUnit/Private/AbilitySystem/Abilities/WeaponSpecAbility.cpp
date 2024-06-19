@@ -15,37 +15,44 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
                                          const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                          const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	const bool bIsServer = HasAuthority(&ActivationInfo);
-	if (!bIsServer) return;
-	// Get the Hand Socket
-	APlayerCharacterBase* Player = Cast<APlayerCharacterBase>(GetAvatarActorFromActorInfo());
-	if (Player)
-	{
-		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent((GetAvatarActorFromActorInfo()));
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+   Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+   const bool bIsServer = HasAuthority(&ActivationInfo);
+   if (!bIsServer) return;
+   // Get the Hand Socket
+    if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
+    {
+        if (WeaponClass)
+        {
+            //Interface Values
+            const FTransform SpawnTransform = CombatInterface->GetCombatSocketTransform();
 
-		// Weapon
-		AWeaponBase* Weapon = Cast<AWeaponBase>(Player->PrimaryWeapon);
-		
-		// Capture Attributes
-		const UMainAttributeSet* AttributeSet = Cast<UMainAttributeSet>(SourceASC->GetAttributeSet(UMainAttributeSet::StaticClass()));
-		
-		const float StrengthValue = Weapon->GetTierValue(Weapon->StrengthDamageEff) * AttributeSet->GetStrength();
-		const float DexterityValue = Weapon->GetTierValue(Weapon->DexterityDamageEff) * AttributeSet->GetDexterity();
-		const float IntelligenceValue = Weapon->GetTierValue(Weapon->IntelligenceDamageEff) * AttributeSet->GetIntelligence();
-		const float FaithValue = Weapon->GetTierValue(Weapon->FaithDamageEff) * AttributeSet->GetFaith();
-		const float ResolveValue = Weapon->GetTierValue(Weapon->CurseDamageEff) * AttributeSet->GetResolve();
+            AWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<AWeaponBase>(WeaponClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+            const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent((GetAvatarActorFromActorInfo()));
+            const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+            // Capture Attributes
+            const UMainAttributeSet* AttributeSet = Cast<UMainAttributeSet>(SourceASC->GetAttributeSet(UMainAttributeSet::StaticClass()));
 
-		//Tag For the Damage
-		const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
-		//Damage
+            const float StrengthValue = DefaultWeapon->GetTierValue(DefaultWeapon->StrengthDamageEff) * AttributeSet->GetStrength();
+            const float DexterityValue = DefaultWeapon->GetTierValue(DefaultWeapon->DexterityDamageEff) * AttributeSet->GetDexterity();
+            const float IntelligenceValue = DefaultWeapon->GetTierValue(DefaultWeapon->IntelligenceDamageEff) * AttributeSet->GetIntelligence();
+            const float FaithValue = DefaultWeapon->GetTierValue(DefaultWeapon->FaithDamageEff) * AttributeSet->GetFaith();
+            const float ResolveValue = DefaultWeapon->GetTierValue(DefaultWeapon->CurseDamageEff) * AttributeSet->GetResolve();
 
-		const float ScaledDamage = Weapon->PhysicalDamage + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
-		// GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("FireBolt Damage: %f"), ScaledDamage));
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Damage_WeaponDamage, ScaledDamage);
-			
-		Weapon->DamageEffectSpecHandle = SpecHandle;
-	}
-	K2_EndAbility();
+
+            //Tag For the Damage
+            const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
+            //Damage
+
+            const float ScaledDamage = DefaultWeapon->PhysicalDamage + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
+            // GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("FireBolt Damage: %f"), ScaledDamage));
+            UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Damage_WeaponDamage, ScaledDamage);
+
+            DefaultWeapon->DamageEffectSpecHandle = SpecHandle;
+            
+            DefaultWeapon->FinishSpawning(SpawnTransform);
+            // Attach the weapon
+            CombatInterface->SetWeaponAttachment(DefaultWeapon);
+        }
+    }
+   K2_EndAbility();
 }

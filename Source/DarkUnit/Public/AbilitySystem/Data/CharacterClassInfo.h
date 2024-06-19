@@ -17,10 +17,11 @@ enum class ECharacterClass : uint8
 	Mage
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FCharacterClassDefaultInfo
 {
 	GENERATED_BODY()
+	
 	UPROPERTY(EditDefaultsOnly, Category="Class Defaults")
 	TSubclassOf<UGameplayEffect> PrimaryAttributes;
 	

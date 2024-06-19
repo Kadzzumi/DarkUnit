@@ -6,6 +6,7 @@
 #include "AbilitySystem/Abilities/DarkUnitGameplayAbility.h"
 #include "WeaponSpecAbility.generated.h"
 
+class AWeaponBase;
 /**
  * 
  */
@@ -17,4 +18,6 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<AWeaponBase> WeaponClass;	
 };
