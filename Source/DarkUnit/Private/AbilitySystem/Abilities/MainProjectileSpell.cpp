@@ -35,9 +35,7 @@ void UMainProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			// Calculate the end point of the ray
 			TargetLocation = CameraLocation + (CameraRotation.Vector() * 10000);
 		}
-		FRotator SpawnRotation = (TargetLocation - SpawnTransform.GetLocation()).Rotation();
-		SpawnRotation.Pitch = 0.f;
-		
+		const FRotator SpawnRotation = (TargetLocation - SpawnTransform.GetLocation()).Rotation();
 		SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 
 		

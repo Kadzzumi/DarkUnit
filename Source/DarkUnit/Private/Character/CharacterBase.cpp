@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Actor/Weapon/WeaponBase.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -12,6 +13,9 @@
 ACharacterBase::ACharacterBase(): PrimaryWeapon(nullptr), DeathMontage(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
