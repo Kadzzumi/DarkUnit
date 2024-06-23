@@ -3,7 +3,10 @@
 
 #include "Actor/Projectile/ProjectileBase.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -11,7 +14,7 @@
 // Sets default values
 AProjectileBase::AProjectileBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 	
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
@@ -21,6 +24,7 @@ AProjectileBase::AProjectileBase()
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	Sphere->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	Sphere->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Block);
 	
 	//Movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
@@ -33,16 +37,25 @@ AProjectileBase::AProjectileBase()
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if (HasAuthority())
+	SetLifeSpan(ProjectileLifeSpan);
+	Sphere->OnComponentHit.AddDynamic(this, &AProjectileBase::OnHit);
+	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
+}
+
+void AProjectileBase::Destroyed()
+{
+	if (!bHit && !HasAuthority())
 	{
-		Sphere->OnComponentHit.AddDynamic(this, &AProjectileBase::OnHit);
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		LoopingSoundComponent->Stop();
 	}
+	Super::Destroyed();	
 }
 
 
-
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
-	FVector NormalImpulse, const FHitResult& Hit)
+                            FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (OtherActor == GetOwner()) return;
 	if (ImpactSound && ImpactEffect)
@@ -52,7 +65,15 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	if (HasAuthority())
 	{
+		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		{
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		}
 		Destroy();
+	}
+	else
+	{
+		bHit = true;
 	}
 }
 

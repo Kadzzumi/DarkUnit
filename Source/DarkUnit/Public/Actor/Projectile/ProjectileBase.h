@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
 #include "ProjectileBase.generated.h"
 
@@ -22,16 +23,24 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 protected:
 	
 	virtual void BeginPlay() override;
-	
+	virtual void Destroyed() override;
+
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	
+
+	
 private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;
+
 
 	//Cues
 	UPROPERTY(EditAnywhere)
@@ -39,5 +48,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundBase> ImpactSound;	
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> LoopingSound;
 
+	UPROPERTY()
+	TObjectPtr<UAudioComponent> LoopingSoundComponent;
+	
+	UPROPERTY(EditAnywhere)
+	float ProjectileLifeSpan = 5.f;
+
+	bool bHit = false;
 };
