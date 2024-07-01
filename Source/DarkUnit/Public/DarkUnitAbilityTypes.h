@@ -53,7 +53,6 @@ struct TStructOpsTypeTraits<FDarkUnitGameplayEffectContext> : public TStructOpsT
 	enum
 	{
 		WithNetSerializer = true,
-		
 		WithCopy = true
 	};
 };

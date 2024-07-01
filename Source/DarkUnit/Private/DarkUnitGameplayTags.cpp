@@ -20,16 +20,21 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxHealth"), FString("Improves health of the character. Gives more survivability"));
 	GameplayTags.Attributes_Secondary_MaxStamina = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxStamina"), FString("Improves stamina of the character. Gives more ability to perform advanced movements"));
 	GameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MaxMana"), FString("Improves mana of the character"));
-	GameplayTags.Attributes_Secondary_Defense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Defense"), FString("Improves defense of the character. Gives more survivability"));
-	GameplayTags.Attributes_Secondary_MagicDefense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.MagicDefense"), FString("Improves magic defense of the character"));
-	GameplayTags.Attributes_Secondary_CurseResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.CurseResistance"), FString("Improves curse resistance of the character"));
-	GameplayTags.Attributes_Secondary_StatusEffectResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.StatusEffectResistance"), FString("Improves resistance to status effects"));
 	GameplayTags.Attributes_Secondary_Evasion = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Evasion"), FString("Improves evasion"));
 	GameplayTags.Attributes_Secondary_StaminaRecoveryRate = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.StaminaRecoveryRate"), FString("Recovers stamina faster"));
 	GameplayTags.Attributes_Secondary_HealingEffectiveness = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HealingEffectiveness"), FString("Improves healing effectiveness"));
 	GameplayTags.Attributes_Secondary_ControlOverCurses = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.ControlOverCurses"), FString("Improves control over curses"));
-	GameplayTags.Attributes_Secondary_HolyDamageResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.HolyDamageResistance"), FString("Improves resistance to holy damage"));
 	GameplayTags.Attributes_Secondary_Focus = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Focus"), FString("Improves Focus"));
+
+	// Defenses
+	GameplayTags.Attributes_Resistances_Defense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.Defense"), FString("Improves physical defense of the character. Gives more survivability"));
+	GameplayTags.Attributes_Resistances_FireResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.FireResistance"), FString("Improves resistance to fire damage. Increases survivability against fire attacks"));
+	GameplayTags.Attributes_Resistances_IceResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.IceResistance"), FString("Improves resistance to ice damage. Increases survivability against ice attacks"));
+	GameplayTags.Attributes_Resistances_LightningResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.LightningResistance"), FString("Improves resistance to lightning damage. Increases survivability against lightning attacks"));
+	GameplayTags.Attributes_Resistances_MagicDefense = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.MagicDefense"), FString("Improves magic and ice defense of the character. Provides better protection against magical and ice-based attacks"));
+	GameplayTags.Attributes_Resistances_HolyDamageResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.HolyDamageResistance"), FString("Improves resistance to holy, fire, and lightning damage. Provides comprehensive protection against these elements"));
+	GameplayTags.Attributes_Resistances_CurseResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.CurseResistance"), FString("Improves resistance to curses. Reduces the impact of curse-based attacks"));
+	GameplayTags.Attributes_Resistances_StatusEffectResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.StatusEffectResistance"), FString("Improves resistance to status effects. Reduces the duration and impact of status effects"));
 
 	// Damage Types
 	GameplayTags.Attributes_Damage_WeaponDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Weapon"), FString("Weapon damage"));
@@ -50,7 +55,16 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Status_Strike = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Strike"), FString("Lightning Status"));
 	GameplayTags.Status_Blight = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Blight"), FString("Dark Status"));
 	GameplayTags.Status_Poison = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Poison"), FString("Poison Status"));
-
+	
+	// TMap for the damage and its resistance
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Physical, GameplayTags.Attributes_Resistances_Defense);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Fire, GameplayTags.Attributes_Resistances_FireResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Ice, GameplayTags.Attributes_Resistances_IceResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Lightning, GameplayTags.Attributes_Resistances_LightningResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Magic, GameplayTags.Attributes_Resistances_MagicDefense);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Holy, GameplayTags.Attributes_Resistances_HolyDamageResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Curse, GameplayTags.Attributes_Resistances_CurseResistance);
+	
 	// Effects
 	GameplayTags.Effect_HitReactSmall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effect.HitReactSmall"), FString("Hit Reaction slight"));
 

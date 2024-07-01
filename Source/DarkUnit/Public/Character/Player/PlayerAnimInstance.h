@@ -21,7 +21,7 @@ public:
 private:
 	//References
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="References", meta = (AllowPrivateAccess = "true"))
-	class APlayerCharacterBase* Player;
+	class ACharacterBase* Player;
 	
 	// Movement
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta = (AllowPrivateAccess = "true"))

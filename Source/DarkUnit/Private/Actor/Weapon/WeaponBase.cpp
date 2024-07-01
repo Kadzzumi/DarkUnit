@@ -24,10 +24,6 @@ AWeaponBase::AWeaponBase() :
 	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SetWeaponState(EWeaponState::State_Equipped);
 
-	// Create and initialize the particle system component
-	TrailEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TrailEffect"));
-	TrailEffect->SetupAttachment(GetRootComponent());  // Assuming RootComponent is already set
-	TrailEffect->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -79,7 +75,6 @@ void AWeaponBase::SetWeaponCollision(bool bCanHit)
 		HitActors.Empty();  // Clear hit actors when stopping collision checks
 	}
 }
-
 void AWeaponBase::PerformTrace()
 {
 	if (!WeaponMesh || !DamageEffectSpecHandle.IsValid() || !Owner)
@@ -87,18 +82,19 @@ void AWeaponBase::PerformTrace()
 		UE_LOG(LogTemp, Warning, TEXT("WeaponMesh, DamageEffectSpecHandle, or Owner is invalid."));
 		return;
 	}
+	// Trace Params
+	FVector Start, End, Direction;
+	float CapsuleHalfHeight;
+	FQuat CapsuleRotation;
+	SetupTraceParameters(Start, End, Direction, CapsuleHalfHeight, CapsuleRotation);
 
-	const FVector Start = WeaponMesh->GetSocketLocation(FName("Start"));
-	const FVector End = WeaponMesh->GetSocketLocation(FName("End"));
-	const FVector Direction = (End - Start).GetSafeNormal();
-	const float CapsuleHalfHeight = (End - Start).Size() - 15.f;
-
-	const FQuat CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
-
+	//Collision Params
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
-	CollisionParams.AddIgnoredActor(Owner);
+	CollisionParams.AddIgnoredActor(GetOwner());
+
+	const bool bIsPlayer{GetOwner()->ActorHasTag("Player")};
 
 	const bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
@@ -109,16 +105,15 @@ void AWeaponBase::PerformTrace()
 		FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight),
 		CollisionParams
 	);
-
-	// Draw the capsule in the world to visualize the sweep
-	// DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, CapsuleRadius, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
+	DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, CapsuleRadius, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
 
 	if (bHit)
 	{
 		for (auto& Hit : HitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
-			if (HitActor && Cast<AEnemyCharacterBase>(HitActor) && !HitActors.Contains(HitActor))
+			if((bIsPlayer && HitActor->ActorHasTag("Player")) || (!bIsPlayer && HitActor->ActorHasTag("Enemy"))) return;
+			if (HitActor && !HitActors.Contains(HitActor))
 			{
 				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor))
 				{
@@ -136,7 +131,14 @@ void AWeaponBase::PerformTrace()
 		}
 	}
 }
-
+void AWeaponBase::SetupTraceParameters(FVector& Start, FVector& End, FVector& Direction, float& CapsuleHalfHeight, FQuat& CapsuleRotation) const
+{
+	Start = WeaponMesh->GetSocketLocation(FName("Start"));
+	End = WeaponMesh->GetSocketLocation(FName("End"));
+	Direction = (End - Start).GetSafeNormal();
+	CapsuleHalfHeight = (End - Start).Size() - 15.f;
+	CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
+}
 void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Location, const FRotator& Rotation)
 {
 	if (ImpactSound && ImpactEffect)
@@ -145,6 +147,15 @@ void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Locat
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, Location, Rotation);
 	}
 }
+//
+// Weapon Phys Damage
+
+void AWeaponBase::SetWeaponLevel(int32 NewWeaponLevel)
+{
+	WeaponLevel = FMath::Clamp(NewWeaponLevel, 1, 10);
+	PhysicalDamage = DamageCurve.GetValueAtLevel(WeaponLevel);
+}
+
 
 // Weapon State
 void AWeaponBase::SetWeaponState_Implementation(EWeaponState State)
@@ -180,30 +191,5 @@ void AWeaponBase::Dissolve()
 		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(MI_WeaponDessolve, WeaponMesh);
 		WeaponMesh->SetMaterial(0, DynamicMatInst);
 		StartDissolveTimeline(DynamicMatInst);
-	}
-}
-
-//
-// Weapon Phys Damage
-
-void AWeaponBase::SetWeaponLevel(int32 NewWeaponLevel)
-{
-	WeaponLevel = FMath::Clamp(NewWeaponLevel, 1, 10);
-	PhysicalDamage = DamageCurve.GetValueAtLevel(WeaponLevel);
-}
-
-void AWeaponBase::ToggleTrailEffect(bool bShouldStart)
-{
-	if (bShouldStart)
-	{
-		// Start the particle system from the "start" socket to the "end" socket
-		TrailEffect->SetVectorParameter(FName("Source"), WeaponMesh->GetSocketLocation(FName("Start")));
-		TrailEffect->SetVectorParameter(FName("Target"), WeaponMesh->GetSocketLocation(FName("End")));
-		TrailEffect->ActivateSystem();
-	}
-	else
-	{
-		// Stop the particle system
-		TrailEffect->DeactivateSystem();
 	}
 }

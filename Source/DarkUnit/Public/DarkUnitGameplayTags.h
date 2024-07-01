@@ -26,16 +26,25 @@ public:
 	FGameplayTag Attributes_Secondary_MaxHealth;             // Health Points (HP)
 	FGameplayTag Attributes_Secondary_MaxStamina;            // Stamina Points (SP)
 	FGameplayTag Attributes_Secondary_MaxMana;               // Mana Points (MP)
-	FGameplayTag Attributes_Secondary_Defense;                  // Defense
-	FGameplayTag Attributes_Secondary_MagicDefense;             // Magic Defense
-	FGameplayTag Attributes_Secondary_CurseResistance;          // Curse Resistance
-	FGameplayTag Attributes_Secondary_StatusEffectResistance;   // Status Effect Resistance
+	
+	// Resistances and Evasion
+	FGameplayTag Attributes_Secondary_Focus;					// Focus
 	FGameplayTag Attributes_Secondary_Evasion;                  // Evasion
 	FGameplayTag Attributes_Secondary_StaminaRecoveryRate;      // Stamina Recovery Rate
 	FGameplayTag Attributes_Secondary_HealingEffectiveness;     // Healing Effectiveness
 	FGameplayTag Attributes_Secondary_ControlOverCurses;        // Control Over Curses
-	FGameplayTag Attributes_Secondary_HolyDamageResistance;     // Holy Damage Resistance
-	FGameplayTag Attributes_Secondary_Focus;
+	
+	//Defenses
+	FGameplayTag Attributes_Resistances_Defense;                  // Physical Defense
+	FGameplayTag Attributes_Resistances_FireResistance;           // Physical Defense
+	FGameplayTag Attributes_Resistances_IceResistance;            // Physical Defense
+	FGameplayTag Attributes_Resistances_LightningResistance;      // Physical Defense
+	FGameplayTag Attributes_Resistances_MagicDefense;             // Magic and Ice Defense
+	FGameplayTag Attributes_Resistances_HolyDamageResistance;     // Holy, Fire and Lightning Damage Resistance
+	FGameplayTag Attributes_Resistances_CurseResistance;          // Curse Resistance
+	
+	FGameplayTag Attributes_Resistances_StatusEffectResistance;   // Status Effect Resistance
+
 	
 	// Damage Types
 	FGameplayTag Attributes_Damage_WeaponDamage;
@@ -75,6 +84,7 @@ public:
 	FGameplayTag InputTag_AttributeMenu;
 	FGameplayTag InputTag_SpawnDefaultWeapon;
 
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 	//
 	FGameplayTag GA_SetWeaponSpecHandle;
 

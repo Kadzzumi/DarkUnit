@@ -2,6 +2,7 @@
 #include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
 
 #include "AttributeSet.h"
+#include "DarkUnitAbilityTypes.h"
 #include "AbilitySystem/Abilities/DarkUnitGameplayAbility.h"
 #include "DarkUnit/DarkUnitGameMode.h"
 #include "Kismet/GameplayStatics.h"
@@ -84,4 +85,22 @@ UCharacterClassInfo* UDarkUnitAbilitySystemLibrary::GetCharacterClassInfo(const 
 	
 	return MainGameMode->CharacterClassInfo;
 
+}
+
+bool UDarkUnitAbilitySystemLibrary::IsEvadedHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FDarkUnitGameplayEffectContext* DarkUnitEffectContext = static_cast<const FDarkUnitGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		return DarkUnitEffectContext->IsEvadedHit();
+	}
+	return false;
+	
+}
+
+void UDarkUnitAbilitySystemLibrary::SetIsEvadedHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsEvaded)
+{
+	if (FDarkUnitGameplayEffectContext* DarkUnitEffectContext = static_cast<FDarkUnitGameplayEffectContext*>(EffectContextHandle.Get()))
+	{
+		DarkUnitEffectContext->SetIsEvadedHit(bInIsEvaded);
+	}
 }

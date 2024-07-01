@@ -74,8 +74,6 @@ void APlayerCharacterBase::BeginPlay()
 void APlayerCharacterBase::Tick(float DeltaSeconds)
 {
    Super::Tick(DeltaSeconds);
-
-
    // Orient Rotation
    if (GetSpeed() <= 0.f || !bCanRotate)
    {
@@ -86,18 +84,6 @@ void APlayerCharacterBase::Tick(float DeltaSeconds)
       SetRotation(false, true);
    }
    
-}
-
-void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
-{
-   if(Weapon == nullptr) return;
-   // Get the Hand Socket
-   if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
-   {
-      // Attach the Weapon to the hand socket RightHandSocket
-      PrimaryWeapon = Weapon;
-      HandSocket->AttachActor(PrimaryWeapon, GetMesh());
-   }
 }
 
 void APlayerCharacterBase::InitAbilityActorInfo()
@@ -168,7 +154,18 @@ void APlayerCharacterBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedCom
    }
 }
 
-
+// Weapon
+void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
+{
+   if(Weapon == nullptr) return;
+   // Get the Hand Socket
+   if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
+   {
+      // Attach the Weapon to the hand socket RightHandSocket
+      PrimaryWeapon = Weapon;
+      HandSocket->AttachActor(PrimaryWeapon, GetMesh());
+   }
+}
 void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
 {
    if (PrimaryWeapon)

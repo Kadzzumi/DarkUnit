@@ -48,7 +48,10 @@ protected:
 	void OnEndOverlap(AActor* TargetActor);
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AppliedEffects")
-	bool bDestroyOnEffectRemoval = true;
+	bool bDestroyOnEffectApplication {true};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AppliedEffects")
+	bool bApplyEffectToEnemy {false};
 	
 // Effects application policy
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AppliedEffects")

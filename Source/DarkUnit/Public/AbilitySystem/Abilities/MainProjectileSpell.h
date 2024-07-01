@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Abilities/DarkUnitGameplayAbility.h"
+#include "AbilitySystem/Abilities/DarkUnitDamageGA.h"
 #include "MainProjectileSpell.generated.h"
 
 class AProjectileBase;
@@ -12,7 +12,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class DARKUNIT_API UMainProjectileSpell : public UDarkUnitGameplayAbility
+class DARKUNIT_API UMainProjectileSpell : public UDarkUnitDamageGA
 {
 	GENERATED_BODY()
 protected:
@@ -23,7 +23,4 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Projectile")
 	TSubclassOf<AProjectileBase> ProjectileActor;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
 };

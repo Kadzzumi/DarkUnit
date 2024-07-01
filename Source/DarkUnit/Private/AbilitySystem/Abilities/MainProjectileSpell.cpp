@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "DarkUnitGameplayTags.h"
 #include "Actor/Projectile/ProjectileBase.h"
 #include "Interaction/CombatInterface.h"
 
@@ -55,6 +56,12 @@ void UMainProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		HitResult.Location = ProjectileTargetLocation; 
 		
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+		const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
+		for (auto& Pair : DamageTypes)
+		{
+			const float OverallDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, OverallDamage);
+		}
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		
 		// Spawn Finish

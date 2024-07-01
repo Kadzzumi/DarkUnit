@@ -96,6 +96,17 @@ float ACharacterBase::CalculateOveralldDamage()
 	return ICombatInterface::CalculateOveralldDamage();
 }
 
+
+void ACharacterBase::WeaponTrailEffect(bool bStart)
+{
+	if (PrimaryWeapon != nullptr)
+	{
+		//TODO::TrailEffect
+	}
+}
+
+
+
 //
 //Hit react and Death
 UAnimMontage* ACharacterBase::GetHitReactMontage_Implementation()
@@ -123,6 +134,7 @@ void ACharacterBase::MulticastHandleDeath_Implementation()
 	PlayDeath();
 	Dissolve();
 }
+
 void ACharacterBase::PlayDeath() const
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -156,13 +168,3 @@ void ACharacterBase::Dissolve()
 		StartDissolveTimeline(DynamicMatInst);
 	}
 }
-
-void ACharacterBase::WeaponTrailEffect(bool bStart)
-{
-	if (PrimaryWeapon != nullptr)
-	{
-		PrimaryWeapon->ToggleTrailEffect(bStart);
-	}
-}
-
-

@@ -165,6 +165,43 @@ public:
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, MaxMana);
 	
+	// Evasion
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Evasion, Category = "Vital Attributes")
+	FGameplayAttributeData Evasion;
+	UFUNCTION()
+	void OnRep_Evasion(const FGameplayAttributeData& OldEvasion) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, Evasion);
+	
+	// Stamina Recovery Rate
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StaminaRecoveryRate, Category = "Vital Attributes")
+	FGameplayAttributeData StaminaRecoveryRate;
+	UFUNCTION()
+	void OnRep_StaminaRecoveryRate(const FGameplayAttributeData& OldStaminaRecoveryRate) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, StaminaRecoveryRate);
+
+	// Healing Effectiveness
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealingEffectiveness, Category = "Vital Attributes")
+	FGameplayAttributeData HealingEffectiveness;
+	UFUNCTION()
+	void OnRep_HealingEffectiveness(const FGameplayAttributeData& OldHealingEffectiveness) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, HealingEffectiveness);
+
+	// Control Over Curses
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ControlOverCurses, Category = "Vital Attributes")
+	FGameplayAttributeData ControlOverCurses;
+	UFUNCTION()
+	void OnRep_ControlOverCurses(const FGameplayAttributeData& OldControlOverCurses) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, ControlOverCurses);
+	
+	// Focus
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HolyDamageResistance, Category = "Vital Attributes")
+	FGameplayAttributeData Focus;
+	UFUNCTION()
+	void OnRep_Focus(const FGameplayAttributeData& OldFocus) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, Focus);
+
+
+	
 	// Defense
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Defense, Category = "Vital Attributes")
 	FGameplayAttributeData Defense;
@@ -193,47 +230,35 @@ public:
 	void OnRep_StatusEffectResistance(const FGameplayAttributeData& OldStatusEffectResistance) const;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, StatusEffectResistance);
 	
-	// Evasion
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Evasion, Category = "Vital Attributes")
-	FGameplayAttributeData Evasion;
-	UFUNCTION()
-	void OnRep_Evasion(const FGameplayAttributeData& OldEvasion) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, Evasion);
-	
-	// Stamina Recovery Rate
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_StaminaRecoveryRate, Category = "Vital Attributes")
-	FGameplayAttributeData StaminaRecoveryRate;
-	UFUNCTION()
-	void OnRep_StaminaRecoveryRate(const FGameplayAttributeData& OldStaminaRecoveryRate) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, StaminaRecoveryRate);
-
-	// Healing Effectiveness
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealingEffectiveness, Category = "Vital Attributes")
-	FGameplayAttributeData HealingEffectiveness;
-	UFUNCTION()
-	void OnRep_HealingEffectiveness(const FGameplayAttributeData& OldHealingEffectiveness) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, HealingEffectiveness);
-
-	// Control Over Curses
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ControlOverCurses, Category = "Vital Attributes")
-	FGameplayAttributeData ControlOverCurses;
-	UFUNCTION()
-	void OnRep_ControlOverCurses(const FGameplayAttributeData& OldControlOverCurses) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, ControlOverCurses);
-
 	// Holy Damage Resistance
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HolyDamageResistance, Category = "Vital Attributes")
 	FGameplayAttributeData HolyDamageResistance;
 	UFUNCTION()
 	void OnRep_HolyDamageResistance(const FGameplayAttributeData& OldHolyDamageResistance) const;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, HolyDamageResistance);
-	
-	// Holy Damage Resistance
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HolyDamageResistance, Category = "Vital Attributes")
-	FGameplayAttributeData Focus;
+
+
+	// Fire Damage Resistance
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_FireDamageResistance, Category = "Vital Attributes")
+	FGameplayAttributeData FireDamageResistance;
 	UFUNCTION()
-	void OnRep_Focus(const FGameplayAttributeData& OldFocus) const;
-	ATTRIBUTE_ACCESSORS(UMainAttributeSet, Focus);
+	void OnRep_FireDamageResistance(const FGameplayAttributeData& OldFireDamageResistance) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, FireDamageResistance);
+
+	// ICe Damage Resistance
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_IceDamageResistance, Category = "Vital Attributes")
+	FGameplayAttributeData IceDamageResistance;
+	UFUNCTION()
+	void OnRep_IceDamageResistance(const FGameplayAttributeData& OldIceDamageResistance) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, IceDamageResistance);
+
+	// Lightning Damage Resistance
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_LightningDamageResistance, Category = "Vital Attributes")
+	FGameplayAttributeData LightningDamageResistance;
+	UFUNCTION()
+	void OnRep_LightningDamageResistance(const FGameplayAttributeData& OldLightningDamageResistance) const;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, LightningDamageResistance);
+
 
 	// Damage Types
 	// Physical Damage
@@ -349,9 +374,11 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="MetaAttributes")
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, IncomingDamage);
+
+	//
 	
 private:
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
-	void ShowFloatingText(const FEffectProperties& Props, float Damage);
+	void ShowFloatingText(const FEffectProperties& Props, float Damage, bool bEvadedHit);
 };

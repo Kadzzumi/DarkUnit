@@ -30,9 +30,9 @@ void AMainPlayerController::BeginPlay()
 		Subsystem->AddMappingContext(PlayerContext, 0);
 	}
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
-	SetWeaponSpecHandle();
+	// SetWeaponSpecHandle();
 }
-//
+/*
 void AMainPlayerController::SetWeaponSpecHandle()
 {
 	if (GetASC())
@@ -43,6 +43,7 @@ void AMainPlayerController::SetWeaponSpecHandle()
 		GetASC()->TryActivateAbilitiesByTag(WeaponTagContainer);
 	}
 }
+*/
 // Setting inputs
 void AMainPlayerController::SetupInputComponent()
 {
@@ -87,8 +88,6 @@ void AMainPlayerController::Look(const FInputActionValue& InputActionValue)
 		ControlledPawn->AddControllerYawInput(LookAxisVector.X);
 		const float CurrentPitch = ControlledPawn->GetBaseAimRotation().Pitch;
 		float BasePitch = LookAxisVector.Y;
-		UE_LOG(LogTemp, Warning, TEXT("Pitch is: %f"), CurrentPitch);
-		UE_LOG(LogTemp, Warning, TEXT("BasePitch is: %f"), BasePitch);
 		if (CurrentPitch >= 50 && BasePitch < 0)
 		{
 			BasePitch = 0;
@@ -144,7 +143,7 @@ void AMainPlayerController::PlayerJump()
 	}
 }
 // Show Damage Number
-void AMainPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter)
+void AMainPlayerController::ShowDamageNumber_Implementation(float DamageAmount, ACharacter* TargetCharacter, bool bEvaded)
 {
 	if (IsValid(TargetCharacter) && DamageText)
 	{
@@ -152,6 +151,6 @@ void AMainPlayerController::ShowDamageNumber_Implementation(float DamageAmount, 
 		DamageTextComponent->RegisterComponent();
 		DamageTextComponent->AttachToComponent(TargetCharacter->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("DamageSocket"));
 		DamageTextComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-		DamageTextComponent->SetDamageText(DamageAmount);
+		DamageTextComponent->SetDamageText(DamageAmount, bEvaded);
 	}
 }

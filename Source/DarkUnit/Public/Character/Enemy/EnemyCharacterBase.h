@@ -9,6 +9,8 @@
 #include "EnemyCharacterBase.generated.h"
 
 class UWidgetComponent;
+class UBehaviorTree;
+class AMainAIController;
 
 /**
  * 
@@ -19,6 +21,8 @@ class DARKUNIT_API AEnemyCharacterBase : public ACharacterBase
 	GENERATED_BODY()
 public:
 	AEnemyCharacterBase();
+
+	virtual void PossessedBy(AController* NewController) override;
 	// Combat Interface
 	virtual int32 GetPlayerLevel() override;
 	
@@ -35,11 +39,13 @@ public:
 	bool bHitReacting;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combat")
-	float BaseWalkSpeed = 250.f;
+	float BaseWalkSpeed = 150.f;
 	
 	// Weapon
+	virtual void SetAttackCollisions(const int32 Index) override;
+	
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
-	virtual float CalculateOveralldDamage() override;
+
 	// Death
 	virtual void Die() override;
 protected:
@@ -56,9 +62,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
 
+	//AI Pops
+	UPROPERTY(EditAnywhere, Category="AI")
+	TObjectPtr<UBehaviorTree> MainBehaviorTree;
+
+	UPROPERTY(EditAnywhere, Category="AI")
+	TObjectPtr<AMainAIController> MainAIController;
 private:
 	UPROPERTY(EditDefaultsOnly)
 	float BonusDamage = 50;
 	UPROPERTY(EditDefaultsOnly)
-	float LifeSpanTime = 5.f;	
+	float LifeSpanTime = 5.f;
+
 };

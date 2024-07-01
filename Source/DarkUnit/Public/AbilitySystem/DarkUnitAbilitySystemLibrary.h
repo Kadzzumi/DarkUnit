@@ -7,6 +7,7 @@
 #include "Data/CharacterClassInfo.h"
 #include "DarkUnitAbilitySystemLibrary.generated.h"
 
+struct FGameplayEffectContextHandle;
 class UAbilitySystemComponent;
 class UAttributeWidgetController;
 class UOverlayWidgetController;
@@ -31,5 +32,12 @@ public:
 	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
 
 	
-	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject); 
+	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
+
+	// Functions for the Context Bools like evaded or critical hit
+	UFUNCTION(BlueprintPure, Category= "DarkUnitAbilitySystemLibrary|GameplayEffects")	
+	static bool IsEvadedHit(const FGameplayEffectContextHandle& EffectContextHandle);
+
+	UFUNCTION(BlueprintCallable, Category= "DarkUnitAbilitySystemLibrary|GameplayEffects")	
+	static void SetIsEvadedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bInIsEvaded);	
 };

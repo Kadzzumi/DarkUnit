@@ -28,6 +28,17 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
 
             AWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<AWeaponBase>(WeaponClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
             const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent((GetAvatarActorFromActorInfo()));
+
+        	// Effect Context Handle
+        	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+        	EffectContextHandle.SetAbility(this);
+        	EffectContextHandle.AddSourceObject(DefaultWeapon);
+        	TArray<TWeakObjectPtr<AActor>> Actors;
+        	Actors.Add(DefaultWeapon);
+        	EffectContextHandle.AddActors(Actors);
+        	FHitResult HitResult;
+        	EffectContextHandle.AddHitResult(HitResult);
+        	
             const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
             // Capture Attributes
             const UMainAttributeSet* AttributeSet = Cast<UMainAttributeSet>(SourceASC->GetAttributeSet(UMainAttributeSet::StaticClass()));
@@ -42,10 +53,12 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
             //Tag For the Damage
             const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
             //Damage
-
-            const float ScaledDamage = DefaultWeapon->PhysicalDamage + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
-            // GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("FireBolt Damage: %f"), ScaledDamage));
-            UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameplayTags.Attributes_Damage_WeaponDamage, ScaledDamage);
+        	for (auto& Pair : DamageTypes)
+        	{
+        		const float ScaledDamage = DefaultWeapon->PhysicalDamage + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
+        		const float OverallDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+        		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, OverallDamage + ScaledDamage);
+        	}
 
             DefaultWeapon->DamageEffectSpecHandle = SpecHandle;
             

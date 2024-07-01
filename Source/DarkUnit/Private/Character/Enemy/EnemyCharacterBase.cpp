@@ -8,7 +8,9 @@
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "AbilitySystem/MainAttributeSet.h"
 #include "Actor/Weapon/WeaponBase.h"
-#include "Engine/SkeletalMeshSocket.h"
+#include "AIEnemy/MainAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/MainUserWidget.h"
 
@@ -20,10 +22,30 @@ AEnemyCharacterBase::AEnemyCharacterBase()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
+	// Rotation
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll  = false;
+	bUseControllerRotationYaw   = false;
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	
 	AttributeSet = CreateDefaultSubobject<UMainAttributeSet>("AttributeSet");
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("EnemyHealthWidget");
 	HealthBar->SetupAttachment(GetRootComponent());
+}
+
+void AEnemyCharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (!HasAuthority()) return;
+	
+	MainAIController = Cast<AMainAIController>(NewController);
+
+	MainAIController->GetBlackboardComponent()->InitializeBlackboard(*MainBehaviorTree->BlackboardAsset);
+	MainAIController->RunBehaviorTree(MainBehaviorTree);
+	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+	MainAIController->GetBlackboardComponent()->SetValueAsEnum(FName("EnemyType"), static_cast<uint8>(CharacterClass));
 }
 
 int32 AEnemyCharacterBase::GetPlayerLevel()
@@ -79,8 +101,9 @@ void AEnemyCharacterBase::BeginPlay()
 			AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
 		}
 	}
+	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
 }
-
+ 
 void AEnemyCharacterBase::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
@@ -96,14 +119,39 @@ void AEnemyCharacterBase::InitializeDefaultAttributes() const
 	UDarkUnitAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
+
 void AEnemyCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
 	Super::SetWeaponAttachment(Weapon);
 }
 
-float AEnemyCharacterBase::CalculateOveralldDamage()
+void AEnemyCharacterBase::SetAttackCollisions(const int32 Index)
 {
-	return BonusDamage;
+	if (PrimaryWeapon)
+	{
+		switch (Index)
+		{
+		case 0:
+			PrimaryWeapon->SetWeaponCollision(false);
+			break;
+		case 1:
+			PrimaryWeapon->SetWeaponCollision(true);
+			break;
+		case 3:
+			PrimaryWeapon->SetWeaponCollision(false);
+			break;
+		default:
+			PrimaryWeapon->SetWeaponCollision(false);
+			break;
+		}
+	}
+}
+
+void AEnemyCharacterBase::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bHitReacting = NewCount > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
+	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
 }
 
 void AEnemyCharacterBase::Die()
@@ -112,8 +160,3 @@ void AEnemyCharacterBase::Die()
 	Super::Die();
 }
 
-void AEnemyCharacterBase::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
-	bHitReacting = NewCount > 0;
-	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
-}

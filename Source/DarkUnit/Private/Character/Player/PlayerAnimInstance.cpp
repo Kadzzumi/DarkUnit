@@ -22,7 +22,7 @@ void UPlayerAnimInstance::LocalNativeUpdateAnimation(float DeltaTime)
 {
 	if (Player == nullptr)
 	{
-		Player = Cast<APlayerCharacterBase>(TryGetPawnOwner());
+		Player = Cast<ACharacterBase>(TryGetPawnOwner());
 	}
 	if (Player)
 	{

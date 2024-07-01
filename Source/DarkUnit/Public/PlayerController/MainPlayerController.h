@@ -24,9 +24,9 @@ public:
 	void PlayerJump();
 
 	UFUNCTION(Client, Reliable)
-	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter);
-
-	void SetWeaponSpecHandle();
+	void ShowDamageNumber(float DamageAmount, ACharacter* TargetCharacter, bool bEvaded);
+	// UFUNCTION(NetMulticast, Reliable)
+	// void SetWeaponSpecHandle(); 
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;

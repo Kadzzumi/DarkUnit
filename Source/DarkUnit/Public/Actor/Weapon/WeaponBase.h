@@ -51,7 +51,6 @@ public:
 	//Dmg
 	//Weapon Damage Tier
 	//
-	
 	float GetTierValue(EWeaponDamageTier DamageTier);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Damage")
@@ -90,16 +89,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
 	FScalableFloat DamageCurve;
 
-	//Weapon Trail
-	void ToggleTrailEffect(bool bShouldStart);
-
-	UPROPERTY(EditAnywhere)
-	UParticleSystemComponent* TrailEffect;
 protected:
 	virtual void BeginPlay() override;
 	// Trace for combat
 	UFUNCTION()
 	void PerformTrace();
+	
+	void SetupTraceParameters(FVector& Start, FVector& End, FVector& Direction, float& CapsuleHalfHeight, FQuat& CapsuleRotation) const;
+
 	// Add at the beginning of the private section
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastPlayImpactEffects(const FVector& Location, const FRotator& Rotation);

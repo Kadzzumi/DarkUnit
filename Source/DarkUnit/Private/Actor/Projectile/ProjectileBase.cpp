@@ -57,7 +57,17 @@ void AProjectileBase::Destroyed()
 void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
                             FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor == GetOwner()) return;
+	bool bIsPlayer{true};
+	if (GetOwner()->ActorHasTag("Player"))
+	{
+		bIsPlayer = true;
+	}
+	else
+	{
+		bIsPlayer = false;
+	}
+
+	
 	if (ImpactSound && ImpactEffect)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
@@ -65,9 +75,16 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	if (HasAuthority())
 	{
-		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		if((bIsPlayer && OtherActor->ActorHasTag("Player")) || (bIsPlayer && OtherActor->ActorHasTag("Player")))
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			//Do nothing
+		}
+		else
+		{
+			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+			{
+				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			}
 		}
 		Destroy();
 	}
