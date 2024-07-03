@@ -53,11 +53,11 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
             //Tag For the Damage
             const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
             //Damage
-        	for (auto& Pair : DamageTypes)
+        	for (TTuple<FGameplayTag, FScalableFloat>& Pair  : DamageTypes)
         	{
         		const float ScaledDamage = DefaultWeapon->PhysicalDamage + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
-        		const float OverallDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-        		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, OverallDamage + ScaledDamage);
+        		// const float OverallDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+        		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
         	}
 
             DefaultWeapon->DamageEffectSpecHandle = SpecHandle;

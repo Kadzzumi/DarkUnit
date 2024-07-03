@@ -66,8 +66,6 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	{
 		bIsPlayer = false;
 	}
-
-	
 	if (ImpactSound && ImpactEffect)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
@@ -78,13 +76,11 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		if((bIsPlayer && OtherActor->ActorHasTag("Player")) || (bIsPlayer && OtherActor->ActorHasTag("Player")))
 		{
 			//Do nothing
+			return;
 		}
-		else
+		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-			{
 				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-			}
 		}
 		Destroy();
 	}

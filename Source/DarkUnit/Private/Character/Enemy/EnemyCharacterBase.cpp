@@ -62,7 +62,8 @@ void AEnemyCharacterBase::BeginPlay()
 	InitAbilityActorInfo();
 	if (HasAuthority())
 	{
-		UDarkUnitAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+		UDarkUnitAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);
+		MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
 	}
 
 	
@@ -101,7 +102,6 @@ void AEnemyCharacterBase::BeginPlay()
 			AbilitySystemComponent->TryActivateAbilitiesByTag(TagContainer);
 		}
 	}
-	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
 }
  
 void AEnemyCharacterBase::InitAbilityActorInfo()
@@ -151,7 +151,10 @@ void AEnemyCharacterBase::HitReactTagChanged(const FGameplayTag CallbackTag, int
 {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
-	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
+	if (HasAuthority())
+	{
+		MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
+	}
 }
 
 void AEnemyCharacterBase::Die()

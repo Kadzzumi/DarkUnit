@@ -28,8 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="DarkUnitAbilitySystemLibrary|CharacterClassInfo")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 
+	// Give Start Up Abilities to all characters
 	UFUNCTION(BlueprintCallable, Category="DarkUnitAbilitySystemLibrary|CharacterClassInfo")
-	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
+	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass);
 
 	
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);

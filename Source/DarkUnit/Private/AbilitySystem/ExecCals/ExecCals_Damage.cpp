@@ -5,12 +5,10 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "DarkUnitAbilityTypes.h"
 #include "DarkUnitGameplayTags.h"
 #include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
 #include "AbilitySystem/MainAttributeSet.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
-#include "AbilitySystem/DarkUnitASG.h"
 #include "Interaction/CombatInterface.h"
 
 struct DarkUnitDamageStatics
@@ -171,10 +169,6 @@ void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 			UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), DamageTypeValue);
 			UE_LOG(LogTemp, Warning, TEXT("Defence : %f"), EffectiveDefense);
 			DamageTypeValue *= FMath::Clamp(EffectiveDefense, 0.5f, 1);
-		}
-		else
-		{
-
 		}
 		Damage += DamageTypeValue;
 		UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), Damage);
