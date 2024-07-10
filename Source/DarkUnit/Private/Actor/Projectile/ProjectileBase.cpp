@@ -76,6 +76,7 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 		if((bIsPlayer && OtherActor->ActorHasTag("Player")) || (bIsPlayer && OtherActor->ActorHasTag("Player")))
 		{
 			//Do nothing
+			Destroy();
 			return;
 		}
 		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))

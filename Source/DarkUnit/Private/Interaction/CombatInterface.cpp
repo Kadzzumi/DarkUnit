@@ -7,10 +7,16 @@ int32 ICombatInterface::GetPlayerLevel()
 	return 0;
 }
 
-void ICombatInterface::SetAttackCollisions(const int32 Index)
+void ICombatInterface::SetAttackCollisions(const bool bCanHit)
 {
 	
 }
+
+FVector ICombatInterface::GetLookLocation()
+{
+	return FVector();
+}
+
 FTransform ICombatInterface::GetCombatSocketTransform()
 {
 	return FTransform();

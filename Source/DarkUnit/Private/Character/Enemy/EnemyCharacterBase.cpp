@@ -119,32 +119,9 @@ void AEnemyCharacterBase::InitializeDefaultAttributes() const
 	UDarkUnitAbilitySystemLibrary::InitializeDefaultAttributes(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
-
 void AEnemyCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
 	Super::SetWeaponAttachment(Weapon);
-}
-
-void AEnemyCharacterBase::SetAttackCollisions(const int32 Index)
-{
-	if (PrimaryWeapon)
-	{
-		switch (Index)
-		{
-		case 0:
-			PrimaryWeapon->SetWeaponCollision(false);
-			break;
-		case 1:
-			PrimaryWeapon->SetWeaponCollision(true);
-			break;
-		case 3:
-			PrimaryWeapon->SetWeaponCollision(false);
-			break;
-		default:
-			PrimaryWeapon->SetWeaponCollision(false);
-			break;
-		}
-	}
 }
 
 void AEnemyCharacterBase::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
@@ -162,4 +139,24 @@ void AEnemyCharacterBase::Die()
 	SetLifeSpan(LifeSpanTime);
 	Super::Die();
 }
+//
+//Combat
+//
+void AEnemyCharacterBase::SetCombatTarget_Implementation(AActor* InCombatTaget)
+{
+	CombatTarget = InCombatTaget;
+}
 
+AActor* AEnemyCharacterBase::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
+FVector AEnemyCharacterBase::GetLookLocation()
+{
+	if (CombatTarget != nullptr && CombatTarget->ActorHasTag("Player"))
+	{
+		return CombatTarget->GetActorLocation();
+	}
+	return FVector();
+}

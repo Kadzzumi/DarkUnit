@@ -88,4 +88,11 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	//
 	GameplayTags.GA_SetWeaponSpecHandle = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GA.SetWeaponSpecHandle"), FString("Spawns Weapon Spec Handle"));
 
+	// Weapon Socket Montage tags
+	GameplayTags.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.Weapon"), FString(""));
+	GameplayTags.Montage_Attack_WeaponBack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.WeaponBack"), FString(""));
+	GameplayTags.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.RightHand"), FString(""));
+	GameplayTags.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.LeftHand"), FString(""));
+
+	
 }

@@ -36,8 +36,7 @@ public:
    //
    //Attack
    UFUNCTION(BlueprintCallable)
-   virtual void SetAttackCollisions(const int32 Index) override;
-   
+   virtual FVector GetLookLocation() override;
    virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
 
    //Character Rotation
@@ -49,7 +48,6 @@ protected:
    
    //Movement
    void SetRotation(bool bOrientToMovement, bool Yaw);
-
 
 private:
    // Functions

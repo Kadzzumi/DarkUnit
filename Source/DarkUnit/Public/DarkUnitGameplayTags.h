@@ -88,6 +88,12 @@ public:
 	//
 	FGameplayTag GA_SetWeaponSpecHandle;
 
+	//Weapon Socket Tags
+	FGameplayTag Montage_Attack_Weapon;
+	FGameplayTag Montage_Attack_WeaponBack;
+	FGameplayTag Montage_Attack_RightHand;
+	FGameplayTag Montage_Attack_LeftHand;
+
 private:
 	static FDarkUnitGameplayTags GameplayTags;
 };

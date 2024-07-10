@@ -9,6 +9,7 @@
 #include "GameplayEffectTypes.h"
 #include "CharacterBase.generated.h"
 
+struct FTaggedMontage;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
@@ -30,17 +31,20 @@ public:
 	AWeaponBase* PrimaryWeapon;
 	
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	
 	//Weapons
 	virtual FTransform GetCombatSocketTransform() override;
 	virtual FTransform GetSpellSocketTransform() override;
 	virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
+	UFUNCTION(BlueprintCallable)
+	virtual void SetAttackCollisions(const bool bCanHit) override;
 	// Damage Output
 	virtual float CalculateOveralldDamage() override;
 
 	//Death
 	virtual void Die() override;
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	TArray<FTaggedMontage> GetAttackMontages();
 	
 protected:
 	virtual void BeginPlay() override;

@@ -21,8 +21,8 @@ protected:
 	
 public:
 	UFUNCTION(BlueprintCallable, Category="Attack Collision")
-	virtual void SetCollisions(int32 Index);
+	virtual void SetCollisions(bool bCanHit);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
 };

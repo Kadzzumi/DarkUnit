@@ -5,17 +5,16 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
-#include "Character/Enemy/EnemyCharacterBase.h"
+
 
 // Sets default values
 AWeaponBase::AWeaponBase() :
-	CapsuleRadius(10)
+	CapsuleRadius(10)  // Initialize here
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 
-
-	//Setting Root && Basics
+	// Setting Root && Basics
 	RootSceneComponent = CreateDefaultSubobject<USceneComponent>("RootComponent");
 	SetRootComponent(RootSceneComponent);
 
@@ -23,58 +22,50 @@ AWeaponBase::AWeaponBase() :
 	WeaponMesh->SetupAttachment(GetRootComponent());
 	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SetWeaponState(EWeaponState::State_Equipped);
-
 }
 
 // Called when the game starts or when spawned
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
-	//Setup collisions
+	// Setup collisions
 	HitActors.Empty();  // Ensure set is empty at the start
-	StrengthCoff = GetTierValue(StrengthDamageEff);
 	SetWeaponLevel(1);
+	SetWeaponCollision(false);
 }
 
-
-float AWeaponBase::GetTierValue(EWeaponDamageTier DamageTier)
+// Called every frame
+void AWeaponBase::Tick(float DeltaTime)
 {
-	switch (DamageTier)
-	{
-	case EWeaponDamageTier::Tier_S:
-		return 1.0f;
-		break;
-	case EWeaponDamageTier::Tier_A:
-		return 0.8f;
-		break;
-	case EWeaponDamageTier::Tier_B:
-		return 0.6f;
-		break;
-	case EWeaponDamageTier::Tier_C:
-		return 0.4f;
-		break;
-	case EWeaponDamageTier::Tier_D:
-		return 0.2f;
-		break;
-	case EWeaponDamageTier::Tier_E:
-		return 0.f;
-		break;
-	}
-	return 0;
+	Super::Tick(DeltaTime);
+
+	 if (bCanHitChar)  // Add this check
+	 {
+	 	TimeSinceLastTrace += DeltaTime;
+	 	if (TimeSinceLastTrace >= 0.01f)
+	 	{
+	 		PerformTrace();
+	 		TimeSinceLastTrace = 0.f;
+	 	}
+	 }
 }
 
 void AWeaponBase::SetWeaponCollision(bool bCanHit)
 {
-	if (bCanHit)
+	bCanHitChar = bCanHit;  // Store the collision state
+
+	if (!bCanHit)
 	{
-		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &AWeaponBase::PerformTrace, 0.02f, true, 0.f);
+		TimeSinceLastTrace = 0.f;
+		HitActors.Empty();  // Clear hit actors when stopping collision checks
+		// GetWorldTimerManager().ClearTimer(AttackTimerHandle);	
 	}
 	else
 	{
-		GetWorldTimerManager().ClearTimer(AttackTimerHandle);
-		HitActors.Empty();  // Clear hit actors when stopping collision checks
+		// GetWorldTimerManager().SetTimer(AttackTimerHandle, 0.01f, true);
 	}
 }
+
 void AWeaponBase::PerformTrace()
 {
 	if (!WeaponMesh || !DamageEffectSpecHandle.IsValid() || !Owner)
@@ -88,13 +79,13 @@ void AWeaponBase::PerformTrace()
 	FQuat CapsuleRotation;
 	SetupTraceParameters(Start, End, Direction, CapsuleHalfHeight, CapsuleRotation);
 
-	//Collision Params
+	// Collision Params
 	TArray<FHitResult> HitResults;
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(this);
 	CollisionParams.AddIgnoredActor(GetOwner());
 
-	const bool bIsPlayer{GetOwner()->ActorHasTag("Player")};
+	const bool bIsPlayer{ GetOwner()->ActorHasTag("Player") };
 
 	const bool bHit = GetWorld()->SweepMultiByChannel(
 		HitResults,
@@ -112,7 +103,7 @@ void AWeaponBase::PerformTrace()
 		for (auto& Hit : HitResults)
 		{
 			AActor* HitActor = Hit.GetActor();
-			if((bIsPlayer && HitActor->ActorHasTag("Player")) || (!bIsPlayer && HitActor->ActorHasTag("Enemy"))) return;
+			if ((bIsPlayer && HitActor->ActorHasTag("Player")) || (!bIsPlayer && HitActor->ActorHasTag("Enemy"))) return;
 			if (HitActor && !HitActors.Contains(HitActor))
 			{
 				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor))
@@ -131,6 +122,7 @@ void AWeaponBase::PerformTrace()
 		}
 	}
 }
+
 void AWeaponBase::SetupTraceParameters(FVector& Start, FVector& End, FVector& Direction, float& CapsuleHalfHeight, FQuat& CapsuleRotation) const
 {
 	Start = WeaponMesh->GetSocketLocation(FName("Start"));
@@ -139,6 +131,7 @@ void AWeaponBase::SetupTraceParameters(FVector& Start, FVector& End, FVector& Di
 	CapsuleHalfHeight = (End - Start).Size() - 15.f;
 	CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
 }
+
 void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Location, const FRotator& Rotation)
 {
 	if (ImpactSound && ImpactEffect)
@@ -147,15 +140,19 @@ void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Locat
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, Location, Rotation);
 	}
 }
-//
+
 // Weapon Phys Damage
+
 
 void AWeaponBase::SetWeaponLevel(int32 NewWeaponLevel)
 {
 	WeaponLevel = FMath::Clamp(NewWeaponLevel, 1, 10);
-	PhysicalDamage = DamageCurve.GetValueAtLevel(WeaponLevel);
 }
 
+float AWeaponBase::GetWeaponDamage() const
+{
+	return DamageCurve.GetValueAtLevel(WeaponLevel);
+}
 
 // Weapon State
 void AWeaponBase::SetWeaponState_Implementation(EWeaponState State)
@@ -186,7 +183,7 @@ void AWeaponBase::SetWeaponState_Implementation(EWeaponState State)
 
 void AWeaponBase::Dissolve()
 {
-	if(IsValid(MI_WeaponDessolve))
+	if (IsValid(MI_WeaponDessolve))
 	{
 		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(MI_WeaponDessolve, WeaponMesh);
 		WeaponMesh->SetMaterial(0, DynamicMatInst);

@@ -56,6 +56,13 @@ void ACharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 	}
 }
 
+void ACharacterBase::SetAttackCollisions(const bool bCanHit)
+{
+	if (PrimaryWeapon)
+	{
+		PrimaryWeapon->SetWeaponCollision(bCanHit);
+	}
+}
 
 void ACharacterBase::InitAbilityActorInfo()
 {
@@ -89,7 +96,15 @@ void ACharacterBase::AddCharacterAbilities()
 	
 }
 
-
+//
+TArray<FTaggedMontage> ACharacterBase::GetAttackMontages_Implementation()
+{
+	if (PrimaryWeapon)
+	{
+		//TODO:Do the check
+	}
+	return PrimaryWeapon->AttackMontages;
+}
 
 float ACharacterBase::CalculateOveralldDamage()
 {
@@ -104,8 +119,6 @@ void ACharacterBase::WeaponTrailEffect(bool bStart)
 		//TODO::TrailEffect
 	}
 }
-
-
 
 //
 //Hit react and Death
@@ -124,6 +137,8 @@ void ACharacterBase::Die()
 	MulticastHandleDeath();
 }
 
+
+//Death
 void ACharacterBase::MulticastHandleDeath_Implementation()
 {
 	if (PrimaryWeapon != nullptr)

@@ -75,7 +75,9 @@ void APlayerCharacterBase::Tick(float DeltaSeconds)
 {
    Super::Tick(DeltaSeconds);
    // Orient Rotation
-   if (GetSpeed() <= 0.f || !bCanRotate)
+   const UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+   if (AnimInstance == nullptr) return;
+   if (GetSpeed() <= 0.f || AnimInstance->IsAnyMontagePlaying())
    {
       SetRotation(true, false);
    }
@@ -112,6 +114,7 @@ void APlayerCharacterBase::SetRotation(bool bOrientToMovement, bool Yaw)
    bUseControllerRotationYaw = Yaw;
    
 }
+
 
 //Speed
 float APlayerCharacterBase::GetSpeed() const
@@ -153,6 +156,22 @@ void APlayerCharacterBase::OnSphereEndOverlap(UPrimitiveComponent* OverlappedCom
       InteractingActorList.Remove(Item);
    }
 }
+FVector APlayerCharacterBase::GetLookLocation()
+{
+   if (AMainPlayerController* PlayerController = Cast<AMainPlayerController>(GetController()))
+   {
+      const APlayerController* PC = Cast<APlayerController>(PlayerController);
+      FVector CameraLocation;
+      FRotator CameraRotation;
+
+      // Get the player's viewpoint
+      PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+      // Calculate the end point of the ray
+      return CameraLocation + (CameraRotation.Vector() * 10000);
+   }
+   return FVector();;
+}
 
 // Weapon
 void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
@@ -166,28 +185,4 @@ void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
       HandSocket->AttachActor(PrimaryWeapon, GetMesh());
    }
 }
-void APlayerCharacterBase::SetAttackCollisions(const int32 Index)
-{
-   if (PrimaryWeapon)
-   {
-      switch (Index)
-      {
-      case 0:
-         PrimaryWeapon->SetWeaponCollision(false);
-         bCanRotate = true;
-         break;
-      case 1:
-         PrimaryWeapon->SetWeaponCollision(true);
-         bCanRotate = false;
-         break;
-      case 3:
-         PrimaryWeapon->SetWeaponCollision(false);
-         bCanRotate = false;
-         break;
-      default:
-         PrimaryWeapon->SetWeaponCollision(false);
-         bCanRotate = true;
-         break;
-      }
-   }
-}
+

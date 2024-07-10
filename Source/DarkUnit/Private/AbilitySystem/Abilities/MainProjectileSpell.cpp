@@ -23,21 +23,10 @@ void UMainProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	if (bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority(); !bIsServer) return;
 	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 	{
-		FVector TargetLocation = ProjectileTargetLocation;
+		FVector TargetLocation = CombatInterface->GetLookLocation();
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(CombatInterface->GetSpellSocketTransform().GetLocation());
-		if (ProjectileTargetLocation.IsZero())
-		{
-			APlayerController* PC = Cast<APlayerController>(GetActorInfo().PlayerController);
-			FVector CameraLocation;
-			FRotator CameraRotation;
 
-			// Get the player's viewpoint
-			PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
-
-			// Calculate the end point of the ray
-			TargetLocation = CameraLocation + (CameraRotation.Vector() * 10000);
-		}
 		const FRotator SpawnRotation = (TargetLocation - SpawnTransform.GetLocation()).Rotation();
 		SpawnTransform.SetRotation(SpawnRotation.Quaternion());
 

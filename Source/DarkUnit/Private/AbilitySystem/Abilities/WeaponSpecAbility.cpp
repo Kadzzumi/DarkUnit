@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "DarkUnitGameplayTags.h"
 #include "AbilitySystem/MainAttributeSet.h"
-#include "Actor/Weapon/WeaponBase.h"
+#include "Actor/Weapon/Player/PlayerWeaponBase.h"
 #include "Character/Player/PlayerCharacterBase.h"
 
 
@@ -26,9 +26,9 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
             //Interface Values
             const FTransform SpawnTransform = CombatInterface->GetCombatSocketTransform();
 
-            AWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<AWeaponBase>(WeaponClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+            APlayerWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<APlayerWeaponBase>(WeaponClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
             const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent((GetAvatarActorFromActorInfo()));
-
+        	
         	// Effect Context Handle
         	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
         	EffectContextHandle.SetAbility(this);
@@ -43,25 +43,22 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
             // Capture Attributes
             const UMainAttributeSet* AttributeSet = Cast<UMainAttributeSet>(SourceASC->GetAttributeSet(UMainAttributeSet::StaticClass()));
 
+        	//Damage Types
             const float StrengthValue = DefaultWeapon->GetTierValue(DefaultWeapon->StrengthDamageEff) * AttributeSet->GetStrength();
             const float DexterityValue = DefaultWeapon->GetTierValue(DefaultWeapon->DexterityDamageEff) * AttributeSet->GetDexterity();
             const float IntelligenceValue = DefaultWeapon->GetTierValue(DefaultWeapon->IntelligenceDamageEff) * AttributeSet->GetIntelligence();
             const float FaithValue = DefaultWeapon->GetTierValue(DefaultWeapon->FaithDamageEff) * AttributeSet->GetFaith();
             const float ResolveValue = DefaultWeapon->GetTierValue(DefaultWeapon->CurseDamageEff) * AttributeSet->GetResolve();
 
+        	FGameplayTag WeaponDamageType = DefaultWeapon->WeaponDamageTag;
 
             //Tag For the Damage
             const FDarkUnitGameplayTags GameplayTags = FDarkUnitGameplayTags::Get();
             //Damage
-        	for (TTuple<FGameplayTag, FScalableFloat>& Pair  : DamageTypes)
-        	{
-        		const float ScaledDamage = DefaultWeapon->PhysicalDamage + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
-        		// const float OverallDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-        		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, Pair.Key, ScaledDamage);
-        	}
+        	const float ScaledDamage = DefaultWeapon->GetWeaponDamage() + (StrengthValue + DexterityValue + IntelligenceValue + FaithValue + ResolveValue) * 10;
+        	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, WeaponDamageType, ScaledDamage);
 
             DefaultWeapon->DamageEffectSpecHandle = SpecHandle;
-            
             DefaultWeapon->FinishSpawning(SpawnTransform);
             // Attach the weapon
             CombatInterface->SetWeaponAttachment(DefaultWeapon);
@@ -69,3 +66,10 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
     }
    K2_EndAbility();
 }
+
+/*
+for (TTuple<FGameplayTag, FScalableFloat>& Pair  : DamageTypes)
+{
+	// const float OverallDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+}
+*/

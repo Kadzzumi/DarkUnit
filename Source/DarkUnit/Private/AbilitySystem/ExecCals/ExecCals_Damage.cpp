@@ -89,6 +89,9 @@ UExecCals_Damage::UExecCals_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().FocusDef);
 	RelevantAttributesToCapture.Add(DamageStatics().StrengthDef);
 	RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
+	
 
 }
 

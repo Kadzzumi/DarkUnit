@@ -11,22 +11,25 @@ class UBoxComponent;
 class USphereComponent;
 class UNiagaraSystem;
 
-UENUM(BlueprintType)
-enum class EWeaponDamageTier : uint8
-{
-	Tier_S UMETA(DisplayName = "S"),
-	Tier_A UMETA(DisplayName = "A"),
-	Tier_B UMETA(DisplayName = "B"),
-	Tier_C UMETA(DisplayName = "C"),
-	Tier_D UMETA(DisplayName = "D"),
-	Tier_E UMETA(DisplayName = "E")
-};
+
 
 UENUM(BlueprintType)
 enum class EWeaponState : uint8
 {
 	State_Equipped UMETA(DisplayName = "Equipped"),
 	State_Dropped UMETA(DisplayName = "Dropped"),
+};
+
+USTRUCT(BlueprintType)
+struct FTaggedMontage
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<UAnimMontage*> Montages;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag MontageTag;
 };
 
 UCLASS()
@@ -36,7 +39,7 @@ class DARKUNIT_API AWeaponBase : public AActor
 	
 public:	
 	AWeaponBase();
-	
+	virtual void Tick(float DeltaSeconds) override;
 	void SetWeaponCollision(bool bCanHit);
 
 	// Weapon Mesh
@@ -47,38 +50,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
-
-	//Dmg
-	//Weapon Damage Tier
-	//
-	float GetTierValue(EWeaponDamageTier DamageTier);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Damage")
-	float StrengthCoff;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-	EWeaponDamageTier StrengthDamageEff;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-	EWeaponDamageTier DexterityDamageEff;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-	EWeaponDamageTier IntelligenceDamageEff;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-	EWeaponDamageTier FaithDamageEff;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
-	EWeaponDamageTier CurseDamageEff;
-
 	UFUNCTION(Client, Reliable)
 	void SetWeaponState(EWeaponState State);
 
 	//
-	// Weapon Level Damage
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Damage")
-	float PhysicalDamage;
+	// Weapon Level & Damage
+	float GetWeaponDamage() const;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (ClampMin = 1, ClampMax = 10))
 	int32 WeaponLevel;
@@ -89,6 +66,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
 	FScalableFloat DamageCurve;
 
+	UPROPERTY(EditDefaultsOnly, Category="Damage Types")
+	FGameplayTag WeaponDamageTag;
+	
+	//
+	UPROPERTY(EditAnywhere, Category="Damage Types")
+	TArray<FTaggedMontage> AttackMontages;
+	
 protected:
 	virtual void BeginPlay() override;
 	// Trace for combat
@@ -103,8 +87,10 @@ protected:
 
 	// WeaponDissolve
 	void Dissolve();
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> MI_WeaponDessolve;
 	
@@ -112,7 +98,9 @@ private:
 	// Root and mesh
 	UPROPERTY(VisibleAnywhere, Category="Weapon")
 	USceneComponent* RootSceneComponent;
-	
+
+	float TimeSinceLastTrace{0};
+	bool bCanHitChar{false};  // Store the collision state
 	//Cues
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* ImpactEffect;
@@ -124,8 +112,6 @@ private:
 	TSet<AActor*> HitActors;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee", meta = (AllowPrivateAccess = "true"))
 	float CapsuleRadius;
-	
-	FTimerHandle AttackTimerHandle;
 
 	// Weapon State
 	UPROPERTY(VisibleAnywhere)

@@ -7,7 +7,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Character/Player/PlayerCharacterBase.h"
-#include "Engine/SkeletalMeshSocket.h"
 #include "input/DarkUnitInputComponent.h"
 #include "GameFramework/Character.h"
 #include "UI/Widget/DamageTextComponent.h"
@@ -32,18 +31,7 @@ void AMainPlayerController::BeginPlay()
 	ControlledPawn = Cast<APlayerCharacterBase>(GetPawn());
 	// SetWeaponSpecHandle();
 }
-/*
-void AMainPlayerController::SetWeaponSpecHandle()
-{
-	if (GetASC())
-	{
-		const FGameplayTag WeaponTag = FGameplayTag::RequestGameplayTag(FName("GA.SetWeaponSpecHandle"));
-		FGameplayTagContainer WeaponTagContainer;
-		WeaponTagContainer.AddTag(WeaponTag);
-		GetASC()->TryActivateAbilitiesByTag(WeaponTagContainer);
-	}
-}
-*/
+
 // Setting inputs
 void AMainPlayerController::SetupInputComponent()
 {
