@@ -174,6 +174,20 @@ FVector APlayerCharacterBase::GetLookLocation()
 }
 
 // Weapon
+AWeaponBase* APlayerCharacterBase::GetMainWeapon()
+{
+   const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+   if (PrimaryWeapon == nullptr)
+   {
+       return MainPlayerState->WeaponInventory[0];
+   }
+   else
+   {
+      return MainPlayerState->WeaponInventory[1];
+   }
+}
+
 void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 {
    if(Weapon == nullptr) return;
@@ -181,8 +195,20 @@ void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
    if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
    {
       // Attach the Weapon to the hand socket RightHandSocket
-      PrimaryWeapon = Weapon;
-      HandSocket->AttachActor(PrimaryWeapon, GetMesh());
+      if (PrimaryWeapon == nullptr)
+      {
+         PrimaryWeapon = Weapon;
+         PrimaryWeapon->SetWeaponState_Implementation(EWeaponState::State_Equipped);
+         HandSocket->AttachActor(PrimaryWeapon, GetMesh());  
+      }
+      else
+      {
+         SecondaryWeapon = Weapon;
+         SecondaryWeapon->SetWeaponState_Implementation(EWeaponState::State_Equipped);
+         HandSocket->AttachActor(SecondaryWeapon, GetMesh());
+         PrimaryWeapon->Destroy();
+      }
    }
 }
+
 

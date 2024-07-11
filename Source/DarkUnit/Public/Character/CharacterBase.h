@@ -29,6 +29,8 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
 	AWeaponBase* PrimaryWeapon;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
+	AWeaponBase* SecondaryWeapon;	
 	
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	//Weapons

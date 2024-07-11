@@ -38,7 +38,7 @@ public:
    UFUNCTION(BlueprintCallable)
    virtual FVector GetLookLocation() override;
    virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
-
+   virtual AWeaponBase* GetMainWeapon() override;
    //Character Rotation
    UPROPERTY(EditAnywhere)
    bool bCanRotate = true;
@@ -66,7 +66,7 @@ private:
    
    //
    //PickUp
-   UPROPERTY(EditDefaultsOnly, Category="Weapon")
+   UPROPERTY(EditDefaultsOnly, Category="PickUp")
    UCapsuleComponent* PickupSphere;
    
    // Function to handle the begin overlap event

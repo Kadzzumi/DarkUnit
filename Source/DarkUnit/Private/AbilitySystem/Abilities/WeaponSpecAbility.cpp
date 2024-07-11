@@ -21,12 +21,12 @@ void UWeaponSpecAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle
    // Get the Hand Socket
     if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
     {
-        if (WeaponClass)
+        if (AWeaponBase* Weapon = CombatInterface->GetMainWeapon())
         {
             //Interface Values
             const FTransform SpawnTransform = CombatInterface->GetCombatSocketTransform();
 
-            APlayerWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<APlayerWeaponBase>(WeaponClass, SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+            APlayerWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<APlayerWeaponBase>(Weapon->GetClass(), SpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
             const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent((GetAvatarActorFromActorInfo()));
         	
         	// Effect Context Handle

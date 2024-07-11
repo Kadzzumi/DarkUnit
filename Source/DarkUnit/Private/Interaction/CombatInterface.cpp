@@ -1,5 +1,6 @@
 // Interface for the Level
 #include "Interaction/CombatInterface.h"
+#include "Actor/Weapon/WeaponBase.h"
 
 
 int32 ICombatInterface::GetPlayerLevel()
@@ -15,6 +16,11 @@ void ICombatInterface::SetAttackCollisions(const bool bCanHit)
 FVector ICombatInterface::GetLookLocation()
 {
 	return FVector();
+}
+
+AWeaponBase* ICombatInterface::GetMainWeapon()
+{
+	return nullptr;
 }
 
 FTransform ICombatInterface::GetCombatSocketTransform()

@@ -52,6 +52,7 @@ void ACharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
 	{
 		// Attach the Weapon to the hand socket RightHandSocket
 		PrimaryWeapon = Weapon;
+		
 		HandSocket->AttachActor(PrimaryWeapon, GetMesh());
 	}
 }

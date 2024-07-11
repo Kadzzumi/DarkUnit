@@ -31,15 +31,3 @@ UAbilitySystemComponent* AMainPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
 }
-
-void AMainPlayerState::UpdateWeaponInventory(AWeaponBase* Weapon, bool bIsAdding)
-{
-	if (bIsAdding)
-	{
-		WeaponInventory.Add(Weapon);
-	}
-	else
-	{
-		WeaponInventory.Remove(Weapon);
-	}
-}

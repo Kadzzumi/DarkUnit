@@ -30,15 +30,12 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	AWeaponBase* EquippedWeapon;
 
-	const int32 MaxWeaponCapacity{ 3 };
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AWeaponBase> DefaultWeapon;
+	const int32 MaxWeaponCapacity{ 2 };
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<AWeaponBase*> WeaponInventory;
 	
-	void UpdateWeaponInventory(AWeaponBase* Weapon, bool bIsAdding);
+
 	
 	
 protected:	

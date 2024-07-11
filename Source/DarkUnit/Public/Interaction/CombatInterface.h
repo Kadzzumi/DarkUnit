@@ -28,6 +28,7 @@ public:
 	void GetTargetLocation();
 	virtual FVector GetLookLocation();
 	//Spell Sockets
+	virtual AWeaponBase* GetMainWeapon();
 	virtual FTransform GetCombatSocketTransform();
 	virtual FTransform GetSpellSocketTransform();
 	//Weapon

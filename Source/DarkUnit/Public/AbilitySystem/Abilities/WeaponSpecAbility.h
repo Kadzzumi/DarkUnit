@@ -16,9 +16,4 @@ class DARKUNIT_API UWeaponSpecAbility : public UDarkUnitDamageGA
 	GENERATED_BODY()
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<APlayerWeaponBase> WeaponClass;
-
-
 };

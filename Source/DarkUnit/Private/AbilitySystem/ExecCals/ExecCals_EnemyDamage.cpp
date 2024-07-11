@@ -3,10 +3,14 @@
 
 #include "AbilitySystem/ExecCals/ExecCals_EnemyDamage.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "DarkUnitGameplayTags.h"
 #include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
 #include "AbilitySystem/MainAttributeSet.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
+
 
 struct DarkUnitDamageStatics
 {
