@@ -19,6 +19,7 @@ void UInteractAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		{
 			PlayerCharacter->InteractingActorList.Remove(ActorToDestroy);
 			ActorToDestroy->Destroy();
+			//TODO::Interact with the ItemBase and get the StoredWeapon to the PlayerState WeaponInventory
 		}
 	}
 	
