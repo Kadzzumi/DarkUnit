@@ -7,7 +7,7 @@
 #include "GameFramework/PlayerState.h"
 #include "MainPlayerState.generated.h"
 
-class AWeaponBase;
+class APlayerWeaponBase;
 class UAbilitySystemComponent;
 class UAttributeSet;
 
@@ -33,7 +33,7 @@ public:
 	const int32 MaxWeaponCapacity{ 2 };
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<AWeaponBase*> WeaponInventory;
+	TArray<TSubclassOf<APlayerWeaponBase>> WeaponInventory;
 	
 
 	
