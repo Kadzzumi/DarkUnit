@@ -7,6 +7,7 @@
 #include "ItemBase.generated.h"
 
 class USphereComponent;
+class APlayerWeaponBase;
 
 UCLASS()
 class DARKUNIT_API AItemBase : public AActor
@@ -16,6 +17,8 @@ class DARKUNIT_API AItemBase : public AActor
 public:	
 	AItemBase();
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<APlayerWeaponBase> StoredWeapon;
 protected:
 	virtual void BeginPlay() override;
 private:
