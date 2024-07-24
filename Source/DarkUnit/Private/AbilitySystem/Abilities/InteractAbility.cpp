@@ -1,5 +1,7 @@
 
 #include "AbilitySystem/Abilities/InteractAbility.h"
+
+#include "Actor/Items/ItemBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Character/Player/PlayerCharacterBase.h"
 
@@ -17,9 +19,14 @@ void UInteractAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		UKismetSystemLibrary::PrintString(this, FString("ActivateAbility Interact"), true, true, FLinearColor::Yellow, 3);
 		if (AActor* ActorToDestroy = PlayerCharacter->InteractingActorList[0])
 		{
-			PlayerCharacter->InteractingActorList.Remove(ActorToDestroy);
-			ActorToDestroy->Destroy();
-			//TODO::Interact with the ItemBase and get the StoredWeapon to the PlayerState WeaponInventory
+			if (AItemBase* Item = Cast<AItemBase>(ActorToDestroy))
+			{
+				PlayerCharacter->InteractingActorList.Remove(ActorToDestroy);
+				Item->Interact(PlayerCharacter);
+				ActorToDestroy->Destroy();
+				//TODO::Interact with the ItemBase and get the StoredWeapon to the PlayerState WeaponInventory
+			}
+
 		}
 	}
 	

@@ -5,6 +5,8 @@
 
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "AbilitySystem/MainAttributeSet.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
+#include "PlayerController/MainPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -14,10 +16,17 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxHealthChanged.Broadcast(MainAttributeSet->GetMaxHealth());
 	OnStaminaChanged.Broadcast(MainAttributeSet->GetStamina());
 	OnMaxStaminaChanged.Broadcast(MainAttributeSet->GetMaxStamina());
+	OnManaChanged.Broadcast(MainAttributeSet->GetMana());
+	OnMaxManaChanged.Broadcast(MainAttributeSet->GetMaxMana());
+
 }
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
+	AMainPlayerState* MainPlayerState = CastChecked<AMainPlayerState>(PlayerState);
+	MainPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChange);
+	MainPlayerState->OnLevelChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnLevelChange);
+	
 	const UMainAttributeSet* MainAttributeSet = Cast<UMainAttributeSet>(AttributeSet);
 	//Update Report Changes in the data
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MainAttributeSet->GetHealthAttribute()).AddLambda(
@@ -44,21 +53,88 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			OnMaxStaminaChanged.Broadcast(Data.NewValue);
 		}
 	);
-	// Affect the HUD from the Data Tabgle and add widgets and tags
-	Cast<UMainAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[this](const FGameplayTagContainer& AssetTags)
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MainAttributeSet->GetManaAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
 		{
-			for (FGameplayTag Tag : AssetTags)
-			{
-				
-				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
-				if (Tag.MatchesTag(MessageTag))
-				{
-					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-					MessageWidgetRowDelegate.Broadcast(*Row);
-				}
-			}
+			OnManaChanged.Broadcast(Data.NewValue);
 		}
 	);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MainAttributeSet->GetMaxManaAttribute()).AddLambda(
+[this](const FOnAttributeChangeData& Data)
+		{
+			OnMaxManaChanged.Broadcast(Data.NewValue);
+		}
+	);
+	if (UMainAbilitySystemComponent* MainAbilitySystemComponent = Cast<UMainAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (MainAbilitySystemComponent->bStartUpAbilitiesGiven)
+		{
+			OnInitializeStartUpAbilities(MainAbilitySystemComponent);
+		}
+		else
+		{
+			//
+			MainAbilitySystemComponent->AbilityGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializeStartUpAbilities);
+		}
+		
+		// Affect the HUD from the Data Tabgle and add widgets and tags
+		MainAbilitySystemComponent->EffectAssetTags.AddLambda(
+			[this](const FGameplayTagContainer& AssetTags)
+			{
+				for (FGameplayTag Tag : AssetTags)
+				{
+				
+					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+					if (Tag.MatchesTag(MessageTag))
+					{
+						const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+						MessageWidgetRowDelegate.Broadcast(*Row);
+					}
+				}
+			}
+		);
+	}
 }
 
+void UOverlayWidgetController::OnInitializeStartUpAbilities(UMainAbilitySystemComponent* MainASC)
+{
+	// TODO:: GetInfo about all abilites and look up for abilities and broadcast
+	if (!MainASC->bStartUpAbilitiesGiven) return;
+
+	FForEachAbility BroadcastDelegate;
+	BroadcastDelegate.BindLambda([this, MainASC](const FGameplayAbilitySpec& AbilitySpec)
+	{
+		FDarkUnitAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(MainASC->GetAbilityTagFromSpec(AbilitySpec));
+		Info.InputTag = MainASC->GetInputTagFromSpec(AbilitySpec);
+		AbilityInfoDelegate.Broadcast(Info);
+	});
+	MainASC->ForEachAbility(BroadcastDelegate);
+}
+
+void UOverlayWidgetController::OnXPChange(int32 NewXP) const
+{
+	const AMainPlayerState* MainPlayerState = CastChecked<AMainPlayerState>(PlayerState);
+	const ULevelUpInfo* LevelUpInfo = MainPlayerState->LevelUpInfo;
+	check(LevelUpInfo);
+
+	const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);
+	const int32 MaxLevel = LevelUpInfo->LevelUpInformation.Num();
+
+	if (Level <= MaxLevel && Level > 0)
+	{
+		const int32 LevelUpRequirement = LevelUpInfo->LevelUpInformation[Level].LevelUpRequirement;
+		const int32 PreviousLevelUpRequirement = LevelUpInfo->LevelUpInformation[Level-1].LevelUpRequirement;
+		
+		const int32 DeltaLevelReq = LevelUpRequirement - PreviousLevelUpRequirement;
+		const int32 XPForThisLevel = NewXP - PreviousLevelUpRequirement;
+		const float FloatDeltaLevelReq = static_cast<float>(DeltaLevelReq); 
+		const float FloatXPForThisLevel = static_cast<float>(XPForThisLevel); 
+
+		OnCurrentXPChangedDelegate.Broadcast(FloatXPForThisLevel);
+		OnMaxXPChangedDelegate.Broadcast(FloatDeltaLevelReq);
+	}
+}
+
+void UOverlayWidgetController::OnLevelChange(int32 NewLevel)
+{
+}

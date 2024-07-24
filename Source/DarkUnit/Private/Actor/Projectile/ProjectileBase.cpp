@@ -58,6 +58,10 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
                             FVector NormalImpulse, const FHitResult& Hit)
 {
 	bool bIsPlayer{true};
+	if (!DamageEffectSpecHandle.Data.IsValid() || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
+	{
+		return;
+	}
 	if (GetOwner()->ActorHasTag("Player"))
 	{
 		bIsPlayer = true;
@@ -73,7 +77,7 @@ void AProjectileBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 	}
 	if (HasAuthority())
 	{
-		if((bIsPlayer && OtherActor->ActorHasTag("Player")) || (bIsPlayer && OtherActor->ActorHasTag("Player")))
+		if((bIsPlayer && OtherActor->ActorHasTag("Player")) || (!bIsPlayer && OtherActor->ActorHasTag("Enemy")))
 		{
 			//Do nothing
 			Destroy();

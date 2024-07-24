@@ -55,7 +55,8 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() const override;
 	UPROPERTY(BlueprintReadWrite, Category="Combat")
 	TObjectPtr<AActor> CombatTarget;
-	
+
+	virtual ECharacterClass GetCharacterClass_Implementation() override;
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;

@@ -18,11 +18,6 @@ FVector ICombatInterface::GetLookLocation()
 	return FVector();
 }
 
-AWeaponBase* ICombatInterface::GetMainWeapon()
-{
-	return nullptr;
-}
-
 FTransform ICombatInterface::GetCombatSocketTransform()
 {
 	return FTransform();

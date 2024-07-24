@@ -43,5 +43,5 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Damage")
 	EWeaponDamageTier CurseDamageEff;
-
+	
 };

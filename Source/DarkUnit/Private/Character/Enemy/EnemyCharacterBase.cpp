@@ -54,6 +54,11 @@ int32 AEnemyCharacterBase::GetPlayerLevel()
 }
 
 
+ECharacterClass AEnemyCharacterBase::GetCharacterClass_Implementation()
+{
+	return CharacterClass;
+}
+
 void AEnemyCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();

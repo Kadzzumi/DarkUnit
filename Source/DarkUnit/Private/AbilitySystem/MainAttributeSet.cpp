@@ -9,7 +9,9 @@
 #include "Net/UnrealNetwork.h"
 #include "DarkUnitGameplayTags.h"
 #include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
+#include "DarkUnit/DarkUnitLogChannels.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/InteractionInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerController/MainPlayerController.h"
 
@@ -160,11 +162,12 @@ void UMainAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 				// Owner PlayerController
 				Props.SourceController = Pawn->GetController();
 			}
-			if (Props.SourceController)
-			{
-				// Owner Character
-				Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
-			}
+		}
+		if (Props.SourceController)
+		{
+			// Owner Character
+			Props.SourceCharacter = Cast<ACharacter>(Props.SourceController->GetPawn());
+				
 		}
 	}
 	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
@@ -176,12 +179,15 @@ void UMainAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData
 	}	
 }
 
+
+
 void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
 
+	// Vitals
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
@@ -192,8 +198,9 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxStamina()));
+		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
 	}
+	// Damage
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 		const float LocalIncomingDamage = GetIncomingDamage();
@@ -206,10 +213,12 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			if (bFatal)
 			{
 				ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
+				SendXPEvent(Props);
 				if (CombatInterface)
 				{
 					CombatInterface->Die();
 				}
+
 			}
 			else
 			{
@@ -220,6 +229,17 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			
 			const bool bEvaded = UDarkUnitAbilitySystemLibrary::IsEvadedHit(Props.EffectContextHandle);
 			ShowFloatingText(Props, LocalIncomingDamage, bEvaded);
+		}
+		//
+		if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+		{
+			const float LocalIncomingXP = GetIncomingXP();
+			SetIncomingXP(0.f);
+			// TODO::Check for the Level up
+			if (Props.SourceCharacter->Implements<UInteractionInterface>())
+			{
+				IInteractionInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+			}
 		}
 	}
 }
@@ -232,6 +252,22 @@ void UMainAttributeSet::ShowFloatingText(const FEffectProperties& Props, float D
 		{
 			PC->ShowDamageNumber(Damage, Props.TargetCharacter, bEvadedHit);
 		}
+	}
+}
+
+void UMainAttributeSet::SendXPEvent(const FEffectProperties& Props)
+{
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	{
+		const int32 TargetLevel = CombatInterface->GetPlayerLevel();
+		const ECharacterClass TargetClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
+		const int32 XPReward = UDarkUnitAbilitySystemLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter, TargetClass, TargetLevel);
+
+		const FDarkUnitGameplayTags& GameplayTags = FDarkUnitGameplayTags::Get();
+		FGameplayEventData Payload;
+		Payload.EventTag =  GameplayTags.Attributes_Meta_IncomingXP;
+		Payload.EventMagnitude = XPReward;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, GameplayTags.Attributes_Meta_IncomingXP, Payload);
 	}
 }
 

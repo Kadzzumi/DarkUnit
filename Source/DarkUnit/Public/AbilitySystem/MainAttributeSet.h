@@ -375,10 +375,14 @@ public:
 	FGameplayAttributeData IncomingDamage;
 	ATTRIBUTE_ACCESSORS(UMainAttributeSet, IncomingDamage);
 
+	UPROPERTY(BlueprintReadOnly, Category="MetaAttributes")
+	FGameplayAttributeData IncomingXP;
+	ATTRIBUTE_ACCESSORS(UMainAttributeSet, IncomingXP);
 	//
 	
 private:
 
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 	void ShowFloatingText(const FEffectProperties& Props, float Damage, bool bEvadedHit);
+	void SendXPEvent(const FEffectProperties& Props);
 };

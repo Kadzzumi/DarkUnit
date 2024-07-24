@@ -32,6 +32,7 @@ void AWeaponBase::BeginPlay()
 	HitActors.Empty();  // Ensure set is empty at the start
 	SetWeaponLevel(1);
 	SetWeaponCollision(false);
+	
 }
 
 // Called every frame

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "CombatInterface.generated.h"
 
 class AWeaponBase;
@@ -27,8 +27,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void GetTargetLocation();
 	virtual FVector GetLookLocation();
-	//Spell Sockets
-	virtual AWeaponBase* GetMainWeapon();
+	//Spell Sockets;
 	virtual FTransform GetCombatSocketTransform();
 	virtual FTransform GetSpellSocketTransform();
 	//Weapon
@@ -42,5 +41,6 @@ public:
 	virtual void Die() = 0;
 
 	//TODO:Have to figure out how to get the montages from the weapon and set them in the right manner
-
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	ECharacterClass GetCharacterClass();
 };

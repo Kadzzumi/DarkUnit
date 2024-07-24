@@ -47,8 +47,8 @@ struct DarkUnitDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMainAttributeSet, Evasion, Target, false);
 		//Source
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UMainAttributeSet, Focus, Source, false);
-		// DEFINE_ATTRIBUTE_CAPTUREDEF(UMainAttributeSet, Strength, Source, false);
-		// DEFINE_ATTRIBUTE_CAPTUREDEF(UMainAttributeSet, Dexterity, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UMainAttributeSet, Strength, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UMainAttributeSet, Dexterity, Source, false);
 
 		const FDarkUnitGameplayTags& Tags = FDarkUnitGameplayTags::Get();
 		
@@ -85,8 +85,8 @@ UExecCals_EnemyDamage::UExecCals_EnemyDamage()
 	
 	//Source
 	RelevantAttributesToCapture.Add(DamageStatics().FocusDef);
-	// RelevantAttributesToCapture.Add(DamageStatics().StrengthDef);
-	// RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
+	RelevantAttributesToCapture.Add(DamageStatics().StrengthDef);
+	RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
 
 }
 
@@ -164,12 +164,12 @@ void UExecCals_EnemyDamage::Execute_Implementation(const FGameplayEffectCustomEx
 		if (DamageTypeValue > 0.f && DefenseType > 0.f)
 		{
 			const float EffectiveDefense = 1-(DefenseType/DamageTypeValue/2);
-			UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), DamageTypeValue);
-			UE_LOG(LogTemp, Warning, TEXT("Defence : %f"), EffectiveDefense);
+			// UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), DamageTypeValue);
+			// UE_LOG(LogTemp, Warning, TEXT("Defence : %f"), EffectiveDefense);
 			DamageTypeValue *= FMath::Clamp(EffectiveDefense, 0.5f, 1);
 		}
 		Damage += DamageTypeValue;
-		UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), Damage);
+		// UE_LOG(LogTemp, Warning, TEXT("Damage : %f"), Damage);
 	}
 	
 	const bool bEvaded = FMath::RandRange(1, 100) < TargetEvasionChance/SourceFocus*10;

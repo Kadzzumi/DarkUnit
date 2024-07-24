@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/CharacterBase.h"
+#include "Interaction/InteractionInterface.h"
 #include "PlayerCharacterBase.generated.h"
 
 
@@ -13,7 +14,7 @@ class UGameplayEffect;
  * 
  */
 UCLASS()
-class DARKUNIT_API APlayerCharacterBase : public ACharacterBase
+class DARKUNIT_API APlayerCharacterBase : public ACharacterBase, public IInteractionInterface
 {
    GENERATED_BODY()
 public:
@@ -27,9 +28,10 @@ public:
    //Movement
    float GetSpeed() const;
 
-   //Combat Interface
+   //Combat Interfaces
+   virtual void AddToXP_Implementation(int32 InXP) override;
    virtual int32 GetPlayerLevel() override;
-
+   
    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Items")
    TArray<AActor*> InteractingActorList;
    
@@ -38,7 +40,6 @@ public:
    UFUNCTION(BlueprintCallable)
    virtual FVector GetLookLocation() override;
    virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
-   virtual AWeaponBase* GetMainWeapon() override;
    //Character Rotation
    UPROPERTY(EditAnywhere)
    bool bCanRotate = true;
@@ -61,8 +62,6 @@ private:
 
    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
    FRotator ZAxisRotation{FRotator(0.f, 540.f, 0.f)};
-
-
    
    //
    //PickUp
@@ -77,6 +76,5 @@ private:
    UFUNCTION()
    void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-   //
 
 };

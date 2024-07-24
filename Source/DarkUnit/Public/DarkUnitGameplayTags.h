@@ -66,8 +66,15 @@ public:
 	FGameplayTag Status_Blight;
 	FGameplayTag Status_Poison;
 
+	//Reacts
 	FGameplayTag Effect_HitReactSmall;
-	
+
+	// Spells
+	FGameplayTag Spell_Fire_FireBall;
+	//Spell Cooldowns
+	FGameplayTag Spell_CD_Low;
+	FGameplayTag Spell_CD_FireBall;
+
 	//Inputs tags
 	FGameplayTag InputTag_Attack;
 	FGameplayTag InputTag_Block;
@@ -88,6 +95,9 @@ public:
 	//
 	FGameplayTag GA_SetWeaponSpecHandle;
 
+	// Meta Attributes
+	FGameplayTag Attributes_Meta_IncomingXP;
+	
 	//Weapon Socket Tags
 	FGameplayTag Montage_Attack_Weapon;
 	FGameplayTag Montage_Attack_WeaponBack;

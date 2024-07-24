@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ItemBase.generated.h"
 
+class APlayerCharacterBase;
 class USphereComponent;
 class APlayerWeaponBase;
 
@@ -16,9 +17,7 @@ class DARKUNIT_API AItemBase : public AActor
 	
 public:	
 	AItemBase();
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<APlayerWeaponBase> StoredWeapon;
+	virtual void Interact(APlayerCharacterBase* Player);
 protected:
 	virtual void BeginPlay() override;
 private:

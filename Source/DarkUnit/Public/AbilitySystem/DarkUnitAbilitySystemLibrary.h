@@ -40,5 +40,8 @@ public:
 	static bool IsEvadedHit(const FGameplayEffectContextHandle& EffectContextHandle);
 
 	UFUNCTION(BlueprintCallable, Category= "DarkUnitAbilitySystemLibrary|GameplayEffects")	
-	static void SetIsEvadedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bInIsEvaded);	
+	static void SetIsEvadedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bInIsEvaded);
+
+	// XP Reward from the Enemy
+	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 };

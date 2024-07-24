@@ -14,6 +14,12 @@ AItemBase::AItemBase()
 	CollisionSphere->SetCollisionResponseToAllChannels(ECR_Overlap);
 }
 
+void AItemBase::Interact(APlayerCharacterBase* Player)
+{
+	//TODO:: Do something
+	Destroy();
+}
+
 void AItemBase::BeginPlay()
 {
 	Super::BeginPlay();

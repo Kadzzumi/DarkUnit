@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "UI/WidgetController/MainWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
-
+class UMainAbilitySystemComponent;
 class UMainUserWidget;
 
 USTRUCT(BlueprintType)
@@ -28,7 +29,7 @@ struct FUIWidgetRow : public FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, WidgetRow);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FDarkUnitAbilityInfo&, Info);
 
 /**
  * 
@@ -53,17 +54,40 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FOnAttributeChangeSignature OnMaxStaminaChanged;
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChangeSignature OnManaChanged;
+	
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChangeSignature OnMaxManaChanged;
+	
 	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
-	FMessageWidgetRowSignature MessageWidgetRowDelegate;	
+	FMessageWidgetRowSignature MessageWidgetRowDelegate;
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|Messages")
+	FAbilityInfoSignature AbilityInfoDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChangeSignature OnMaxXPChangedDelegate;
+	
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnAttributeChangeSignature OnCurrentXPChangedDelegate;
+	
+
+	
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WidgetData")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WidgetData")
+	TObjectPtr<UAbilityInfo> AbilityInfo;
+	
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
 
+	void OnInitializeStartUpAbilities(UMainAbilitySystemComponent* MainASC);
 	
+	void OnXPChange(int32 NewXP) const;
+	void OnLevelChange(int32 NewLevel);
 };
 
 template <typename T>

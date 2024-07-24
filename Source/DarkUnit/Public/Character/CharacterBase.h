@@ -104,11 +104,17 @@ private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* DeathMontage;
+	
+	//Abilities
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
-	UAnimMontage* DeathMontage;
+	//Passive abilities
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities;
+
 
 	
 };

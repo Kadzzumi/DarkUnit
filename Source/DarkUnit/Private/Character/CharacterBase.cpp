@@ -94,7 +94,7 @@ void ACharacterBase::AddCharacterAbilities()
 	if (!HasAuthority()) return;
 	
 	DarkUnitASC->AddCharacterAbilities(StartupAbilities);
-	
+	DarkUnitASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
 }
 
 //

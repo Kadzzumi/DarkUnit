@@ -46,6 +46,16 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Damage_Holy = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Holy"), FString("Holy damage"));
 	GameplayTags.Attributes_Damage_Curse = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Curse"), FString("Curse damage"));
 
+
+	// TMap for the damage and its resistance
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Physical, GameplayTags.Attributes_Resistances_Defense);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Fire, GameplayTags.Attributes_Resistances_FireResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Ice, GameplayTags.Attributes_Resistances_IceResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Lightning, GameplayTags.Attributes_Resistances_LightningResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Magic, GameplayTags.Attributes_Resistances_MagicDefense);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Holy, GameplayTags.Attributes_Resistances_HolyDamageResistance);
+	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Curse, GameplayTags.Attributes_Resistances_CurseResistance);
+	
 	// Status types
 	GameplayTags.Status_Slash = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Slash"), FString("Slash Status"));
 	GameplayTags.Status_Pierce = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Pierce"), FString("Pierce Status"));
@@ -56,17 +66,15 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Status_Blight = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Blight"), FString("Dark Status"));
 	GameplayTags.Status_Poison = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Status.Poison"), FString("Poison Status"));
 	
-	// TMap for the damage and its resistance
-	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Physical, GameplayTags.Attributes_Resistances_Defense);
-	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Fire, GameplayTags.Attributes_Resistances_FireResistance);
-	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Ice, GameplayTags.Attributes_Resistances_IceResistance);
-	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Lightning, GameplayTags.Attributes_Resistances_LightningResistance);
-	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Magic, GameplayTags.Attributes_Resistances_MagicDefense);
-	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Holy, GameplayTags.Attributes_Resistances_HolyDamageResistance);
-	GameplayTags.DamageTypesToResistances.Add(GameplayTags.Attributes_Damage_Curse, GameplayTags.Attributes_Resistances_CurseResistance);
-	
 	// Effects
 	GameplayTags.Effect_HitReactSmall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effect.HitReactSmall"), FString("Hit Reaction slight"));
+
+	// Spells
+	GameplayTags.Spell_Fire_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Spell.Fire.FireBall"), FString("Fire Ball"));
+
+	// Cooldowns
+	GameplayTags.Spell_CD_Low = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Spell.CD.Low"), FString("Low Cooldown"));
+	GameplayTags.Spell_CD_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Spell.CD.FireBall"), FString("Low Cooldown"));
 
 	
 	//Input Tags
@@ -88,6 +96,10 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	//
 	GameplayTags.GA_SetWeaponSpecHandle = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GA.SetWeaponSpecHandle"), FString("Spawns Weapon Spec Handle"));
 
+	//
+	GameplayTags.Attributes_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Meta.IncomingXP"), FString("Get the incoming XP value"));
+
+	
 	// Weapon Socket Montage tags
 	GameplayTags.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.Weapon"), FString(""));
 	GameplayTags.Montage_Attack_WeaponBack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.WeaponBack"), FString(""));
