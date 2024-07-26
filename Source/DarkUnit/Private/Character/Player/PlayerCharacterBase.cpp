@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 #include "Actor/Weapon/WeaponBase.h"
+#include "Actor/Weapon/Player/PlayerWeaponBase.h"
 #include "Camera/CameraComponent.h"
 #include "Character/Enemy/EnemyCharacterBase.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -51,6 +52,9 @@ APlayerCharacterBase::APlayerCharacterBase()
 void APlayerCharacterBase::PossessedBy(AController* NewController)
 {
    Super::PossessedBy(NewController);
+   //Weapon Equip
+   SpawnWeapons(0);
+   SpawnWeapons(1);
    InitAbilityActorInfo();
    AddCharacterAbilities();
 }
@@ -67,7 +71,6 @@ void APlayerCharacterBase::OnRep_PlayerState()
 void APlayerCharacterBase::BeginPlay()
 {
    Super::BeginPlay();
-   //Weapon Equip
 
 }
 
@@ -114,6 +117,7 @@ void APlayerCharacterBase::SetRotation(bool bOrientToMovement, bool Yaw)
    bUseControllerRotationYaw = Yaw;
    
 }
+
 
 
 //Speed
@@ -183,19 +187,40 @@ FVector APlayerCharacterBase::GetLookLocation()
 }
 
 // Weapon
-
-
-void APlayerCharacterBase::SetWeaponAttachment(AWeaponBase* Weapon)
+void APlayerCharacterBase::SpawnWeapons(int32 Index)
+{
+   AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   if (MainPlayerState && MainPlayerState->WeaponInventory.Num() > Index)
+   {
+      //Interface Values
+      const FTransform SpawnTransform{GetCombatSocketTransform()};
+      APlayerWeaponBase* DefaultWeapon = GetWorld()->SpawnActorDeferred<APlayerWeaponBase>(MainPlayerState->WeaponInventory[Index], SpawnTransform, this, this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+      DefaultWeapon->FinishSpawning(SpawnTransform);
+      // Attach the weapon
+      if(Index ==0)
+      {
+         SetWeaponAttachments(DefaultWeapon, WeaponSocketName);
+         MainPlayerState->EquippedWeapon1 = DefaultWeapon;
+         PrimaryWeapon = DefaultWeapon;
+      }
+      else
+      {
+         MainPlayerState->EquippedWeapon2 = DefaultWeapon;
+         SetWeaponAttachments(DefaultWeapon, BackSocketName);
+      }
+   }
+}
+void APlayerCharacterBase::SetWeaponAttachments(AWeaponBase* Weapon, FName Socket) const
 {
    if(Weapon == nullptr) return;
    // Get the Hand Socket
-   if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(WeaponSocketName))
+   if (const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(Socket))
    {
       // Attach the Weapon to the hand socket RightHandSocket
-         PrimaryWeapon = Weapon;
-         PrimaryWeapon->SetWeaponState_Implementation(EWeaponState::State_Equipped);
-         HandSocket->AttachActor(PrimaryWeapon, GetMesh());  
+      Weapon->SetWeaponState_Implementation(EWeaponState::State_Equipped);
+      HandSocket->AttachActor(Weapon, GetMesh());  
    }
 }
+
 
 

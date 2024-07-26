@@ -29,8 +29,6 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
 	AWeaponBase* PrimaryWeapon;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Weapon", meta=(AllowPrivateAccess = "true"))
-	AWeaponBase* SecondaryWeapon;	
 	
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	//Weapons
@@ -53,6 +51,10 @@ protected:
 	//Weapons
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName WeaponSocketName = "RightHandSocket";
+	
+	UPROPERTY(EditAnywhere, Category="Combat")
+	FName BackSocketName = "BackSocket";
+	
 	
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName WeaponTipSocketName = "WeaponTipSocket";

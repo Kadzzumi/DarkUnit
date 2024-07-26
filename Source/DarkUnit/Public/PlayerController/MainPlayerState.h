@@ -40,11 +40,17 @@ public:
 	void SetToXP(int InXP);
 	FOnPlayerStatChanged OnXPChangedDelegate;
 
-	
+	//
 	const int32 MaxWeaponCapacity{ 2 };
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TSubclassOf<APlayerWeaponBase>> WeaponInventory;
+
+	UPROPERTY(VisibleAnywhere)
+	APlayerWeaponBase* EquippedWeapon1{nullptr};
+	
+	UPROPERTY(VisibleAnywhere)
+	APlayerWeaponBase* EquippedWeapon2{nullptr};
 	
 
 	

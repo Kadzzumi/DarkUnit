@@ -218,7 +218,6 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				{
 					CombatInterface->Die();
 				}
-
 			}
 			else
 			{
@@ -230,16 +229,16 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const bool bEvaded = UDarkUnitAbilitySystemLibrary::IsEvadedHit(Props.EffectContextHandle);
 			ShowFloatingText(Props, LocalIncomingDamage, bEvaded);
 		}
-		//
-		if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	}
+	//
+	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+	{
+		const float LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.f);
+		// TODO::Check for the Level up
+		if (Props.SourceCharacter->Implements<UInteractionInterface>())
 		{
-			const float LocalIncomingXP = GetIncomingXP();
-			SetIncomingXP(0.f);
-			// TODO::Check for the Level up
-			if (Props.SourceCharacter->Implements<UInteractionInterface>())
-			{
-				IInteractionInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
-			}
+			IInteractionInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
 		}
 	}
 }

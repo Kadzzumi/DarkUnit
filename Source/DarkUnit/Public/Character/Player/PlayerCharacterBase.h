@@ -39,7 +39,6 @@ public:
    //Attack
    UFUNCTION(BlueprintCallable)
    virtual FVector GetLookLocation() override;
-   virtual void SetWeaponAttachment(AWeaponBase* Weapon) override;
    //Character Rotation
    UPROPERTY(EditAnywhere)
    bool bCanRotate = true;
@@ -49,7 +48,8 @@ protected:
    
    //Movement
    void SetRotation(bool bOrientToMovement, bool Yaw);
-
+   void SetWeaponAttachments(AWeaponBase* Weapon, FName Socket) const;
+   void SpawnWeapons(int32 Index);
 private:
    // Functions
    virtual void InitAbilityActorInfo() override;

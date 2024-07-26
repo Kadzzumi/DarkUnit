@@ -71,6 +71,7 @@ public:
 
 	// Spells
 	FGameplayTag Spell_Fire_FireBall;
+	
 	//Spell Cooldowns
 	FGameplayTag Spell_CD_Low;
 	FGameplayTag Spell_CD_FireBall;
