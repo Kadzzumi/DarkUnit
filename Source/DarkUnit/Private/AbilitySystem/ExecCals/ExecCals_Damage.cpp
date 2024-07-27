@@ -52,6 +52,9 @@ struct DarkUnitDamageStatics
 		const FDarkUnitGameplayTags& Tags = FDarkUnitGameplayTags::Get();
 
 		//Offenses
+		// TagsToCaptureDefs.Add(Tags.Attributes_Damage_Curse, CurseResistanceDef);
+
+
 
 		//Defenses
 		TagsToCaptureDefs.Add(Tags.Attributes_Resistances_Defense, DefenseDef);
@@ -86,9 +89,6 @@ UExecCals_Damage::UExecCals_Damage()
 	RelevantAttributesToCapture.Add(DamageStatics().FocusDef);
 	RelevantAttributesToCapture.Add(DamageStatics().StrengthDef);
 	RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
-	RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
-	RelevantAttributesToCapture.Add(DamageStatics().DexterityDef);
-	
 
 }
 

@@ -5,6 +5,9 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
+#include "DarkUnit/DarkUnitLogChannels.h"
 
 
 // Sets default values
@@ -21,6 +24,14 @@ AWeaponBase::AWeaponBase() :
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	WeaponMesh->SetupAttachment(GetRootComponent());
 	WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	// Create and configure the capsule component
+	DamageCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("DamageCapsule"));
+	DamageCapsule->SetupAttachment(WeaponMesh, FName("Center"));
+	DamageCapsule->SetCollisionResponseToAllChannels(ECR_Overlap);
+	DamageCapsule->OnComponentBeginOverlap.AddDynamic(this, &AWeaponBase::PerformTrace);
+	DamageCapsule->SetGenerateOverlapEvents(false);
+	
 	SetWeaponState(EWeaponState::State_Equipped);
 }
 
@@ -28,6 +39,11 @@ AWeaponBase::AWeaponBase() :
 void AWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+	if (GetOwner())
+	{
+		DamageCapsule->IgnoreActorWhenMoving(this, true);
+		DamageCapsule->IgnoreActorWhenMoving(GetOwner(), true);
+	}
 	// Setup collisions
 	HitActors.Empty();  // Ensure set is empty at the start
 	SetWeaponLevel(1);
@@ -40,15 +56,7 @@ void AWeaponBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	 if (bCanHitChar)  // Add this check
-	 {
-	 	TimeSinceLastTrace += DeltaTime;
-	 	if (TimeSinceLastTrace >= 0.01f)
-	 	{
-	 		PerformTrace();
-	 		TimeSinceLastTrace = 0.f;
-	 	}
-	 }
+
 }
 
 void AWeaponBase::SetWeaponCollision(bool bCanHit)
@@ -57,80 +65,41 @@ void AWeaponBase::SetWeaponCollision(bool bCanHit)
 
 	if (!bCanHit)
 	{
-		TimeSinceLastTrace = 0.f;
+		DamageCapsule->SetGenerateOverlapEvents(false);
 		HitActors.Empty();  // Clear hit actors when stopping collision checks
-		// GetWorldTimerManager().ClearTimer(AttackTimerHandle);	
+		
 	}
 	else
 	{
-		// GetWorldTimerManager().SetTimer(AttackTimerHandle, 0.01f, true);
+		DamageCapsule->SetGenerateOverlapEvents(true);
 	}
 }
 
-void AWeaponBase::PerformTrace()
+void AWeaponBase::PerformTrace(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (!WeaponMesh || !DamageEffectSpecHandle.IsValid() || !Owner)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("WeaponMesh, DamageEffectSpecHandle, or Owner is invalid."));
 		return;
 	}
-	// Trace Params
-	FVector Start, End, Direction;
-	float CapsuleHalfHeight;
-	FQuat CapsuleRotation;
-	SetupTraceParameters(Start, End, Direction, CapsuleHalfHeight, CapsuleRotation);
-
-	// Collision Params
-	TArray<FHitResult> HitResults;
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-	CollisionParams.AddIgnoredActor(GetOwner());
-
 	const bool bIsPlayer{ GetOwner()->ActorHasTag("Player") };
-
-	const bool bHit = GetWorld()->SweepMultiByChannel(
-		HitResults,
-		Start,
-		End,
-		CapsuleRotation,
-		ECC_Visibility,
-		FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight),
-		CollisionParams
-	);
-	DrawDebugCapsule(GetWorld(), (Start + End) / 2.0f, CapsuleHalfHeight, CapsuleRadius, CapsuleRotation, FColor::Blue, false, 1.0f, 0, 2.0f);
-
-	if (bHit)
+	if ((bIsPlayer && OtherActor->ActorHasTag("Player")) || (!bIsPlayer && OtherActor->ActorHasTag("Enemy"))) return;
+	if (OtherActor && !HitActors.Contains(OtherActor))
 	{
-		for (auto& Hit : HitResults)
+		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			AActor* HitActor = Hit.GetActor();
-			if ((bIsPlayer && HitActor->ActorHasTag("Player")) || (!bIsPlayer && HitActor->ActorHasTag("Enemy"))) return;
-			if (HitActor && !HitActors.Contains(HitActor))
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			// Play impact effects
+			if (ImpactSound && ImpactEffect)
 			{
-				if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(HitActor))
-				{
-					TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
-					// Play impact effects
-					if (ImpactSound && ImpactEffect)
-					{
-						const FVector SpawnLocation = Hit.ImpactPoint;
-						const FRotator SpawnRotation = Hit.ImpactNormal.Rotation();
-						MulticastPlayImpactEffects(SpawnLocation, SpawnRotation);
-					}
-					HitActors.Add(HitActor);  // Add actor to set so it won't be hit again until cleared
-				}
+				const FVector SpawnLocation = SweepResult.ImpactPoint;
+				const FRotator SpawnRotation = SweepResult.ImpactNormal.Rotation();
+				UE_LOG(LogDarkUnit, Error, TEXT("The Location is : %s"), *SpawnLocation.ToString());
+				MulticastPlayImpactEffects(SpawnLocation, SpawnRotation);
 			}
+			HitActors.Add(OtherActor);  // Add actor to set so it won't be hit again until cleared
 		}
 	}
-}
-
-void AWeaponBase::SetupTraceParameters(FVector& Start, FVector& End, FVector& Direction, float& CapsuleHalfHeight, FQuat& CapsuleRotation) const
-{
-	Start = WeaponMesh->GetSocketLocation(FName("Start"));
-	End = WeaponMesh->GetSocketLocation(FName("End"));
-	Direction = (End - Start).GetSafeNormal();
-	CapsuleHalfHeight = (End - Start).Size() - 15.f;
-	CapsuleRotation = FQuat::FindBetweenVectors(FVector::UpVector, Direction);
 }
 
 void AWeaponBase::MulticastPlayImpactEffects_Implementation(const FVector& Location, const FRotator& Rotation)

@@ -8,7 +8,7 @@
 #include "WeaponBase.generated.h"
 
 class UBoxComponent;
-class USphereComponent;
+class UCapsuleComponent;
 class UNiagaraSystem;
 
 
@@ -40,6 +40,7 @@ class DARKUNIT_API AWeaponBase : public AActor
 public:	
 	AWeaponBase();
 	virtual void Tick(float DeltaSeconds) override;
+
 	void SetWeaponCollision(bool bCanHit);
 
 	// Weapon Mesh
@@ -52,7 +53,10 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void SetWeaponState(EWeaponState State);
-
+	
+	// Trace for combat
+	UFUNCTION()
+	void PerformTrace(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	//
 	// Weapon Level & Damage
 	float GetWeaponDamage() const;
@@ -75,11 +79,6 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	// Trace for combat
-	UFUNCTION()
-	void PerformTrace();
-	
-	void SetupTraceParameters(FVector& Start, FVector& End, FVector& Direction, float& CapsuleHalfHeight, FQuat& CapsuleRotation) const;
 
 	// Add at the beginning of the private section
 	UFUNCTION(NetMulticast, Reliable)
@@ -99,6 +98,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category="Weapon")
 	USceneComponent* RootSceneComponent;
 
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	UCapsuleComponent* DamageCapsule;
+	
 	float TimeSinceLastTrace{0};
 	bool bCanHitChar{false};  // Store the collision state
 	//Cues
