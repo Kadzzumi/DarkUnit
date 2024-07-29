@@ -2,12 +2,6 @@
 #include "Interaction/CombatInterface.h"
 #include "Actor/Weapon/WeaponBase.h"
 
-
-int32 ICombatInterface::GetPlayerLevel()
-{
-	return 0;
-}
-
 void ICombatInterface::SetAttackCollisions(const bool bCanHit)
 {
 	

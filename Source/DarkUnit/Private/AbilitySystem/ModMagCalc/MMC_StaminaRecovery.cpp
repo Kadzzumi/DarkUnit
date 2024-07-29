@@ -28,8 +28,10 @@ float UMMC_StaminaRecovery::CalculateBaseMagnitude_Implementation(const FGamepla
 	GetCapturedAttributeMagnitude(EnduranceDef, Spec, EvaluateParameters, Endurance);
 	Endurance = FMath::Max<float>(Endurance, 0);
 	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
-
+	int32 PlayerLevel{1};
+	if (Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		PlayerLevel = ICombatInterface::Execute_GetPlayerLevel(Spec.GetContext().GetSourceObject());
+	}
 	return	15 + Endurance/1.8 + PlayerLevel/5;
 }

@@ -20,8 +20,8 @@ class DARKUNIT_API ICombatInterface
 	GENERATED_BODY()
 
 public:
-	
-	virtual int32 GetPlayerLevel();
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetPlayerLevel();
 	virtual void SetAttackCollisions(const bool bCanHit);
 	//
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)

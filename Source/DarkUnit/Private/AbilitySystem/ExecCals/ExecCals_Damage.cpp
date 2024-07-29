@@ -101,11 +101,17 @@ void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// Getting Avatars
 	AActor* SourceAvatar = SourceACS ? SourceACS->GetAvatarActor() : nullptr;
-	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
-		
 	AActor* TargetAvatar = TargetACS ? TargetACS->GetAvatarActor() : nullptr;
-	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
-
+	int32 SourcePlayerLevel{1};
+	if (SourceAvatar->Implements<UCombatInterface>())
+	{
+		SourcePlayerLevel = ICombatInterface::Execute_GetPlayerLevel(SourceAvatar);
+	}
+	int32 TargetPlayerLevel{1};
+	if (TargetAvatar->Implements<UCombatInterface>())
+	{
+		TargetPlayerLevel = ICombatInterface::Execute_GetPlayerLevel(TargetAvatar);
+	}
 	
 	// Gather tags from source and target
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
@@ -145,7 +151,7 @@ void UExecCals_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	const UCharacterClassInfo* CharacterClassInfo = UDarkUnitAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
 	const FRealCurve* CharDamageCurve = CharacterClassInfo->CharacterDamageCurve->FindCurve(FName("CharDamagePerLevel"), FString());
-	const float CharacterDamage = CharDamageCurve->Eval(SourceCombatInterface->GetPlayerLevel());
+	const float CharacterDamage = CharDamageCurve->Eval(SourcePlayerLevel);
 	
 	//
 	//Calculation

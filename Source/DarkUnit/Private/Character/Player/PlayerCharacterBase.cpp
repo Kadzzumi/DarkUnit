@@ -5,6 +5,7 @@
 #include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "AbilitySystem/MainAbilitySystemComponent.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
 #include "Actor/Weapon/WeaponBase.h"
 #include "Actor/Weapon/Player/PlayerWeaponBase.h"
 #include "Camera/CameraComponent.h"
@@ -71,7 +72,7 @@ void APlayerCharacterBase::OnRep_PlayerState()
 void APlayerCharacterBase::BeginPlay()
 {
    Super::BeginPlay();
-
+   
 }
 
 void APlayerCharacterBase::Tick(float DeltaSeconds)
@@ -128,6 +129,15 @@ float APlayerCharacterBase::GetSpeed() const
    return Velocity.Size();
 }
 
+//
+//Player Level
+int32 APlayerCharacterBase::GetPlayerLevel_Implementation()
+{
+   const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+
+   return MainPlayerState->GetPlayerLevel();
+}
 void APlayerCharacterBase::AddToXP_Implementation(int32 InXP)
 {
    AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
@@ -136,15 +146,47 @@ void APlayerCharacterBase::AddToXP_Implementation(int32 InXP)
    MainPlayerState->AddToXP(InXP);
 }
 
-//
-//Player Level
-int32 APlayerCharacterBase::GetPlayerLevel()
+void APlayerCharacterBase::AddToAttributePoints_Implementation(int32 InAttributePoints)
+{
+   AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+   // MainPlayerState->;
+   //TODO: AddAttributePoints TO the playerstate
+}
+
+void APlayerCharacterBase::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
+{
+   AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+   MainPlayerState->AddToLevel(InPlayerLevel);
+}
+
+int32 APlayerCharacterBase::GetXP_Implementation() const
 {
    const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
    check(MainPlayerState);
-
-   return MainPlayerState->GetPlayerLevel();
+   return MainPlayerState->GetXP();
 }
+
+int32 APlayerCharacterBase::FindLevelForXP_Implementation(int32 InXP) const
+{
+   const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+   return MainPlayerState->LevelUpInfo->FindLevelForXP(InXP);
+}
+
+int32 APlayerCharacterBase::GetAttributePointsReward_Implementation(int32 Level) const
+{
+   const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+   return MainPlayerState->LevelUpInfo->LevelUpInformation[Level].AttributePointAward;
+}
+
+void APlayerCharacterBase::LevelUp_Implementation()
+{
+   
+}
+
 
 
 //

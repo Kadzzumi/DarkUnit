@@ -25,7 +25,7 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 	// Combat Interface
-	virtual int32 GetPlayerLevel() override;
+	virtual int32 GetPlayerLevel_Implementation() override;
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangeSignature OnHealthChange;

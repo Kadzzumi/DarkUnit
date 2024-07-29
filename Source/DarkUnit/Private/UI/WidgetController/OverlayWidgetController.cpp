@@ -25,8 +25,13 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	AMainPlayerState* MainPlayerState = CastChecked<AMainPlayerState>(PlayerState);
 	MainPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChange);
-	MainPlayerState->OnLevelChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnLevelChange);
-	
+	MainPlayerState->OnLevelChangedDelegate.AddLambda(
+		[this](int32 NewLevel)
+		{
+			OnPlayerLevelChangedDelegate.Broadcast(NewLevel);
+		}
+	);
+
 	const UMainAttributeSet* MainAttributeSet = Cast<UMainAttributeSet>(AttributeSet);
 	//Update Report Changes in the data
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(MainAttributeSet->GetHealthAttribute()).AddLambda(
@@ -98,7 +103,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 void UOverlayWidgetController::OnInitializeStartUpAbilities(UMainAbilitySystemComponent* MainASC)
 {
-	// TODO:: GetInfo about all abilites and look up for abilities and broadcast
+	// TODO:: GetInfo about all abilities and look up for abilities and broadcast
 	if (!MainASC->bStartUpAbilitiesGiven) return;
 
 	FForEachAbility BroadcastDelegate;
@@ -127,14 +132,8 @@ void UOverlayWidgetController::OnXPChange(int32 NewXP) const
 		
 		const int32 DeltaLevelReq = LevelUpRequirement - PreviousLevelUpRequirement;
 		const int32 XPForThisLevel = NewXP - PreviousLevelUpRequirement;
-		const float FloatDeltaLevelReq = static_cast<float>(DeltaLevelReq); 
-		const float FloatXPForThisLevel = static_cast<float>(XPForThisLevel); 
 
-		OnCurrentXPChangedDelegate.Broadcast(FloatXPForThisLevel);
-		OnMaxXPChangedDelegate.Broadcast(FloatDeltaLevelReq);
+		OnCurrentXPChangedDelegate.Broadcast(XPForThisLevel);
+		OnMaxXPChangedDelegate.Broadcast(DeltaLevelReq);
 	}
-}
-
-void UOverlayWidgetController::OnLevelChange(int32 NewLevel)
-{
 }

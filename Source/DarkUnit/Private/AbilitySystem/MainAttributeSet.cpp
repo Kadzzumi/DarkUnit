@@ -9,10 +9,8 @@
 #include "Net/UnrealNetwork.h"
 #include "DarkUnitGameplayTags.h"
 #include "AbilitySystem/DarkUnitAbilitySystemLibrary.h"
-#include "DarkUnit/DarkUnitLogChannels.h"
 #include "Interaction/CombatInterface.h"
 #include "Interaction/InteractionInterface.h"
-#include "Kismet/GameplayStatics.h"
 #include "PlayerController/MainPlayerController.h"
 
 UMainAttributeSet::UMainAttributeSet()
@@ -235,9 +233,28 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	{
 		const float LocalIncomingXP = GetIncomingXP();
 		SetIncomingXP(0.f);
-		// TODO::Check for the Level up
-		if (Props.SourceCharacter->Implements<UInteractionInterface>())
+		// Source Character is owner
+		if (Props.SourceCharacter->Implements<UInteractionInterface>() && Props.SourceCharacter->Implements<UCombatInterface>())
 		{
+			const int32 CurrentLevel = ICombatInterface::Execute_GetPlayerLevel(Props.SourceCharacter);
+			const int32 CurrentXP = IInteractionInterface::Execute_GetXP(Props.SourceCharacter);
+
+			const int32 NewLevel = IInteractionInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+			const int32 NumLevelUps = NewLevel - CurrentLevel;
+			if (NumLevelUps > 0)
+			{
+				// TODO::00 Add to Player Level
+				const int32 AttributePointsReward = IInteractionInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
+				
+				IInteractionInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
+				IInteractionInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
+
+				SetHealth(GetMaxHealth());
+				SetMana(GetMaxMana());
+				// TODO:: Fill up health and mana
+				
+				IInteractionInterface::Execute_LevelUp(Props.SourceCharacter);
+			}
 			IInteractionInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
 		}
 	}
@@ -256,9 +273,9 @@ void UMainAttributeSet::ShowFloatingText(const FEffectProperties& Props, float D
 
 void UMainAttributeSet::SendXPEvent(const FEffectProperties& Props)
 {
-	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+	if (Props.TargetCharacter->Implements<UCombatInterface>())
 	{
-		const int32 TargetLevel = CombatInterface->GetPlayerLevel();
+		const int32 TargetLevel = ICombatInterface::Execute_GetPlayerLevel(Props.TargetCharacter);
 		const ECharacterClass TargetClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetCharacter);
 		const int32 XPReward = UDarkUnitAbilitySystemLibrary::GetXPRewardForClassAndLevel(Props.TargetCharacter, TargetClass, TargetLevel);
 

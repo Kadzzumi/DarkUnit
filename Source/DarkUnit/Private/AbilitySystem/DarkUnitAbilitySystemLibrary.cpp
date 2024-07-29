@@ -78,12 +78,13 @@ void UDarkUnitAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldCon
 		ASC->GiveAbility(AbilitySpec);
 	}
 	const FCharacterClassDefaultInfo& DefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : DefaultInfo.AIStartUpAbilities)
 	{
-		//TODO:Get Enemy Level
-		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, CombatInterface->GetPlayerLevel());
-		ASC->GiveAbility(AbilitySpec);
+		if (ASC->GetAvatarActor()->Implements<UCombatInterface>())
+		{
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor()));
+			ASC->GiveAbility(AbilitySpec);
+		}
 	}
 }
 //XP reward

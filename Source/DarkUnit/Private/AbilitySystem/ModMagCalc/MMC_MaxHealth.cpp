@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/MainAttributeSet.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/InteractionInterface.h"
 
 UMMC_MaxHealth::UMMC_MaxHealth()
 {
@@ -29,10 +30,11 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	GetCapturedAttributeMagnitude(VigorDef, Spec, EvaluateParameters, Vigor);
 	Vigor = FMath::Max<float>(Vigor, 0);
 	
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	
-	if (CombatInterface == nullptr) return 0;
-	const int32 PlayerLevel = CombatInterface->GetPlayerLevel();
+	int32 PlayerLevel{1};
+	if (Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		PlayerLevel = ICombatInterface::Execute_GetPlayerLevel(Spec.GetContext().GetSourceObject());
+	}
 
 	return 50.f + (Vigor * 20) + (PlayerLevel * 5); 
 }

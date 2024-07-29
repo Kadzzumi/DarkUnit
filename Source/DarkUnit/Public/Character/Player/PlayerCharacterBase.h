@@ -30,18 +30,26 @@ public:
 
    //Combat Interfaces
    virtual void AddToXP_Implementation(int32 InXP) override;
-   virtual int32 GetPlayerLevel() override;
+   virtual void AddToAttributePoints_Implementation(int32 InAttributePoints) override;
+   virtual void AddToPlayerLevel_Implementation(int32 InPlayerLevel) override;
    
+   virtual int32 GetXP_Implementation() const override;
+   virtual int32 FindLevelForXP_Implementation(int32 InXP) const override;
+   virtual int32 GetAttributePointsReward_Implementation(int32 Level) const override;
+   virtual void LevelUp_Implementation() override;
+   virtual int32 GetPlayerLevel_Implementation() override;
+
+   
+   // Interact
    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Items")
    TArray<AActor*> InteractingActorList;
    
-   //
-   //Attack
-   UFUNCTION(BlueprintCallable)
-   virtual FVector GetLookLocation() override;
    //Character Rotation
    UPROPERTY(EditAnywhere)
    bool bCanRotate = true;
+   
+   UFUNCTION(BlueprintCallable)
+   virtual FVector GetLookLocation() override;
 protected:
    
    virtual void BeginPlay() override;

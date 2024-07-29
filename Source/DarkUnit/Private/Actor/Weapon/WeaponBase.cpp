@@ -92,7 +92,8 @@ void AWeaponBase::PerformTrace(UPrimitiveComponent* OverlappedComp, AActor* Othe
 			// Play impact effects
 			if (ImpactSound && ImpactEffect)
 			{
-				const FVector SpawnLocation = SweepResult.ImpactPoint;
+				// const FVector SpawnLocation = SweepResult.ImpactPoint;
+				const FVector SpawnLocation = OtherActor->GetActorLocation();
 				const FRotator SpawnRotation = SweepResult.ImpactNormal.Rotation();
 				UE_LOG(LogDarkUnit, Error, TEXT("The Location is : %s"), *SpawnLocation.ToString());
 				MulticastPlayImpactEffects(SpawnLocation, SpawnRotation);

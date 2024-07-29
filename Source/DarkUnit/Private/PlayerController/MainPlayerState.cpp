@@ -34,6 +34,10 @@ UAbilitySystemComponent* AMainPlayerState::GetAbilitySystemComponent() const
 
 
 //XP setters/Getters Replicated
+void AMainPlayerState::OnRep_XP(int32 OldXP)
+{
+	OnXPChangedDelegate.Broadcast(XP);
+}
 void AMainPlayerState::AddToXP(int InXP)
 {
 	XP += InXP;
@@ -45,10 +49,7 @@ void AMainPlayerState::SetToXP(int InXP)
 	XP = InXP;
 	OnXPChangedDelegate.Broadcast(XP);
 }
-void AMainPlayerState::OnRep_XP(int32 OldXP)
-{
-	OnXPChangedDelegate.Broadcast(XP);
-}
+
 
 // 
 void AMainPlayerState::OnRep_Level(int32 OldLevel)
@@ -58,7 +59,7 @@ void AMainPlayerState::OnRep_Level(int32 OldLevel)
 void AMainPlayerState::AddToLevel(int32 InLevel)
 {
 	Level += InLevel;
-	OnLevelChangedDelegate.Broadcast(InLevel);
+	OnLevelChangedDelegate.Broadcast(Level);
 }
 
 void AMainPlayerState::SetToLevel(int32 InLevel)

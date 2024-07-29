@@ -48,7 +48,7 @@ void AEnemyCharacterBase::PossessedBy(AController* NewController)
 	MainAIController->GetBlackboardComponent()->SetValueAsEnum(FName("EnemyType"), static_cast<uint8>(CharacterClass));
 }
 
-int32 AEnemyCharacterBase::GetPlayerLevel()
+int32 AEnemyCharacterBase::GetPlayerLevel_Implementation()
 {
 	return Level;
 }
