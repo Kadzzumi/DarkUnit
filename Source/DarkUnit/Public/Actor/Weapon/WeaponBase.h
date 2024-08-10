@@ -70,13 +70,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
 	FScalableFloat DamageCurve;
 
-	UPROPERTY(EditDefaultsOnly, Category="Damage Types")
+	UPROPERTY(EditDefaultsOnly, Category="Damage|Damage Types")
 	FGameplayTag WeaponDamageTag;
 	
 	//
 	UPROPERTY(EditAnywhere, Category="Damage Types")
 	TArray<FTaggedMontage> AttackMontages;
 	
+	//Abilities
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayAbility> EssenseBond;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayAbility> GuardingSigil;
 protected:
 	virtual void BeginPlay() override;
 
@@ -118,4 +123,14 @@ private:
 	// Weapon State
 	UPROPERTY(VisibleAnywhere)
 	EWeaponState WeaponState;
+
+	FTimerHandle DropTimer;
+	void DropPhysics();
+
+	//
+	//Weapon Trail system
+	UPROPERTY(EditDefaultsOnly, Category = "Effects")
+	UNiagaraSystem* TrailEffectSystem; // Set this in the Blueprint
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	class UNiagaraComponent* TrailEffectComponent;
 };

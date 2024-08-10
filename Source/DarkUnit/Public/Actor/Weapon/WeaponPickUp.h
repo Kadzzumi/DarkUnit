@@ -6,6 +6,7 @@
 #include "Actor/Items/ItemBase.h"
 #include "WeaponPickUp.generated.h"
 
+class UGameplayEffect;
 class APlayerWeaponBase;
 /**
  * 
@@ -19,4 +20,7 @@ public:
 	virtual void Interact(APlayerCharacterBase* Player) override;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<APlayerWeaponBase> StoredWeapon;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> GameplayEffectClass;
 };

@@ -22,7 +22,7 @@ void UPlayerAnimInstance::LocalNativeUpdateAnimation(float DeltaTime)
 {
 	if (Player == nullptr)
 	{
-		Player = Cast<ACharacterBase>(TryGetPawnOwner());
+		Player = Cast<APlayerCharacterBase>(TryGetPawnOwner());
 	}
 	if (Player)
 	{
@@ -35,6 +35,7 @@ void UPlayerAnimInstance::LocalNativeUpdateAnimation(float DeltaTime)
 		const FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(Velocity);
 		Direction = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation).Yaw;
 		bInAir = Player->GetMovementComponent()->IsFalling();
+		bOrientingToMovement = Player->bOrientToTheMovement;;
 		if (bInAir)
 		{
 			AMainPlayerController* PC = Cast<AMainPlayerController>(Player->GetController());

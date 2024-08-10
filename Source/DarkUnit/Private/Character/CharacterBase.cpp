@@ -103,6 +103,7 @@ TArray<FTaggedMontage> ACharacterBase::GetAttackMontages_Implementation()
 	if (PrimaryWeapon)
 	{
 		//TODO:Do the check
+		return PrimaryWeapon->AttackMontages;
 	}
 	return PrimaryWeapon->AttackMontages;
 }
@@ -112,14 +113,6 @@ float ACharacterBase::CalculateOveralldDamage()
 	return ICombatInterface::CalculateOveralldDamage();
 }
 
-
-void ACharacterBase::WeaponTrailEffect(bool bStart)
-{
-	if (PrimaryWeapon != nullptr)
-	{
-		//TODO::TrailEffect
-	}
-}
 
 //
 //Hit react and Death
@@ -132,7 +125,6 @@ void ACharacterBase::Die()
 {
 	if (PrimaryWeapon != nullptr)
 	{
-		PrimaryWeapon->DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
 		PrimaryWeapon->SetLifeSpan(7.f);
 	}
 	MulticastHandleDeath();
@@ -142,10 +134,7 @@ void ACharacterBase::Die()
 //Death
 void ACharacterBase::MulticastHandleDeath_Implementation()
 {
-	if (PrimaryWeapon != nullptr)
-	{
-		PrimaryWeapon->SetWeaponState(EWeaponState::State_Dropped);
-	}
+
 	HandleDeath();
 	PlayDeath();
 	Dissolve();
@@ -177,6 +166,11 @@ void ACharacterBase::HandleDeath() const
 
 void ACharacterBase::Dissolve()
 {
+	if (PrimaryWeapon != nullptr)
+	{
+		PrimaryWeapon->DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+		PrimaryWeapon->SetWeaponState(EWeaponState::State_Dropped);
+	}
 	if(IsValid(MI_CharacterDessolve))
 	{
 		UMaterialInstanceDynamic* DynamicMatInst = UMaterialInstanceDynamic::Create(MI_CharacterDessolve, this);

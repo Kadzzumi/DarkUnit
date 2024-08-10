@@ -13,12 +13,19 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "PlayerController/MainPlayerController.h"
 #include "PlayerController/MainPlayerState.h"
+#include "Sound/SoundCue.h"
 #include "UI/HUD/MainHUD.h"
 
 APlayerCharacterBase::APlayerCharacterBase()
 {
+   LevelUpParticle = CreateDefaultSubobject<UParticleSystemComponent>("LevelUpParticle");
+   LevelUpParticle->SetupAttachment(GetRootComponent());
+   LevelUpParticle->bAutoActivate = false;
+   
    PrimaryActorTick.bCanEverTick = true;
    // Create Spring Arm Component
    SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -32,7 +39,6 @@ APlayerCharacterBase::APlayerCharacterBase()
    Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
    // SetupCharacter Movement 
-   SetRotation(false, true);
    GetCharacterMovement()->RotationRate = ZAxisRotation;
    bUseControllerRotationPitch = false;
    bUseControllerRotationRoll = false;
@@ -58,6 +64,7 @@ void APlayerCharacterBase::PossessedBy(AController* NewController)
    SpawnWeapons(1);
    InitAbilityActorInfo();
    AddCharacterAbilities();
+   UpdateWeaponAbilities(PrimaryWeapon);
 }
 void APlayerCharacterBase::OnRep_PlayerState()
 {
@@ -72,23 +79,28 @@ void APlayerCharacterBase::OnRep_PlayerState()
 void APlayerCharacterBase::BeginPlay()
 {
    Super::BeginPlay();
-   
+   SetRotationMode(nullptr);
 }
+
 
 void APlayerCharacterBase::Tick(float DeltaSeconds)
 {
    Super::Tick(DeltaSeconds);
    // Orient Rotation
-   const UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-   if (AnimInstance == nullptr) return;
-   if (GetSpeed() <= 0.f || AnimInstance->IsAnyMontagePlaying())
+   if (GetSpeed() >= 500.f)
    {
-      SetRotation(true, false);
+      SetRotationMode(nullptr);
    }
    else
    {
-      SetRotation(false, true);
+      if (!bOrientToTheMovement && LockTarget)
+      {
+         const FRotator CurrentRotation = GetActorRotation();
+         const FRotator ShouldLookRotation = FMath::RInterpTo(CurrentRotation, LockOnEnemy(), DeltaSeconds, LockRotationRate);
+         GetController()->SetControlRotation(ShouldLookRotation);
+      }   
    }
+   
    
 }
 
@@ -112,13 +124,41 @@ void APlayerCharacterBase::InitAbilityActorInfo()
    InitializeDefaultAttributes();
 }
 
-void APlayerCharacterBase::SetRotation(bool bOrientToMovement, bool Yaw)
+//Set rotation
+void APlayerCharacterBase::SetRotationMode(AActor* Target)
 {
-   GetCharacterMovement()->bOrientRotationToMovement = bOrientToMovement;
-   bUseControllerRotationYaw = Yaw;
-   
+   LockTarget = Target;
+   if (Target == nullptr)
+   {
+      bOrientToTheMovement = true;
+      GetCharacterMovement()->bOrientRotationToMovement = true;
+      bUseControllerRotationYaw = false;
+   }
+   else
+   {
+      bOrientToTheMovement = false;
+      GetCharacterMovement()->bOrientRotationToMovement = false;
+      bUseControllerRotationYaw = true;
+   }
 }
+//LockOnEnemy
+FRotator APlayerCharacterBase::LockOnEnemy() const
+{
+   FRotator LookAtRotation{0.f};
+   if (LockTarget != nullptr)
+   {
+      // Get the locations of both actors
+      const FVector SourceLocation = GetActorLocation();
+      const FVector TargetLocation = LockTarget->GetActorLocation();
 
+      // Calculate the direction vector
+      const FVector Direction = (TargetLocation - SourceLocation).GetSafeNormal();
+
+      // Create a rotator from the direction vector
+      LookAtRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+   }
+   return LookAtRotation;
+}
 
 
 //Speed
@@ -138,21 +178,8 @@ int32 APlayerCharacterBase::GetPlayerLevel_Implementation()
 
    return MainPlayerState->GetPlayerLevel();
 }
-void APlayerCharacterBase::AddToXP_Implementation(int32 InXP)
-{
-   AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
-   check(MainPlayerState);
 
-   MainPlayerState->AddToXP(InXP);
-}
 
-void APlayerCharacterBase::AddToAttributePoints_Implementation(int32 InAttributePoints)
-{
-   AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
-   check(MainPlayerState);
-   // MainPlayerState->;
-   //TODO: AddAttributePoints TO the playerstate
-}
 
 void APlayerCharacterBase::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
 {
@@ -160,7 +187,33 @@ void APlayerCharacterBase::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
    check(MainPlayerState);
    MainPlayerState->AddToLevel(InPlayerLevel);
 }
+int32 APlayerCharacterBase::FindLevelForXP_Implementation(int32 InXP) const
+{
+   const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+   return MainPlayerState->LevelUpInfo->FindLevelForXP(InXP);
+}
+void APlayerCharacterBase::LevelUp_Implementation()
+{
+   MulticastLevelUpCues();
+}
 
+void APlayerCharacterBase::MulticastLevelUpCues_Implementation() const
+{
+   if (IsValid(LevelUpParticle) && IsValid(LevelUpSound))
+   {
+      LevelUpParticle->Activate(true);
+      UGameplayStatics::PlaySound2D(this, LevelUpSound);
+   }
+}
+//XP
+void APlayerCharacterBase::AddToXP_Implementation(int32 InXP)
+{
+   AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+
+   MainPlayerState->AddToXP(InXP);
+}
 int32 APlayerCharacterBase::GetXP_Implementation() const
 {
    const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
@@ -168,11 +221,19 @@ int32 APlayerCharacterBase::GetXP_Implementation() const
    return MainPlayerState->GetXP();
 }
 
-int32 APlayerCharacterBase::FindLevelForXP_Implementation(int32 InXP) const
+//Attribute points
+void APlayerCharacterBase::AddToAttributePoints_Implementation(int32 InAttributePoints)
+{
+   AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   check(MainPlayerState);
+   MainPlayerState->AddToAttributePoint(InAttributePoints);
+}
+
+int32 APlayerCharacterBase::GetAttributePoint_Implementation() const
 {
    const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
    check(MainPlayerState);
-   return MainPlayerState->LevelUpInfo->FindLevelForXP(InXP);
+   return MainPlayerState->GetAttributePoint();
 }
 
 int32 APlayerCharacterBase::GetAttributePointsReward_Implementation(int32 Level) const
@@ -182,10 +243,7 @@ int32 APlayerCharacterBase::GetAttributePointsReward_Implementation(int32 Level)
    return MainPlayerState->LevelUpInfo->LevelUpInformation[Level].AttributePointAward;
 }
 
-void APlayerCharacterBase::LevelUp_Implementation()
-{
-   
-}
+
 
 
 
@@ -264,5 +322,42 @@ void APlayerCharacterBase::SetWeaponAttachments(AWeaponBase* Weapon, FName Socke
    }
 }
 
+void APlayerCharacterBase::SwapWeapons()
+{
+   const AMainPlayerState* MainPlayerState = GetPlayerState<AMainPlayerState>();
+   if (!MainPlayerState->EquippedWeapon1 || !MainPlayerState->EquippedWeapon2)
+   {
+      return;
+   }
+   AWeaponBase* OldWeapon{nullptr};
+   if (PrimaryWeapon == MainPlayerState->EquippedWeapon1)
+   {
+      // Swap to Weapon2
+      SetWeaponAttachments(MainPlayerState->EquippedWeapon1, TEXT("BackSocket"));
+      SetWeaponAttachments(MainPlayerState->EquippedWeapon2, TEXT("RightHandSocket"));
+      OldWeapon = MainPlayerState->EquippedWeapon1;
+      PrimaryWeapon = MainPlayerState->EquippedWeapon2;
+   }
+   else if (PrimaryWeapon == MainPlayerState->EquippedWeapon2)
+   {
+      // Swap to Weapon1
+      SetWeaponAttachments(MainPlayerState->EquippedWeapon2, TEXT("BackSocket"));
+      SetWeaponAttachments(MainPlayerState->EquippedWeapon1, TEXT("RightHandSocket"));
+      OldWeapon = MainPlayerState->EquippedWeapon2;
+      PrimaryWeapon = MainPlayerState->EquippedWeapon1;
+   }
+   UpdateWeaponAbilities(OldWeapon);
+}
+
+void APlayerCharacterBase::UpdateWeaponAbilities(const AWeaponBase* Weapon) const
+{
+   UMainAbilitySystemComponent* DarkUnitASC = Cast<UMainAbilitySystemComponent>(AbilitySystemComponent);
+   if (!HasAuthority() || Weapon == nullptr || PrimaryWeapon == nullptr) return;
+   DarkUnitASC->RemoveWeaponAbilities(Weapon->EssenseBond);
+   DarkUnitASC->RemoveWeaponAbilities(Weapon->GuardingSigil);
+   DarkUnitASC->AddWeaponAbilities(PrimaryWeapon->EssenseBond);
+   DarkUnitASC->AddWeaponAbilities(PrimaryWeapon->GuardingSigil);
+}
+//
 
 

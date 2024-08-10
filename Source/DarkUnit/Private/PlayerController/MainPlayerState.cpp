@@ -38,6 +38,7 @@ void AMainPlayerState::OnRep_XP(int32 OldXP)
 {
 	OnXPChangedDelegate.Broadcast(XP);
 }
+
 void AMainPlayerState::AddToXP(int InXP)
 {
 	XP += InXP;
@@ -65,5 +66,23 @@ void AMainPlayerState::AddToLevel(int32 InLevel)
 void AMainPlayerState::SetToLevel(int32 InLevel)
 {
 	Level = InLevel;
-	OnLevelChangedDelegate.Broadcast(InLevel);
+	OnLevelChangedDelegate.Broadcast(Level);
+}
+
+//Attribute Point
+void AMainPlayerState::OnRep_AttributePoint(int32 OldAttributePoint)
+{
+	OnAttributePointChangedDelegate.Broadcast(OldAttributePoint);
+}
+
+void AMainPlayerState::AddToAttributePoint(int InAttributePoint)
+{
+	AttributePoint += InAttributePoint;
+	OnAttributePointChangedDelegate.Broadcast(AttributePoint);
+}
+
+void AMainPlayerState::SetToAttributePoint(int InAttributePoint)
+{
+	AttributePoint = InAttributePoint;
+	OnAttributePointChangedDelegate.Broadcast(AttributePoint);
 }

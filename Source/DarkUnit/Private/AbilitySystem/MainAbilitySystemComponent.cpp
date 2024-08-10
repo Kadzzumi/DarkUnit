@@ -3,9 +3,11 @@
 
 #include "AbilitySystem/MainAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "DarkUnitGameplayTags.h"
 #include "AbilitySystem/Abilities/DarkUnitGameplayAbility.h"
 #include "DarkUnit/DarkUnitLogChannels.h"
+#include "Interaction/InteractionInterface.h"
 
 void UMainAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -34,6 +36,31 @@ void UMainAbilitySystemComponent::AddCharacterPassiveAbilities(
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 		GiveAbilityAndActivateOnce(AbilitySpec);
+	}
+}
+//
+//Weapon Abilities
+void UMainAbilitySystemComponent::AddWeaponAbilities(const TSubclassOf<UGameplayAbility> WeaponAbilities)
+{
+	FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(WeaponAbilities, 1);
+	if (const UDarkUnitGameplayAbility* DarkUnitAbility = Cast<UDarkUnitGameplayAbility>(AbilitySpec.Ability))
+	{
+		AbilitySpec.DynamicAbilityTags.AddTag(DarkUnitAbility->StartupInputTag);
+		GiveAbility(AbilitySpec);
+	}
+	AbilityGivenDelegate.Broadcast(this); 
+}
+
+void UMainAbilitySystemComponent::RemoveWeaponAbilities(const TSubclassOf<UGameplayAbility> WeaponAbilities)
+{
+	// Iterate over the abilities to find the one to remove
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.Ability->GetClass() == WeaponAbilities)
+		{
+			// Remove the ability from the Ability System Component
+			ClearAbility(AbilitySpec.Handle);
+		}
 	}
 }
 
@@ -142,4 +169,29 @@ void UMainAbilitySystemComponent::EffectApply(UAbilitySystemComponent* AbilitySy
 	
 	EffectAssetTags.Broadcast(TagContainer);
 	
+}
+
+// Upgrading attribute when level up
+void UMainAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+	if (GetAvatarActor()->Implements<UInteractionInterface>())
+	{
+		if (IInteractionInterface::Execute_GetAttributePoint(GetAvatarActor()) > 0)
+		{
+			ServerUpgradeAttribute(AttributeTag);
+		}
+	}
+}
+
+void UMainAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
+{
+	FGameplayEventData Payload;
+	Payload.EventTag = AttributeTag;
+	Payload.EventMagnitude = 1.f;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), AttributeTag, Payload);
+	if (GetAvatarActor()->Implements<UInteractionInterface>())
+	{
+		IInteractionInterface::Execute_AddToAttributePoints(GetAvatarActor(), -1);
+	}
 }

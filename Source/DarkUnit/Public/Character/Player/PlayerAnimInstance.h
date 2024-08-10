@@ -21,7 +21,7 @@ public:
 private:
 	//References
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="References", meta = (AllowPrivateAccess = "true"))
-	class ACharacterBase* Player;
+	class APlayerCharacterBase* Player;
 	
 	// Movement
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta = (AllowPrivateAccess = "true"))
@@ -32,6 +32,9 @@ private:
 	bool bCrouching;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta = (AllowPrivateAccess = "true"))
 	bool bInAir;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Movement", meta = (AllowPrivateAccess = "true"))
+	bool bOrientingToMovement;
 public:
 
 };

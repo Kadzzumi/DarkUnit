@@ -37,7 +37,6 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attributes_Resistances_StatusEffectResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Resistances.StatusEffectResistance"), FString("Improves resistance to status effects. Reduces the duration and impact of status effects"));
 
 	// Damage Types
-	GameplayTags.Attributes_Damage_WeaponDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Weapon"), FString("Weapon damage"));
 	GameplayTags.Attributes_Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Physical"), FString("Physical damage"));
 	GameplayTags.Attributes_Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Fire"), FString("Fire damage"));
 	GameplayTags.Attributes_Damage_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Damage.Ice"), FString("Ice damage"));

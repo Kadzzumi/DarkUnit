@@ -2,11 +2,11 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/SphereComponent.h"
 #include "DarkUnit/DarkUnitLogChannels.h"
 
 
@@ -33,6 +33,12 @@ AWeaponBase::AWeaponBase() :
 	DamageCapsule->SetGenerateOverlapEvents(false);
 	
 	SetWeaponState(EWeaponState::State_Equipped);
+
+ 	//
+	// Initialize the Niagara component but do not auto activate it
+	TrailEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("TrailEffectComponent"));
+	TrailEffectComponent->SetupAttachment(WeaponMesh, FName("Center"));
+	TrailEffectComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -67,11 +73,21 @@ void AWeaponBase::SetWeaponCollision(bool bCanHit)
 	{
 		DamageCapsule->SetGenerateOverlapEvents(false);
 		HitActors.Empty();  // Clear hit actors when stopping collision checks
-		
+		if (TrailEffectComponent)
+		{
+			TrailEffectComponent->Deactivate();
+			// TrailEffectComponent->DestroyComponent();
+		}
 	}
 	else
 	{
 		DamageCapsule->SetGenerateOverlapEvents(true);
+		if (TrailEffectSystem)
+		{
+			TrailEffectComponent->SetAsset(TrailEffectSystem);
+			TrailEffectComponent->Activate(true);
+
+		}
 	}
 }
 
@@ -135,21 +151,24 @@ void AWeaponBase::SetWeaponState_Implementation(EWeaponState State)
 		WeaponMesh->SetSimulatePhysics(false);
 		WeaponMesh->SetEnableGravity(false);
 		WeaponMesh->SetVisibility(true);
-		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		break;
 	case EWeaponState::State_Dropped:
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-		WeaponMesh->SetSimulatePhysics(true);
-		WeaponMesh->SetEnableGravity(true);
 		WeaponMesh->SetVisibility(true);
-		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-		WeaponMesh->SetCollisionResponseToChannel(
-			ECollisionChannel::ECC_WorldStatic,
-			ECollisionResponse::ECR_Block);
+		WeaponMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+		WeaponMesh->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+		GetWorld()->GetTimerManager().SetTimer(DropTimer, this, &AWeaponBase::DropPhysics, 0.1f, false);
 		Dissolve();
 		break;
 	}
+}
+	
+void AWeaponBase::DropPhysics()
+{
+	WeaponMesh->SetSimulatePhysics(true);
+	WeaponMesh->SetEnableGravity(true);
 }
 
 void AWeaponBase::Dissolve()
@@ -161,3 +180,4 @@ void AWeaponBase::Dissolve()
 		StartDissolveTimeline(DynamicMatInst);
 	}
 }
+

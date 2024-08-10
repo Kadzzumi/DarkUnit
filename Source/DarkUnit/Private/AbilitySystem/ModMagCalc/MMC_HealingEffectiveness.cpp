@@ -27,5 +27,5 @@ float UMMC_HealingEffectiveness::CalculateBaseMagnitude_Implementation(const FGa
 	float Faith = 0.f;
 	GetCapturedAttributeMagnitude(FaithDef, Spec, EvaluateParameters, Faith);
 	Faith = FMath::Max<float>(Faith, 0);
-	return	6 + Faith;
+	return	8 + Faith;
 }

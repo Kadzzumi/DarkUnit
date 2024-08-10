@@ -27,7 +27,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
-	
+
+	//
+	// Getter and setter
 	// Level Getter
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
 	void AddToLevel(int32 InLevel);
@@ -40,7 +42,14 @@ public:
 	void SetToXP(int InXP);
 	FOnPlayerStatChanged OnXPChangedDelegate;
 
+	//AttributePoint Sets
+	FORCEINLINE int32 GetAttributePoint() const { return AttributePoint; }
+	void AddToAttributePoint(int InAttributePoint);
+	void SetToAttributePoint(int InAttributePoint);
+	FOnPlayerStatChanged OnAttributePointChangedDelegate;
+
 	//
+	//Inventory
 	const int32 MaxWeaponCapacity{ 2 };
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -70,10 +79,13 @@ private:
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
 
-	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
 	int32 XP = 1;
 	UFUNCTION()
 	void OnRep_XP(int32 OldXP);
 
-
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_AttributePoint)
+	int32 AttributePoint = 0;
+	UFUNCTION()
+	void OnRep_AttributePoint(int32 OldAttributePoint);
 };

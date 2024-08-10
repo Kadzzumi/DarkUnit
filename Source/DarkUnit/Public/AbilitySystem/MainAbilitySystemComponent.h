@@ -24,6 +24,8 @@ public:
 	// Adding abilities
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
 	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartUpPassiveAbilities);
+	void AddWeaponAbilities(const TSubclassOf<UGameplayAbility> WeaponAbilities);
+	void RemoveWeaponAbilities(const TSubclassOf<UGameplayAbility> WeaponAbilities);
 	bool bStartUpAbilitiesGiven{false};
 	
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
@@ -34,6 +36,12 @@ public:
 
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	UFUNCTION(BlueprintCallable)
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
 protected:
 	
 	void EffectApply(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);

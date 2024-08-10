@@ -99,9 +99,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> MI_CharacterDessolve;
 
-	UFUNCTION(BlueprintCallable)
-	void WeaponTrailEffect(bool bStart);
-
 private:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;

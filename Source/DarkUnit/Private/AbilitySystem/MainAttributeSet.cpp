@@ -141,8 +141,6 @@ void UMainAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	
 }
 
-
-
 void UMainAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
 	// Source = causer of the effect, Target = target of the effect(owner)
@@ -243,22 +241,23 @@ void UMainAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const int32 NumLevelUps = NewLevel - CurrentLevel;
 			if (NumLevelUps > 0)
 			{
-				// TODO::00 Add to Player Level
-				const int32 AttributePointsReward = IInteractionInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel);
-				
 				IInteractionInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumLevelUps);
-				IInteractionInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
-
-				SetHealth(GetMaxHealth());
-				SetMana(GetMaxMana());
-				// TODO:: Fill up health and mana
-				
+				IInteractionInterface::Execute_AddToAttributePoints(Props.SourceCharacter, NumLevelUps);
 				IInteractionInterface::Execute_LevelUp(Props.SourceCharacter);
 			}
 			IInteractionInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
 		}
 	}
 }
+
+void UMainAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	// SetHealth(GetMaxHealth());
+	// SetMana(GetMaxMana());
+}
+
 // Show Damage
 void UMainAttributeSet::ShowFloatingText(const FEffectProperties& Props, float Damage, bool bEvadedHit)
 {

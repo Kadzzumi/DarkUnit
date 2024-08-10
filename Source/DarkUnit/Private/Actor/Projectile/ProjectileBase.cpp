@@ -22,9 +22,9 @@ AProjectileBase::AProjectileBase()
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
-	Sphere->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-	Sphere->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Block);
+	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
+	Sphere->SetCollisionResponseToChannel(ECC_Visibility, ECR_Overlap);
+	Sphere->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
 	
 	//Movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
