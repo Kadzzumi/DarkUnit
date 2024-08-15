@@ -141,7 +141,7 @@ FGameplayTag UMainAbilitySystemComponent::GetAbilityTagFromSpec(const FGameplayA
 	{
 		for (FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
 		{
-			if(Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Spell"))))
+			if(Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Conjuration"))) || Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("EssenceBond"))) || Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Sigil"))))
 			{
 				return Tag;
 			}

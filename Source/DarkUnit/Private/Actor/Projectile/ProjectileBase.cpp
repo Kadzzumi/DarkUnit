@@ -31,6 +31,7 @@ AProjectileBase::AProjectileBase()
 	ProjectileMovement->InitialSpeed = 1000.f;
 	ProjectileMovement->MaxSpeed = 1000.f;
 	ProjectileMovement->ProjectileGravityScale = 0.05f;
+	
 }
 
 // Called when the game starts or when spawned

@@ -68,14 +68,22 @@ void FDarkUnitGameplayTags::InitializeNativeGameplayTags()
 	// Effects
 	GameplayTags.Effect_HitReactSmall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effect.HitReactSmall"), FString("Hit Reaction slight"));
 
-	// Spells
-	GameplayTags.Spell_Fire_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Spell.Fire.FireBall"), FString("Fire Ball"));
-
-	// Cooldowns
-	GameplayTags.Spell_CD_Low = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Spell.CD.Low"), FString("Low Cooldown"));
-	GameplayTags.Spell_CD_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Spell.CD.FireBall"), FString("Low Cooldown"));
-
+	// Essence Bond
+	GameplayTags.EssenceBond_CircleSwing = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("EssenceBond.CircleSwing"), FString("EssenceBond"));
+	GameplayTags.EssenceBond_ForwardPoke = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("EssenceBond.ForwardPoke"), FString("EssenceBond"));
+	GameplayTags.EssenceBond_UpwardPoke = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("EssenceBond.UpwardPoke"), FString("EssenceBond"));
 	
+	// Sigil
+	GameplayTags.Sigil_BluntResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Sigil.BluntResistance"), FString("EssenceBond"));
+	
+	// Spells
+	GameplayTags.Conjuration_Fire_FireBall = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Conjuration.Fire.FireBall"), FString("Fire Ball"));
+	
+	// Cool-downs
+	GameplayTags.CD_EssenceBond_Low = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CD.EssenceBond.Low"), FString("Low Cooldown"));
+	GameplayTags.CD_Sigil_Low = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CD.Sigil.Low"), FString("Low Cooldown"));
+	GameplayTags.CD_Conjuration_Low = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CD.Conjuration.Low"), FString("Low Cooldown"));
+
 	//Input Tags
 	GameplayTags.InputTag_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Attack"), FString("Triggers the attack action"));
 	GameplayTags.InputTag_Block = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.Block"), FString("Triggers the block action"));

@@ -69,12 +69,22 @@ public:
 	//Reacts
 	FGameplayTag Effect_HitReactSmall;
 
+	//Essence Bonds
+	FGameplayTag EssenceBond_CircleSwing;
+	FGameplayTag EssenceBond_ForwardPoke;
+	FGameplayTag EssenceBond_UpwardPoke;
+
+	//Sigil
+	FGameplayTag Sigil_BluntResistance;
+	
 	// Spells
-	FGameplayTag Spell_Fire_FireBall;
+	FGameplayTag Conjuration_Fire_FireBall;
 	
 	//Spell Cooldowns
-	FGameplayTag Spell_CD_Low;
-	FGameplayTag Spell_CD_FireBall;
+	FGameplayTag CD_EssenceBond_Low;
+	FGameplayTag CD_Sigil_Low;
+	FGameplayTag CD_Conjuration_Low;
+
 
 	//Inputs tags
 	FGameplayTag InputTag_Attack;
