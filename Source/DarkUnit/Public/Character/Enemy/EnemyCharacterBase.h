@@ -42,6 +42,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combat")
 	float BaseWalkSpeed = 150.f;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Combat")
+	bool bIsDead = false;
 	// Weapon
 	UFUNCTION(BlueprintCallable)
 	virtual FVector GetLookLocation() override;	
@@ -79,6 +81,7 @@ protected:
 	TObjectPtr<AMainAIController> MainAIController;
 	
 private:
+	
 	UPROPERTY(EditDefaultsOnly)
 	float BonusDamage = 50;
 	UPROPERTY(EditDefaultsOnly)

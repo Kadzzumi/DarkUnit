@@ -94,12 +94,12 @@ void UExecCals_EnemyDamage::Execute_Implementation(const FGameplayEffectCustomEx
 	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	// Getting Ability system component of the target and the character
-	const UAbilitySystemComponent* SourceACS = ExecutionParams.GetSourceAbilitySystemComponent();
-	const UAbilitySystemComponent* TargetACS = ExecutionParams.GetTargetAbilitySystemComponent();
+	const UAbilitySystemComponent* SourceAcs = ExecutionParams.GetSourceAbilitySystemComponent();
+	const UAbilitySystemComponent* TargetAcs = ExecutionParams.GetTargetAbilitySystemComponent();
 
 	// Getting Avatars
-	AActor* SourceAvatar = SourceACS ? SourceACS->GetAvatarActor() : nullptr;
-	AActor* TargetAvatar = TargetACS ? TargetACS->GetAvatarActor() : nullptr;
+	AActor* SourceAvatar = SourceAcs ? SourceAcs->GetAvatarActor() : nullptr;
+	AActor* TargetAvatar = TargetAcs ? TargetAcs->GetAvatarActor() : nullptr;
 	int32 SourcePlayerLevel{1};
 	if (SourceAvatar->Implements<UCombatInterface>())
 	{

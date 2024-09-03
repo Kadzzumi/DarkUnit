@@ -46,6 +46,7 @@ void AEnemyCharacterBase::PossessedBy(AController* NewController)
 	MainAIController->RunBehaviorTree(MainBehaviorTree);
 	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
 	MainAIController->GetBlackboardComponent()->SetValueAsEnum(FName("EnemyType"), static_cast<uint8>(CharacterClass));
+	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), bIsDead);
 }
 
 int32 AEnemyCharacterBase::GetPlayerLevel_Implementation()
@@ -142,6 +143,8 @@ void AEnemyCharacterBase::HitReactTagChanged(const FGameplayTag CallbackTag, int
 void AEnemyCharacterBase::Die()
 {
 	SetLifeSpan(LifeSpanTime);
+	bIsDead = true;
+	MainAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), bIsDead);
 	Super::Die();
 }
 //
